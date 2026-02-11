@@ -1,0 +1,217 @@
+.navbar{
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 99;
+  background: rgba(0,0,0,0.58);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.container{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.brand{
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logoWrapper{
+  position: relative;
+  width: 130px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.logoImage{
+  object-fit: contain;
+}
+
+/* Desktop menu */
+.menu{
+  display: flex;
+  gap: 24px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.menu a{
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.menu a:hover{
+  color: rgba(0, 67, 225, 0.95);
+}
+
+/* Desktop CTA */
+.button{
+  background: #1e88e5;
+  padding: 9px 18px;
+  border-radius: 999px;
+  color: white;
+  text-decoration: none;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,0.10);
+  transition: transform 140ms ease, background-color 0.2s ease;
+}
+
+.button:hover{
+  
+   background: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
+}
+
+/* Mobile hamburger button */
+.burger{
+  display: none; /* only on mobile */
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  position: relative;
+}
+
+.burgerLine{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 999px;
+  transition: transform 180ms ease, opacity 180ms ease, top 180ms ease;
+}
+
+.burgerLine:nth-child(1){ top: 15px; }
+.burgerLine:nth-child(2){ top: 21px; }
+.burgerLine:nth-child(3){ top: 27px; }
+
+/* X animation */
+.line1Open{ top: 21px !important; transform: rotate(45deg); }
+.line2Open{ opacity: 0; }
+.line3Open{ top: 21px !important; transform: rotate(-45deg); }
+
+/* Mobile overlay + panel */
+.backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  z-index: 98;
+}
+
+.backdropOpen{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobilePanel{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: calc(100% + 10px);
+  border-radius: 18px;
+
+  background: rgba(15, 6, 6, 0.78);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+
+  padding: 12px;
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 180ms ease, opacity 180ms ease;
+  z-index: 100;
+}
+
+.mobilePanelOpen{
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobileLinks{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+}
+
+.mobileLinks a{
+  padding: 12px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.92);
+  font-weight: 850;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.mobileLinks a:hover{
+  border-color: rgba(225,6,0,0.35);
+  background: rgba(255,255,255,0.06);
+}
+
+.mobileBook{
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  padding: 12px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 950;
+  color: white;
+  background: #e10600;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.mobileBook:hover{
+  background: maroon;
+}
+
+/* ===========================
+   Responsive rules
+   =========================== */
+@media (max-width: 860px){
+  .menu{
+    display: none;
+  }
+
+  .button{
+    display: none;
+  }
+
+  .burger{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container{
+    padding: 12px 14px;
+  }
+
+  .logoWrapper{
+    width: 120px;
+    height: 38px;
+  }
+}
