@@ -1,0 +1,89 @@
+.footer{
+    background: #0d0f14;
+    color: #d1d5db;
+    padding-top: 80px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Container */
+.container{
+    width: 85%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 60px;
+    padding-bottom: 60px;
+}
+
+/* Logo */
+.logo{
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.logo span{
+   color: #1565c0 ;
+   font-weight: 500;
+   font-size: 0.7em;
+}
+/* Columns */
+.col h3{
+    color: white;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+.col p{
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #9aa0a6;
+}
+
+/* Links */
+.col a{
+    display: block;
+    text-decoration: none;
+    color: #9aa0a6;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    transition: color .3s ease, transform .3s ease;
+}
+
+.col a:hover{
+    color: white;
+    transform: translateX(4px);
+}
+
+/* Social icons */
+.socials{
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.socials span{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background .3s ease, transform .3s ease;
+}
+
+.socials span:hover{
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-3px);
+}
+
+/* Bottom bar */
+.bottom{
+    text-align: center;
+    padding: 22px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.9rem;
+    color: #777;
+}

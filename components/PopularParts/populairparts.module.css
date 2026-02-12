@@ -1,18 +1,15 @@
 .categories{
-    padding: 100px 10%;
-    background: #151518be;
-    height: 100dvh;
-
+    padding: 120px 8%;
+    background: #0f0f12;
 }
-
 
 .header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 70px;
 }
 
 .header h1 {
-  font-size: 2.5rem;
+   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 15px;
   background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
@@ -21,50 +18,115 @@
 }
 
 .header p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.1rem;
+  color: #9aa0a6;
 }
 
+/* GRID */
 .grid{
   display: grid;
   grid-template-columns: repeat(4,1fr);
-  gap: 30px;
+  gap: 35px;
 }
 
+/* CARD */
 .card{
   position: relative;
-  border-radius: 14px;
+  height: 320px;
+  border-radius: 22px;
   overflow: hidden;
   text-decoration: none;
   color: white;
-  height: 280px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  isolation: isolate;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+  transition: transform .35s ease, box-shadow .35s ease;
 }
 
 .card:hover{
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.55);
 }
 
+/* IMAGE */
 .imageWrapper{
-  object-fit: cover;
-  filter:brightness(0.6)
+  position: absolute;
+  inset: 0;
 }
 
+.image{
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.card:hover .image{
+  transform: scale(1.1);
+}
+
+/* GRADIENT OVERLAY */
+.card::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.75) 10%,
+      rgba(0,0,0,0.45) 40%,
+      rgba(0,0,0,0.15) 70%,
+      transparent 100%
+  );
+  z-index: 1;
+}
+
+/* CONTENT ON IMAGE */
 .cardContent{
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  padding: 26px;
   z-index: 2;
-  padding: 25px;
-  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  transform: translateY(20px);
+  transition: transform .4s ease;
+  gap: 8px;
+}
+.card:hover .cardContent{
+  transform: translateY(0);
+}
+.title{
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
+.cardContent p{
+  font-size: 0.95rem;
+  color: #d1d5db;
+}
+
+/* BUTTON STYLE */
 .button{
-  margin-top: 10px;
-  background: #1e88e5;
-  padding: 8px 14px;
-  border-radius: 14px;
-  font-size: 0.9rem;
+  margin-top: 12px;
+  align-self: flex-start;
+  background: #1565c0;
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.25);
+ 
+}
+
+.card:hover .button{
+  background: rgba(255,255,255,0.25);
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .grid{ 
+    grid-template-columns: repeat(1,1fr);
+    padding: 10px;
+    border-radius: 10px;
+  }
+
 }

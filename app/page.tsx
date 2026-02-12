@@ -5,6 +5,7 @@ import Brands from "@/components/brands/brands"
 import AutoBot from "@/components/autobot/autobot";
 import FAQ from "@/components/FAQ/FAQ"
 import Parts from "@/components/PopularParts/PopularParts";
+import Footer from "@/components/footer/footer";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
     <Brands />
     <Parts />
     <FAQ />
+    <Footer />
    </div>
     
   );

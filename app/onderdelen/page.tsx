@@ -1,3 +1,4 @@
+import Footer from "@/components/footer/footer";
 import Parts from "@/components/PopularParts/PopularParts";
 
 export default function page(){
@@ -5,6 +6,7 @@ export default function page(){
         <section>
             <div>
                 <Parts />
+                <Footer />
             </div>
         </section>
     )

@@ -6,10 +6,11 @@ import Link from "next/link";
 export default function Parts(){
 
     const categories = [
-    { slug: "banden", title: "Banden", image: "/images/category/banden.png", href: "" },
-    { slug: "interieur", title: "Interieur", image: "/images/category/interieur.png", href: "" },
-     { slug: "machine", title: "Machine", image: "/images/category/machine.png", href: "" },
-    { slug: "onderstel", title: "Onderstel", image: "/images/category/onderstel.png", href: "" },
+    { slug: "banden", title: "Banden", image: "/images/category/tires.png", href: "" },
+    { slug: "interieur", title: "Interieur", image: "/images/category/interieur.webp", href: "" },
+     { slug: "machine", title: "Machine", image: "/images/category/machine.avif", href: "" },
+    { slug: "onderstel", title: "Onderstel", image: "/images/category/onderstel.jpg", href: "" },
+  
   ];
 
 
@@ -31,7 +32,7 @@ export default function Parts(){
                 </div>
 
                 <div className={styles.cardContent}>
-                    <h3>{category.title}</h3>
+                    <h3 className={styles.title}>{category.title}</h3>
                     <p>Bekijk alle onderdelen in deze categorie</p>
                     <span className={styles.button}>Bekijk</span>
                 </div>
