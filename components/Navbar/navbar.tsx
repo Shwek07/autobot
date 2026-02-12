@@ -41,15 +41,15 @@ export default function Navbar() {
         {/* Desktop menu */}
         <div className={styles.menu}>
           <Link href="/" onClick={close}>Home</Link>
-          <Link href="/autobot" onClick={close}>AutoBot</Link>
+          <Link href="/ai-agent" onClick={close}>AutoBot</Link>
           <Link href="/onderdelen" onClick={close}>Onderdelen</Link>
-          <Link href="/FAQ" onClick={close}>FAQ</Link>
+          <Link href="/faq" onClick={close}>FAQ</Link>
           <Link href="/contact" onClick={close}>Contact</Link>
         </div>
-
+        
         {/* Desktop CTA */}
         <Link href="/book" className={styles.button} onClick={close}>
-          Book
+          Call us now: +597 868-5952
         </Link>
 
         {/* Mobile hamburger */}
@@ -75,10 +75,11 @@ export default function Navbar() {
       {/* Mobile panel */}
       <div className={`${styles.mobilePanel} ${open ? styles.mobilePanelOpen : ""}`}>
         <div className={styles.mobileLinks}>
-          <Link href="/" onClick={close}>Home</Link>
-          <Link href="/services" onClick={close}>Services</Link>
-          <Link href="/portfolio" onClick={close}>Portfolio</Link>
-          <Link href="/FAQ" onClick={close}>FAQ</Link>
+           <Link href="/" onClick={close}>Home</Link>
+          <Link href="/ai-agent" onClick={close}>AutoBot</Link>
+          <Link href="/onderdelen" onClick={close}>Onderdelen</Link>
+          <Link href="/faq" onClick={close}>FAQ</Link>
+          <Link href="/contact" onClick={close}>Contact</Link>
         </div>
 
         <Link href="/book" className={styles.mobileBook} onClick={close}>

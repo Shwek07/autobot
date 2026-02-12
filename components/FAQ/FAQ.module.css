@@ -1,0 +1,110 @@
+.main {
+  padding: 100px 10%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* FAQ CARD */
+.item {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.itemOpen {
+  border-color: #1e88e5;
+  box-shadow: 0 10px 30px rgba(21, 141, 20, 0.15);
+}
+
+/* QUESTION BUTTON */
+.questionButton {
+  width: 100%;
+  padding: 22px 26px;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.qText {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* CARET ICON */
+.caret {
+  width: 26px;
+  height: 26px;
+  color: #9ca3af;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.caretOpen {
+  transform: rotate(180deg);
+  color: #1e88e5;
+}
+
+/* ANSWER ANIMATION */
+.answerWrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, padding 0.35s ease;
+  padding: 0 26px;
+}
+
+.answerOpen {
+  max-height: 200px;
+  padding: 0 26px 22px 26px;
+}
+
+.answer {
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 0.98rem;
+}
+
+/* Bottom note */
+.bottomNote {
+  text-align: center;
+  margin-top: 50px;
+  color: #6b7280;
+  font-size: 1rem;
+}
