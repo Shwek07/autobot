@@ -15,7 +15,9 @@ export default function Home() {
     <AutoBot />
     <Brands />
     <Parts />
+    <Brands />
     <FAQ />
+    <Brands />
     <Footer />
    </div>
     
