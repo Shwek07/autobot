@@ -1,6 +1,9 @@
+
+
 .autobot {
-padding: 80px 5px;
+padding: 80px 20px;
 background: white;
+overflow-x: hidden;
 
 }
 
@@ -35,6 +38,7 @@ background: white;
   grid-template-columns: 1fr 1fr;
   gap: 50px;
   align-items: center;
+    min-width: 0;
 }
 
 /* Robot Column */
@@ -42,6 +46,7 @@ background: white;
   display: flex;
   justify-content: center;
   align-items: center;
+   min-width: 0;
 }
 
 .robotWrapper {
@@ -92,6 +97,7 @@ background: white;
 /* Chat Column */
 .chatColumn {
   width: 100%;
+   min-width: 0;
 }
 
 .chatContainer {
@@ -136,13 +142,14 @@ background: white;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 15px;  
+  min-width: 0;
 }
 
 .message {
   display: flex;
   gap: 12px;
-  max-width: 80%;
+  max-width: 100%;
   color: #000102;
 }
 .headerBadge {
@@ -194,6 +201,8 @@ background: white;
   border-radius: 18px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   position: relative;
+  
+ 
 }
 
 .message.user .messageContent {
@@ -219,6 +228,8 @@ background: white;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .suggestionButton {
