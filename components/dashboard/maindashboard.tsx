@@ -2,9 +2,9 @@
 'use client';
 
 import { useState } from 'react';
-import DashboardOverview from './components/DashboardOverview';
-import ProductManagement from './components/ProductManagement';
-import AutoModelManagement from './components/AutoModelManagement';
+// import DashboardOverview from './components/DashboardOverview';
+// import ProductManagement from './components/ProductManagement';
+// import AutoModelManagement from './components/AutoModelManagement';
 import styles from './maindashboard.module.css';
 
 type Tab = 'overview' | 'products' | 'automodels' | 'reservations' | 'users';
@@ -43,11 +43,11 @@ export default function AdminDashboard() {
       </aside>
 
       <main className={styles.main}>
-        {activeTab === 'overview' && <DashboardOverview />}
+        {/* {activeTab === 'overview' && <DashboardOverview />}
         {activeTab === 'products' && <ProductManagement />}
         {activeTab === 'automodels' && <AutoModelManagement />}
         {activeTab === 'reservations' && <ReservationManagement />}
-        {activeTab === 'users' && <UserManagement />}
+        {activeTab === 'users' && <UserManagement />} */}
       </main>
     </div>
   );
