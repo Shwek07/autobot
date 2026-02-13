@@ -29,7 +29,7 @@ export default function Navbar() {
           <div className={styles.logoWrapper}>
             <Image
               className={styles.logoImage}
-              src="/images/logo.jpg"
+              src="/Logo.png"
               alt="Logo"
               fill
               sizes="130px"
