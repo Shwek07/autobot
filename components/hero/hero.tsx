@@ -28,6 +28,7 @@ export default function Hero() {
             <option>Tesla</option>
             <option>Audi</option>
             <option>Mitsubishi</option>
+            <option>Honda</option>
             <option>Subaru</option>
             <option>Kia</option>
             <option>BMW</option>
