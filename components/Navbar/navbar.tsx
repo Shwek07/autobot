@@ -82,7 +82,7 @@ export default function Navbar() {
           <Link href="/contact" onClick={close}>Contact</Link>
         </div>
 
-        <Link href="/book" className={styles.mobileBook} onClick={close}>
+        <Link href="/admin/dashboard" className={styles.mobileBook} onClick={close}>
          Call us now: +597 868-5952
         </Link>
       </div>
