@@ -7,6 +7,8 @@ interface Product {
   product_id: number;
   product_name: string;
   product_merk: string;
+  part_number: string;
+  description: string;
   verkoop_prijs: number;
   stock_quantity: number;
 }
@@ -60,6 +62,8 @@ export default function Dashboard() {
               <tr>
                 <th>Naam</th>
                 <th>Merk</th>
+                <th>Description</th>
+                <th>Part Number</th>
                 <th>Prijs</th>
                 <th>Voorraad</th>
               </tr>
@@ -69,6 +73,8 @@ export default function Dashboard() {
                 <tr key={p.product_id}>
                   <td>{p.product_name}</td>
                   <td>{p.product_merk}</td>
+                  <td>{p.description}</td>
+                  <td>{p.part_number}</td>
                   <td>€{p.verkoop_prijs}</td>
                   <td>
                     <span
