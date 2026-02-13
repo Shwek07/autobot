@@ -83,7 +83,7 @@ export default function Navbar() {
         </div>
 
         <Link href="/book" className={styles.mobileBook} onClick={close}>
-          Book a session
+         Call us now: +597 868-5952
         </Link>
       </div>
     </nav>
