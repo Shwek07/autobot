@@ -13,9 +13,7 @@ export default function Home() {
     <Hero />
     <Brands />
     <AutoBot />
-    
     <Parts />
-  
     <FAQ />
     <Brands />
     <Footer />

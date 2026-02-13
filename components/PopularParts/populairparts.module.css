@@ -60,6 +60,7 @@
 
 .card:hover .image{
   transform: scale(1.1);
+
 }
 
 /* GRADIENT OVERLAY */

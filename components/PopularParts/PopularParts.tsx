@@ -7,9 +7,9 @@ export default function Parts(){
 
     const categories = [
     { slug: "banden", title: "Banden", image: "/images/category/tires.png", href: "" },
-    { slug: "interieur", title: "Interieur", image: "/images/category/interieur.webp", href: "" },
-     { slug: "machine", title: "Machine", image: "/images/category/machine.avif", href: "" },
-    { slug: "onderstel", title: "Onderstel", image: "/images/category/onderstel.jpg", href: "" },
+    { slug: "interieur", title: "Interieur", image: "/images/category/interieur1.webp", href: "" },
+     { slug: "machine", title: "Machine", image: "/images/category/machine.webp", href: "" },
+    { slug: "onderstel", title: "Onderstel", image: "/images/category/Mechanic.jpg", href: "" },
   
   ];
 

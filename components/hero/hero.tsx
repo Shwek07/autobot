@@ -1,6 +1,10 @@
+'use client';
+
+import { useEffect } from "react";
 import styles from "./hero.module.css";
 
 export default function Hero() {
+
   return (
     <section className={styles.hero}>
       <div className={styles.overlay} />
