@@ -30,18 +30,12 @@ export default function AutoBot() {
 
 
 
-  // Auto-scroll naar nieuwste bericht
-useEffect(() => {
-  if (messages.length > 1) {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }
-}, [messages]);
-
-
-  // Focus op input bij laden
-  // useEffect(() => {
-  //   inputRef.current?.focus();
-  // }, []);
+    // Auto-scroll naar nieuwste bericht
+     useEffect(() => {
+       if (messages.length > 1) {
+         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+       }
+     }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
