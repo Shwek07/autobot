@@ -1,17 +1,19 @@
-import Dashboard from '@/components/dashboard/Dashboard';
-import Sidebar from '@/components/dashboard/Sidebar';
+import Sidebar from "@/components/dashboard/Sidebar";
 
-export default function layout() {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-   
-<div className="layout">
-  {/* <Sidebar /> */}
-  <main className="main">
-     <Dashboard />
-    <div className='content'>
-   
+    <div className="layout">
+      {/* <Sidebar /> */}
+
+      <main className="main">
+        <div className="content">
+          {children}   
+        </div>
+      </main>
     </div>
-  </main>
-</div>
   );
 }

@@ -1,0 +1,85 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+  background: #000000;
+  min-height: 100vh;
+}
+
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 700px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #1e293b;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.input,
+.textarea {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+  background: #fff;
+  color: #000000;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.button {
+  margin-top: 10px;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+
+.button:hover {
+  background: #1e40af;
+}
+
+.button:active {
+  transform: scale(0.98);
+}

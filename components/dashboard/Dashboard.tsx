@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
+import Link from 'next/dist/client/link';
 
 interface Product {
   product_id: number;
@@ -18,39 +19,54 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const res = await fetch('/api/admin/products');
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const [error, setError] = useState<string | null>(null);
+
+ async function fetchProducts() {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const res = await fetch("/api/admin/products", {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
     }
 
-    // Set current time
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleString('nl-NL', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }));
-    };
-    
-    updateTime();
-    const timer = setInterval(updateTime, 60000); // Update every minute
-    
-    loadData();
+    const data = await res.json();
+    setProducts(data);
+  } catch (err: any) {
+    console.error(err);
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}
 
-    return () => clearInterval(timer);
-  }, []);
+useEffect(() => {
+  fetchProducts();
+
+  const updateTime = () => {
+    const now = new Date();
+    setCurrentTime(
+      now.toLocaleString("nl-NL", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  };
+
+  updateTime();
+  const timer = setInterval(updateTime, 60000);
+
+  return () => clearInterval(timer);
+}, []);
+
 
   if (loading) return (
     <div className={styles.loadingContainer}>
@@ -58,10 +74,23 @@ export default function Dashboard() {
       <p>Dashboard laden...</p>
     </div>
   );
+if (error)
+  return (
+    <div className={styles.loadingContainer}>
+      <p style={{ color: "red" }}>Error: {error}</p>
+      <button onClick={fetchProducts}>Retry</button>
+    </div>
+  );
 
   const lowStock = products.filter(p => p.stock_quantity < 10);
   const outOfStock = products.filter(p => p.stock_quantity === 0);
-  const totalValue = products.reduce((sum, p) => sum + (p.verkoop_prijs * p.stock_quantity), 0);
+  const totalValue = products.reduce(
+  (sum, p) =>
+    sum +
+    Number(p.verkoop_prijs || 0) *
+      Number(p.stock_quantity || 0),
+  0
+);
   
   // New statistics
   const averagePrice = products.length > 0 
@@ -70,6 +99,23 @@ export default function Dashboard() {
   
   const totalItems = products.reduce((sum, p) => sum + p.stock_quantity, 0);
   const categories = [...new Set(products.map(p => p.product_merk))].length;
+
+async function handleDelete(id: number) {
+  if (!confirm("Weet je zeker dat je dit product wilt verwijderen?")) return;
+
+  try {
+    await fetch(`/api/admin/products/${id}`, {
+      method: "DELETE",
+    });
+
+    // Optimistic update
+    setProducts(prev => prev.filter(p => p.product_id !== id));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
 
   return (
     <div className={styles.dashboard}>
@@ -80,7 +126,7 @@ export default function Dashboard() {
           <p className={styles.date}>{currentTime}</p>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.refreshButton} onClick={() => window.location.reload()}>
+          <button className={styles.refreshButton} onClick={fetchProducts}>
             <span>↻</span> Refresh
           </button>
         </div>
@@ -129,7 +175,11 @@ export default function Dashboard() {
               <span className={styles.cardIcon}>🕒</span>
               Recente Producten
             </h2>
+            <Link href="/admin/products/new">
+              <button className={styles.viewAllButton}>Add New Product</button>
+            </Link>
             <button className={styles.viewAllButton}>Bekijk alles →</button>
+            
           </div>
 
           <div className={styles.tableWrapper}>
@@ -189,6 +239,15 @@ export default function Dashboard() {
                         {p.stock_quantity > 10 ? 'Actief' : 'Attention'}
                       </span>
                     </td>
+                    <td>
+                    <button
+                      onClick={() => handleDelete(p.product_id)}
+                      className={styles.deleteButton}
+                    >
+                      🗑
+                    </button>
+                  </td>
+
                   </tr>
                 ))}
               </tbody>

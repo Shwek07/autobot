@@ -860,6 +860,19 @@ display: none;
   cursor: pointer;
   transition: all 0.2s;
 }
+.deleteButton {
+  background: #e96d6d;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteButton:hover {
+  background: #dc2626;
+  color: white;
+}
 
 .orderButton:hover {
   background: #2563eb;
