@@ -81,7 +81,7 @@ export default function Dashboard() {
         </div>
         <div className={styles.headerActions}>
           <button className={styles.refreshButton} onClick={() => window.location.reload()}>
-            <span>↻</span> Verversen
+            <span>↻</span> Refresh
           </button>
         </div>
       </div>
