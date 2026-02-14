@@ -5,10 +5,11 @@ export default function layout() {
   return (
    
 <div className="layout">
-  <Sidebar />
+  {/* <Sidebar /> */}
   <main className="main">
+     <Dashboard />
     <div className='content'>
-    <Dashboard />
+   
     </div>
   </main>
 </div>

@@ -100,45 +100,15 @@ export default function Dashboard() {
           icon="⚠️"
           color="#f59e0b"
         />
-        <StatCard 
-          label="Uitverkocht" 
-          value={outOfStock.length} 
-          icon="❌"
-          color="#ef4444"
-        />
-      </div>
-
-      {/* Stats Grid - Bottom Row (3 cards) */}
-      <div className={styles.statsGridBottom}>
-        <StatCard 
-          label="Voorraad Waarde" 
-          value={`€${totalValue.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} 
-          icon="💰"
-          color="#10b981"
-        />
-        <StatCard 
-          label="Gemiddelde Prijs" 
-          value={`€${averagePrice.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} 
-          icon="🏷️"
-          color="#8b5cf6"
-        />
-        <StatCard 
+         <StatCard 
           label="Totaal Artikelen" 
           value={totalItems.toLocaleString('nl-NL')} 
           icon="📊"
           color="#ec4899"
         />
       </div>
+    
 
-      {/* Optional: Categories Card - You can add this as a 7th card or replace one */}
-      {/* <div className={styles.statsGridBottom}>
-        <StatCard 
-          label="Merken" 
-          value={categories} 
-          icon="🏭"
-          color="#14b8a6"
-        />
-      </div> */}
 
       {/* Alert Banner */}
       {lowStock.length > 0 && (
