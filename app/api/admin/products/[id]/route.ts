@@ -86,21 +86,16 @@ export async function POST(request: Request) {
 }
 
 /* ---------------- UPDATE ---------------- */
+// PUT /api/admin/products/[id]
 export async function PUT(
-  request: Request,
-  context: { params: Promise<{ id: string }> }
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await context.params;
-  const numericId = Number(id);
-
-  if (isNaN(numericId)) {
-    return Response.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  const body = await request.json();
+  const body = await req.json();
+  const id = Number(params.id);
 
   const result = await sql`
-    UPDATE "products"
+    UPDATE products
     SET
       product_name = ${body.product_name},
       product_merk = ${body.product_merk},
@@ -108,17 +103,12 @@ export async function PUT(
       description = ${body.description},
       verkoop_prijs = ${body.verkoop_prijs},
       stock_quantity = ${body.stock_quantity}
-    WHERE product_id = ${numericId}
-    RETURNING *
+    WHERE product_id = ${id}
+    RETURNING *;
   `;
 
-  if (result.length === 0) {
-    return Response.json({ error: "Not found" }, { status: 404 });
-  }
-
-  return Response.json(result[0]);
+  return NextResponse.json(result);
 }
-
 
 /* ---------------- DELETE ---------------- */
 export async function DELETE(

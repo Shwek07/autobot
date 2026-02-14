@@ -28,7 +28,7 @@ export default function Parts(){
                 <Link key={category.slug} href={`/category/${category.slug}`} className={styles.card}>
                 
                 <div className={styles.imageWrapper}>
-                    <Image src={category.image} alt={category.title} fill className={styles.image} />
+                    <Image src={category.image} alt={category.title} fill   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
                 </div>
 
                 <div className={styles.cardContent}>

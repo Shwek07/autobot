@@ -100,6 +100,7 @@ if (error)
   const totalItems = products.reduce((sum, p) => sum + p.stock_quantity, 0);
   const categories = [...new Set(products.map(p => p.product_merk))].length;
 
+
 async function handleDelete(id: number) {
   if (!confirm("Weet je zeker dat je dit product wilt verwijderen?")) return;
 
@@ -114,7 +115,6 @@ async function handleDelete(id: number) {
     console.error(err);
   }
 }
-
 
 
   return (
@@ -247,7 +247,12 @@ async function handleDelete(id: number) {
                       🗑
                     </button>
                   </td>
+                   <td>
+                     <Link href={`/admin/products/${p.product_id}`}>
+                      <button className={styles.updateButton}>✏️</button>
+                    </Link>
 
+                    </td>
                   </tr>
                 ))}
               </tbody>

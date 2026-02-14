@@ -1,0 +1,71 @@
+.formContainer {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.formTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: #111114;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.formCard label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.formCard input,
+.formCard textarea {
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.formCard input:focus,
+.formCard textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+}
+
+.formCard textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.submitButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 10px;
+  background: #3b82f6;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitButton:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}

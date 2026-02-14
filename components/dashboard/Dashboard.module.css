@@ -874,6 +874,21 @@ display: none;
   color: white;
 }
 
+.updateButton {
+  background: #3b82f6;
+  border: none;
+  padding: 6px 10px;
+  padding-left:10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.updateButton:hover {
+  background: #2563eb;
+  color: white;
+}
+
 .orderButton:hover {
   background: #2563eb;
   transform: scale(1.05);
