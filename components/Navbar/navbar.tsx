@@ -48,7 +48,7 @@ export default function Navbar() {
         </div>
         
         {/* Desktop CTA */}
-        <Link href="/admin/dashboard" className={styles.button} onClick={close}>
+        <Link href="/admin/" className={styles.button} onClick={close}>
           Call us now: +597 868-5952
         </Link>
 
@@ -82,7 +82,7 @@ export default function Navbar() {
           <Link href="/contact" onClick={close}>Contact</Link>
         </div>
 
-        <Link href="/admin/dashboard" className={styles.mobileBook} onClick={close}>
+        <Link href="/admin/" className={styles.mobileBook} onClick={close}>
          Call us now: +597 868-5952
         </Link>
       </div>
