@@ -64,8 +64,8 @@ export default function Dashboard() {
                 <th>Merk</th>
                 <th>Description</th>
                 <th>Part Number</th>
-                <th>Prijs</th>
                 <th>Voorraad</th>
+                <th>Prijs</th>
               </tr>
             </thead>
             <tbody>
@@ -75,7 +75,6 @@ export default function Dashboard() {
                   <td>{p.product_merk}</td>
                   <td>{p.description}</td>
                   <td>{p.part_number}</td>
-                  <td>€{p.verkoop_prijs}</td>
                   <td>
                     <span
                       className={`${styles.badge} ${
@@ -89,6 +88,8 @@ export default function Dashboard() {
                       {p.stock_quantity}
                     </span>
                   </td>
+                  <td>€{p.verkoop_prijs}</td>
+
                 </tr>
               ))}
             </tbody>
