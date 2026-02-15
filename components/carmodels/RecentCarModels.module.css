@@ -1,0 +1,385 @@
+/* RecentCarModels.module.css */
+
+.container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #1f2937;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid #374151;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+}
+
+.count {
+  background: #2d3748;
+  color: #9ca3af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Filter Section */
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 2;
+  min-width: 200px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background: #2d3748;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+  background: #374151;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
+}
+
+.yearWrapper {
+  flex: 1;
+  min-width: 120px;
+}
+
+.yearInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #2d3748;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.yearInput:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+  background: #374151;
+}
+.viewAllButton {
+  padding: 0.5rem 1rem;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewAllButton:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+
+.yearInput[type="number"]::-webkit-inner-spin-button,
+.yearInput[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.yearInput[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.clearButton {
+  padding: 0.5rem 1rem;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clearButton:hover {
+  background: #4b5563;
+  color: #f3f4f6;
+  border-color: #6b7280;
+}
+
+/* Table Styles */
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #374151;
+  background: #2d3748;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 800px;
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem;
+  background: #374151;
+  color: #f3f4f6;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #4b5563;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.table th.sortable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.table th.sortable:hover {
+  background: #4b5563;
+}
+
+.table td {
+  padding: 1rem;
+  color: #d1d5db;
+  border-bottom: 1px solid #374151;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: #374151;
+}
+
+/* Cell Styles */
+.merkCell {
+  font-weight: 500;
+}
+
+.merkBadge {
+  background: #2563eb;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.modelCell {
+  font-weight: 500;
+  color: #f3f4f6;
+}
+
+.yearBadge {
+  background: #2d3748;
+  color: #9ca3af;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.vinCell {
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.vin {
+  background: #2d3748;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: #9ca3af;
+  cursor: help;
+}
+
+.emptyValue {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.emptyStateContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #9ca3af;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.emptyStateButton {
+  padding: 0.5rem 1rem;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emptyStateButton:hover {
+  background: #4b5563;
+  color: #f3f4f6;
+}
+
+/* Loading State */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: #1f2937;
+  border-radius: 1rem;
+  border: 1px solid #374151;
+  color: #9ca3af;
+  gap: 1rem;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #374151;
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .searchWrapper,
+  .yearWrapper {
+    width: 100%;
+  }
+
+  .clearButton {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .merkBadge {
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .yearBadge {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Tablet Adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 1.25rem;
+  }
+}
+
+/* Dark mode scrollbar for table wrapper */
+.tableWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tableWrapper::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
