@@ -1,9 +1,109 @@
 'use client';
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./hero.module.css";
 
+interface AutoModel {
+  auto_merk: string;
+  auto_model: string;
+  bouwjaar: number;
+}
+
 export default function Hero() {
+  const router = useRouter();
+  const [brands, setBrands] = useState<string[]>([]);
+  const [models, setModels] = useState<string[]>([]);
+  const [years, setYears] = useState<number[]>([]);
+  
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  
+  const [loading, setLoading] = useState({
+    brands: true,
+    models: false,
+    years: false
+  });
+
+  // Fetch all unique brands on component mount
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const res = await fetch("/api/hero/brands");
+        const data = await res.json();
+        setBrands(data);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      } finally {
+        setLoading(prev => ({ ...prev, brands: false }));
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+  // Fetch models when brand changes
+  useEffect(() => {
+    if (!selectedBrand) {
+      setModels([]);
+      return;
+    }
+
+    const fetchModels = async () => {
+      setLoading(prev => ({ ...prev, models: true }));
+      try {
+        const res = await fetch(`/api/hero/models?brand=${encodeURIComponent(selectedBrand)}`);
+        const data = await res.json();
+        setModels(data);
+      } catch (error) {
+        console.error("Error fetching models:", error);
+      } finally {
+        setLoading(prev => ({ ...prev, models: false }));
+      }
+    };
+
+    fetchModels();
+    // Reset model and year when brand changes
+    setSelectedModel("");
+    setSelectedYear("");
+  }, [selectedBrand]);
+
+  // Fetch years when model changes
+  useEffect(() => {
+    if (!selectedBrand || !selectedModel) {
+      setYears([]);
+      return;
+    }
+
+    const fetchYears = async () => {
+      setLoading(prev => ({ ...prev, years: true }));
+      try {
+        const res = await fetch(
+          `/api/hero/years?brand=${encodeURIComponent(selectedBrand)}&model=${encodeURIComponent(selectedModel)}`
+        );
+        const data = await res.json();
+        setYears(data);
+      } catch (error) {
+        console.error("Error fetching years:", error);
+      } finally {
+        setLoading(prev => ({ ...prev, years: false }));
+      }
+    };
+
+    fetchYears();
+    setSelectedYear("");
+  }, [selectedBrand, selectedModel]);
+
+  const handleSearch = () => {
+    if (!selectedBrand || !selectedModel || !selectedYear) {
+      alert("Please select brand, model and year");
+      return;
+    }
+    
+    // Redirect to products page with filters
+    router.push(`/products?brand=${encodeURIComponent(selectedBrand)}&model=${encodeURIComponent(selectedModel)}&year=${selectedYear}`);
+  };
 
   return (
     <section className={styles.hero}>
@@ -18,69 +118,69 @@ export default function Hero() {
         <p>Selecteer je auto om de juiste onderdelen te vinden</p>
 
         <div className={styles.searchBox}>
-          <select className={styles.select}>
-            <option>Merk</option>
-            <option>Toyota</option>
-            <option>Nissan</option>
-            <option>Ford</option>
-            <option>Mazda</option>
-            <option>Lexus</option>
-            <option>Tesla</option>
-            <option>Audi</option>
-            <option>Mitsubishi</option>
-            <option>Honda</option>
-            <option>Subaru</option>
-            <option>Kia</option>
-            <option>BMW</option>
-            <option>Mercedes-Benz</option>
-            <option>Porsche</option>
-            <option>Jaguar</option>
-            <option>Bentley</option>
-            <option>Rolls-Royce</option>  
+          <select 
+            className={styles.select}
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            disabled={loading.brands}
+          >
+            <option value="">
+              {loading.brands ? "Merken laden..." : "Kies een merk"}
+            </option>
+            {brands.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
           </select>
 
-          <select className={styles.select}>
-            <option>Model</option>
-            <option>Camry</option>
-            <option>Corolla</option>
-            <option>Qashqai</option>
-            <option>A4</option>
-            <option>3 Series</option>
-            <option>C-Class</option>
+          <select 
+            className={styles.select}
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            disabled={!selectedBrand || loading.models}
+          >
+            <option value="">
+              {!selectedBrand 
+                ? "Selecteer eerst een merk" 
+                : loading.models 
+                  ? "Modellen laden..." 
+                  : "Kies een model"}
+            </option>
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
           </select>
 
-          <select className={styles.select}>
-            <option>Bouwjaar</option>
-               <option>2026</option>
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-                <option>2020</option>
-                <option>2019</option>
-                <option>2018</option>
-                <option>2017</option>
-                <option>2016</option>
-                <option>2015</option>
-                <option>2014</option>
-                <option>2013</option>
-                <option>2012</option>
-                <option>2011</option>
-                <option>2010</option>
-                <option>2009</option>
-                <option>2008</option>
-                <option>2007</option>
-                <option>2006</option>
-                <option>2005</option>
-                <option>2004</option>
-                <option>2003</option>
-                <option>2002</option>
-                <option>2001</option>
-                <option>2000</option>
+          <select 
+            className={styles.select}
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            disabled={!selectedModel || loading.years}
+          >
+            <option value="">
+              {!selectedModel 
+                ? "Selecteer eerst een model" 
+                : loading.years 
+                  ? "Jaren laden..." 
+                  : "Kies bouwjaar"}
+            </option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
           </select>
 
-          <button className={styles.searchButton}>Zoek onderdelen</button>
+          <button 
+            className={styles.searchButton}
+            onClick={handleSearch}
+            disabled={!selectedBrand || !selectedModel || !selectedYear}
+          >
+            Zoek onderdelen
+          </button>
         </div>
       </div>
     </section>
