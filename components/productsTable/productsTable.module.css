@@ -1,0 +1,109 @@
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+}
+
+/* Product Info */
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.productAvatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.productName {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.productDescription {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.brand {
+  background: #f1f5f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.partNumber {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: 'Courier New', monospace;
+}
+
+.stockBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.stockOk { background: #dcfce7; color: #166534; }
+.stockLow { background: #fed7aa; color: #9a3412; }
+.stockCritical { background: #fee2e2; color: #991b1b; }
+.stockOut { background: #e2e8f0; color: #475569; }
+
+.price { font-weight: 600; color: #059669; }
+
+.status { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+.statusActive { background: #dbeafe; color: #1e40af; }
+.statusWarning { background: #fef3c7; color: #92400e; }
+
+.deleteButton {
+  background: #e96d6d;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.deleteButton:hover {
+  background: #dc2626;
+  color: white;
+}

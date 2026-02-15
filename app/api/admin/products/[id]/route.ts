@@ -1,3 +1,5 @@
+// api/admin/products/[id]/route.ts
+
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 

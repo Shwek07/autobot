@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from './Dashboard.module.css';
+import styles from './productsTable.module.css';
 import Link from 'next/dist/client/link';
 import RecentCarModels from '../carmodels/RecentCarModels';
 
@@ -15,7 +15,7 @@ interface Product {
   stock_quantity: number;
 }
 
-export default function Dashboard() {
+export default function productsTable() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
@@ -101,7 +101,6 @@ if (error)
   const totalItems = products.reduce((sum, p) => sum + p.stock_quantity, 0);
   const categories = [...new Set(products.map(p => p.product_merk))].length;
 
-
 async function handleDelete(id: number) {
   if (!confirm("Weet je zeker dat je dit product wilt verwijderen?")) return;
 
@@ -116,6 +115,7 @@ async function handleDelete(id: number) {
     console.error(err);
   }
 }
+
 
 
   return (
@@ -176,14 +176,10 @@ async function handleDelete(id: number) {
               <span className={styles.cardIcon}>🕒</span>
               Recente Producten
             </h2>
-            <Link href="/admin/products/">
+            <Link href="/admin/products/new">
               <button className={styles.viewAllButton}>Add New Product</button>
             </Link>
-
-             <Link href="/admin/products/">
-              <button className={styles.viewAllButton}>Bekijk alles →</button>
-            </Link>
-           
+            <button className={styles.viewAllButton}>Bekijk alles →</button>
             
           </div>
 
@@ -252,12 +248,7 @@ async function handleDelete(id: number) {
                       🗑
                     </button>
                   </td>
-                   <td>
-                     <Link href={`/admin/products/${p.product_id}`}>
-                      <button className={styles.updateButton}>✏️</button>
-                    </Link>
 
-                    </td>
                   </tr>
                 ))}
               </tbody>
