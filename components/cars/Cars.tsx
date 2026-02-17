@@ -123,7 +123,7 @@ export default function Cars() {
         <div className={styles.grid}>
           {cars.map(car => (
             <Link 
-              href={`/cars/${car.auto_id}`} 
+              href={`/admin/cars/${car.auto_id}`} 
               key={car.auto_id}
               className={styles.cardLink}
             >

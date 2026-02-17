@@ -42,7 +42,6 @@ export default function Navbar() {
         <div className={styles.menu}>
           <Link href="/" onClick={close}>Home</Link>
           <Link href="/autobot" onClick={close}>AutoBot</Link>
-          <Link href="/cars" onClick={close}>Cars</Link>
           <Link href="/onderdelen" onClick={close}>Onderdelen</Link>
           <Link href="/faq" onClick={close}>FAQ</Link>
           <Link href="/contact" onClick={close}>Contact</Link>
@@ -78,7 +77,6 @@ export default function Navbar() {
         <div className={styles.mobileLinks}>
            <Link href="/" onClick={close}>Home</Link>
           <Link href="/autobot" onClick={close}>AutoBot</Link>
-          <Link href="/cars" onClick={close}>Cars</Link>
           <Link href="/onderdelen" onClick={close}>Onderdelen</Link>
           <Link href="/faq" onClick={close}>FAQ</Link>
           <Link href="/contact" onClick={close}>Contact</Link>
