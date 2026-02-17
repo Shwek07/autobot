@@ -90,7 +90,8 @@ export default function ContactPage() {
             <div className={styles.icon}>💬</div>
             <h3>Live Chat</h3>
             <p>Chat with our team</p>
-            <button className={styles.chatButton}>Start Chat</button>
+
+            <Link href="/autobot" className={styles.chatButton}>Start Chat</Link>
           </div>
         </div>
 
@@ -200,16 +201,16 @@ export default function ContactPage() {
           <div className={styles.mapContainer}>
             <h2>Find Us</h2>
             <div className={styles.map}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.67890!2d-55.123456!3d5.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMDcnMjAuMCJOIDU1wrAwOCczMi4wIlc!5e0!3m2!1sen!2ssr!4v1234567890"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="AutoBot Location"
-              />
+             <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3271.4753591227122!2d-55.22092962602925!3d5.829735730838518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8d09cb510df14999%3A0xf50be9ee58f8dfe6!2sRamdhiansingstraat%2C%20Paramaribo%2C%20Suriname!5e1!3m2!1sen!2s!4v1771337738270!5m2!1sen!2s"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="AutoBot Location"
+            />
             </div>
             
             {/* Business Hours */}

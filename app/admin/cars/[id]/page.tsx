@@ -104,7 +104,7 @@ export default async function CarDetailPage({
 
       {/* Products Section */}
       <h2 className={styles.sectionTitle}>Available Parts</h2>
-        <Link href="/cars" className={styles.backLink}>Back to Cars</Link>
+        <Link href="/admin/cars" className={styles.backLink}>Back to Cars</Link>
       {products.length === 0 ? (
         <p className={styles.noParts}>No compatible parts found.</p>
       ) : (
