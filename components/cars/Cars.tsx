@@ -107,7 +107,7 @@ export default function Autos() {
   return (
     <div className={styles.container}>
       <h1>Available Cars</h1>
-
+    <Link href="/cars" className={styles.backLink}>← Back to Cars</Link>
       {error && (
         <div className={styles.error}>
           <span>Error: {error}</span>
