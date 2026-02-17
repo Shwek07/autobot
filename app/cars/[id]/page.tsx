@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import styles from "./carDetail.module.css";
 import { getCarImageUrl } from "@/lib/utils/carImages";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 interface Product {
   product_id: number;
