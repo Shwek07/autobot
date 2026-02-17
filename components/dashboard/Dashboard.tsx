@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
-import Link from 'next/dist/client/link';
+import Link from 'next/link';
 import RecentCarModels from '../carmodels/RecentCarModels';
 
 interface Product {
