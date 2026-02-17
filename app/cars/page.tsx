@@ -1,22 +1,16 @@
-// app/cars/Page.tsx
-
+//app/cars/page.tsx
 'use client';
 
-import { useEffect, useState } from "react";
-import Footer from "@/components/footer/footer";
 import Cars from "@/components/cars/Cars";
+import Footer from "@/components/footer/footer";
 
-
-
-export default function page() {
+export default function CarsPage() {
   return (
-    <section>
-    <div>
-     
-      <Cars />
-      <Footer />  
+    <div className="pageWrapper">
+      <main className="main">
+        <Cars />
+      </main>
+      <Footer />
     </div>
-    </section>
-  
   );
 }

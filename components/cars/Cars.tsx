@@ -1,3 +1,5 @@
+//componencts/cars/Cars.tsx
+
 'use client';
 
 import { useEffect, useState } from "react";
@@ -5,7 +7,7 @@ import styles from "./autos.module.css";
 import { getCarImageUrl } from "@/lib/utils/carImages";
 import Link from "next/link";
 
-interface Car {
+interface auto_model {
   auto_id: number;
   auto_merk: string;
   auto_model: string;
@@ -18,47 +20,31 @@ interface Category {
   category_name: string;
 }
 
-export default function Autos() {
-  const [cars, setCars] = useState<Car[]>([]);
+export default function Cars() {
+  const [cars, setCars] = useState<auto_model[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [loading, setLoading] = useState({
-    cars: false,
-    categories: false
+    cars: true,
+    categories: true
   });
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch categories on component mount
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Fetch cars when selectedCategory changes
   useEffect(() => {
     fetchCars();
   }, [selectedCategory]);
 
   const fetchCategories = async () => {
-    setLoading(prev => ({ ...prev, categories: true }));
-    setError(null);
-    
     try {
-      console.log("Fetching categories...");
       const res = await fetch("/api/categories");
-      
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.details || `HTTP error ${res.status}`);
-      }
-      
+      if (!res.ok) throw new Error("Failed to fetch categories");
       const data = await res.json();
-      console.log("Categories received:", data);
-      
-      // Ensure data is an array
       setCategories(Array.isArray(data) ? data : []);
-      
     } catch (error) {
-      console.error("Error fetching categories:", error);
       setError(error instanceof Error ? error.message : "Failed to load categories");
     } finally {
       setLoading(prev => ({ ...prev, categories: false }));
@@ -67,50 +53,32 @@ export default function Autos() {
 
   const fetchCars = async () => {
     setLoading(prev => ({ ...prev, cars: true }));
-    setError(null);
-    
     try {
       const url = selectedCategory
         ? `/api/cars?category=${selectedCategory}`
         : "/api/cars";
       
-      console.log("Fetching cars from:", url);
-      
       const res = await fetch(url);
-      
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.details || `HTTP error ${res.status}`);
-      }
-      
+      if (!res.ok) throw new Error("Failed to fetch cars");
       const data = await res.json();
-      console.log("Cars received:", data);
-      
       setCars(Array.isArray(data) ? data : []);
-      
     } catch (error) {
-      console.error("Error fetching cars:", error);
       setError(error instanceof Error ? error.message : "Failed to load cars");
     } finally {
       setLoading(prev => ({ ...prev, cars: false }));
     }
   };
 
-  if (loading.categories && categories.length === 0) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading categories...</div>
-      </div>
-    );
+  if (loading.categories) {
+    return <div className={styles.loading}>Loading categories...</div>;
   }
 
   return (
     <div className={styles.container}>
-      <h1>Available Cars</h1>
-    <Link href="/cars" className={styles.backLink}>← Back to Cars</Link>
+      {/* Error Message */}
       {error && (
         <div className={styles.error}>
-          <span>Error: {error}</span>
+          <span>{error}</span>
           <button onClick={() => {
             fetchCategories();
             fetchCars();
@@ -120,6 +88,7 @@ export default function Autos() {
         </div>
       )}
 
+      {/* Filter Bar */}
       <div className={styles.filterBar}>
         <button 
           onClick={() => setSelectedCategory(null)}
@@ -139,11 +108,16 @@ export default function Autos() {
         ))}
       </div>
 
+      {/* Cars Grid */}
       {loading.cars ? (
-        <div className={styles.loading}>Loading cars...</div>
+        <div className={styles.loadingGrid}>
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className={styles.skeletonCard} />
+          ))}
+        </div>
       ) : cars.length === 0 ? (
         <div className={styles.noResults}>
-          <p>No cars found {selectedCategory ? "for this category" : ""}.</p>
+          <p>No cars found {selectedCategory ? "in this category" : ""}.</p>
         </div>
       ) : (
         <div className={styles.grid}>

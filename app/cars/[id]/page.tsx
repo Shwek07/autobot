@@ -1,7 +1,10 @@
+//app/cars/[id]/page.tsx
+
 import { notFound } from "next/navigation";
 import styles from "./carDetail.module.css";
 import { getCarImageUrl } from "@/lib/utils/carImages";
 import Link from "next/link";
+import { neon } from "@neondatabase/serverless";
 
 interface Product {
   product_id: number;
@@ -21,24 +24,54 @@ interface CarData {
   body_type: string;
 }
 
-async function getCar(id: string) {
-  // Gebruik een fallback URL voor ontwikkeling
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const res = await fetch(
-    `${baseUrl}/api/cars/${id}`,
-    { cache: "no-store" }
-  );
+const sql = neon(process.env.DATABASE_URL!);
 
-  if (!res.ok) return null;
-  return res.json();
+
+interface CarDetailResponse {
+  car: CarData;
+  products: Product[];
+}
+
+async function getCar(id: string): Promise<CarDetailResponse | null> {
+  const numericId = Number(id);
+  if (isNaN(numericId)) return null;
+
+  const car = await sql`
+    SELECT *
+    FROM auto_model
+    WHERE auto_id = ${numericId}
+  `;
+
+  if (car.length === 0) return null;
+
+  const products = await sql`
+    SELECT
+      p.product_id,
+      p.product_name,
+      p.product_merk,
+      p.part_number,
+      p.verkoop_prijs,
+      p.stock_quantity,
+      c.category_name
+    FROM product_compatibility pc
+    JOIN products p ON p.product_id = pc.product_id
+    LEFT JOIN categories c ON c.category_id = p.category_id
+    WHERE pc.auto_id = ${numericId}
+    ORDER BY p.product_name
+  `;
+
+return {
+  car: car[0] as CarData,
+  products: products as Product[],
+};
 }
 
 export default async function CarDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;  // 👈 BELANGRIJK: params is een Promise
+  params: Promise<{ id: string }>; 
 }) {
-  const { id } = await params;  // 👈 Unwrap de Promise
+  const { id } = await params;  
   const data = await getCar(id);
 
   if (!data) return notFound();
