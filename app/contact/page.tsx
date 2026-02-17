@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "./contact.module.css";
 import Link from "next/link";
+import Footer from "@/components/footer/footer";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -86,12 +87,12 @@ export default function ContactPage() {
             <p>support@autobot.com</p>
           </div>
 
-          <div className={styles.infoCard}>
-            <div className={styles.icon}>💬</div>
+        <div className={styles.infoCard}>
+          <div className={styles.icon}>💬</div>
             <h3>Live Chat</h3>
             <p>Chat with our team</p>
 
-            <Link href="/autobot" className={styles.chatButton}>Start Chat</Link>
+            <div className={styles.chatButtonContainer}><Link href="/autobot" className={styles.chatButton}>Start Chat</Link></div>
           </div>
         </div>
 
@@ -263,6 +264,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

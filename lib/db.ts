@@ -21,4 +21,3 @@ export async function query(text: string, params?: any[]) {
   }
 }
 
-export default pool;

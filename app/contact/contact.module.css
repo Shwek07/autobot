@@ -5,7 +5,7 @@
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1e88e5;
   color: white;
   padding: 4rem 2rem;
   text-align: center;
@@ -95,7 +95,7 @@
 }
 
 .chatButton {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #1e88e5;
   color: white;
   border: none;
   padding: 0.8rem 2rem;
@@ -110,6 +110,10 @@
 .chatButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.chatButtonContainer{
+  padding-top: 1.6em;
 }
 
 /* Form & Map Grid */
@@ -181,11 +185,11 @@
 .formGroup input:hover,
 .formGroup select:hover,
 .formGroup textarea:hover {
-  border-color: #764ba2;
+  border-color: #1e88e5;
 }
 
 .submitButton {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #1e88e5;
   color: white;
   border: none;
   padding: 1.2rem;
@@ -231,7 +235,7 @@
 
 /* Map Container */
 .mapContainer {
-  background: white;
+  background: #1e88e5;
   border-radius: 30px;
   padding: 2.5rem;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -239,7 +243,7 @@
 
 .mapContainer h2 {
   margin: 0 0 2rem 0;
-  color: #333;
+  color:  #1e88e5;
   font-size: 2rem;
 }
 
@@ -288,19 +292,19 @@
 .faqSection h2 {
   text-align: center;
   font-size: 2.5rem;
-  color: #333;
+  color: #1e88e5;
   margin-bottom: 3rem;
 }
 
 .faqGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
 .faqItem {
-  background: white;
+  background: #1e88e5;
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -326,7 +330,7 @@
 .faqCTA {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #1e88e5;
   border-radius: 30px;
   color: white;
 }
@@ -339,7 +343,7 @@
 .faqButton {
   display: inline-block;
   background: white;
-  color: #667eea;
+  color: #1e88e5;
   text-decoration: none;
   padding: 1rem 2rem;
   border-radius: 999px;
