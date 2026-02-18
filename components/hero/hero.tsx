@@ -28,20 +28,29 @@ export default function Hero() {
 
   // Fetch all unique brands on component mount
   useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const res = await fetch("/api/hero/brands");
-        const data = await res.json();
-        setBrands(data);
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-      } finally {
-        setLoading(prev => ({ ...prev, brands: false }));
-      }
-    };
+  const fetchBrands = async () => {
+    try {
+      const res = await fetch("/api/hero/brands");
+      const data = await res.json();
 
-    fetchBrands();
-  }, []);
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setBrands(data);
+      } else {
+        console.error("Brands API returned invalid data:", data);
+        setBrands([]);
+      }
+    } catch (error) {
+      console.error("Error fetching brands:", error);
+      setBrands([]);
+    } finally {
+      setLoading(prev => ({ ...prev, brands: false }));
+    }
+  };
+
+  fetchBrands();
+}, []);
+
 
   // Fetch models when brand changes
   useEffect(() => {
@@ -127,11 +136,13 @@ export default function Hero() {
             <option value="">
               {loading.brands ? "Merken laden..." : "Kies een merk"}
             </option>
-            {brands.map((brand) => (
-              <option key={brand} value={brand}>
-                {brand}
-              </option>
-            ))}
+          {Array.isArray(brands) &&
+  brands.map((brand) => (
+    <option key={brand} value={brand}>
+      {brand}
+    </option>
+  ))}
+
           </select>
 
           <select 
