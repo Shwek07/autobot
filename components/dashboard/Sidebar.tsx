@@ -11,7 +11,7 @@ export default function Sidebar() {
   const menuItems = [
     { href: "/admin", label: "Dashboard", icon: "📊" },
     { href: "/admin/products", label: "Producten", icon: "📦" },
-    { href: "/admin/orders", label: "Bestellingen", icon: "🛒" },
+    { href: "/admin/cars", label: "Auto's", icon: "🛒" },
     { href: "/admin/users", label: "Gebruikers", icon: "👥" },
     { href: "/admin/messages", label: "Berichten", icon: "💬" },
   ];

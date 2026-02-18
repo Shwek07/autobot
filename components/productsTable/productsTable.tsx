@@ -1,3 +1,5 @@
+// app/components/productsTable/productsTable.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
