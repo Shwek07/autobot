@@ -5,8 +5,10 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styles from "./login.module.css";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+   const router = useRouter();
   return (
     <div className={styles.wrapper}>
       {/* Background animations */}
@@ -89,10 +91,30 @@ export default function LoginPage() {
           </p>
 
           {/* Social Buttons */}
-          <button className={styles.googleButton} onClick={() => signIn("google")}>
-            <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20}/>
-            <span>Doorgaan met Google</span>
-          </button>
+       <button
+      className={styles.googleButton}
+      onClick={async () => {
+        console.log("Google sign-in clicked");
+        const result = await signIn("google", { redirect: false });
+        console.log("signIn result:", result);
+
+        if (result?.ok || result?.url) {
+          // Navigate manually after OAuth
+          router.push("/admin/admin");
+        } else {
+          console.error("Login failed:", result?.error);
+        }
+      }}
+    >
+      <Image
+        src="https://www.svgrepo.com/show/475656/google-color.svg"
+        alt="Google"
+        width={20}
+        height={20}
+      />
+      <span>Doorgaan met Google</span>
+    </button>
+
          
 
           <div className={styles.divider}><span>of log in met e-mail</span></div>
