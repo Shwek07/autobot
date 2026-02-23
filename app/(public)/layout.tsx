@@ -10,15 +10,15 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en">
-      
-      <body>
-       
-         <div className="bg-layer" />
-         <Navbar />
-        <div className="content-layer">
-          
-          {children}</div>
+      <html lang="en" style={{ backgroundColor: '#0f0f12', margin: 0, padding: 0 }}>
+      <body style={{ 
+        backgroundColor: '#0f0f12', 
+        margin: 0, 
+        padding: 0,
+        minHeight: '100vh',
+        width: '100%'
+      }}>
+        {children}
       </body>
     </html>
   );

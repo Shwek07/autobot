@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import "./globals.css";
+import Navbar from "@/components/Navbar/navbar";
+import Providers from "./providers";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Providers>
+          <div className="bg-layer" />
+          <Navbar />
+          <div className="content-layer">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

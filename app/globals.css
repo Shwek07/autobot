@@ -1,7 +1,7 @@
 :root {
-  --background: #ffffff;
+  --background: #0a0a0a;
   --foreground: #171717;
-  --navbar-height: 80px; /* Voeg dit toe voor consistente spacing */
+  --navbar-height: 80px; 
   --navbar-height-mobile: 70px;
 }
 
@@ -14,9 +14,9 @@
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  height: 100%; /* Zorgt voor volledige hoogte */
+
+    margin: 0;
+  padding: 0;
 }
 
 body {
@@ -40,7 +40,7 @@ a {
   text-decoration: none;
 }
 
-/* Background layer - voor eventuele achtergrond effecten */
+
 .bg-layer {
   position: fixed;
   top: 0;
@@ -52,27 +52,27 @@ a {
   background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 50%);
 }
 
-/* Content layer - DIT IS DE BELANGRIJKSTE TOEVOEGING */
+
 .content-layer {
   position: relative;
   z-index: 1;
-  padding-top: var(--navbar-height); /* Gebruikt de variabele voor consistentie */
+  padding-top: var(--navbar-height);
   min-height: 100vh;
   width: 100%;
 }
 
-/* Responsive aanpassing voor mobiel */
+
 @media (max-width: 860px) {
   .content-layer {
     padding-top: var(--navbar-height-mobile);
   }
   
   :root {
-    --navbar-height: 70px; /* Pas aan voor mobiel */
+    --navbar-height: 70px;
   }
 }
 
-/* Donkere modus aanpassingen */
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -83,12 +83,12 @@ a {
   }
 }
 
-/* Optioneel: Voeg een lichte achtergrond toe aan je main content */
+
 main {
   background-color: transparent;
 }
 
-/* Scrollbar styling (optioneel) */
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -106,7 +106,7 @@ main {
   background: #555;
 }
 
-/* Voor donkere modus scrollbar */
+
 @media (prefers-color-scheme: dark) {
   ::-webkit-scrollbar-track {
     background: #2d2d2d;
