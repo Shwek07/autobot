@@ -58,12 +58,10 @@ export default function ContactPage() {
 
   return (
     <div className={styles.container}>
-      {/* Hero Section */}
       <div className={styles.hero}>
         <h1>Contact Us</h1>
         <p>We're here to help with all your auto parts needs</p>
       </div>
-
       <div className={styles.content}>
         {/* Contact Information Cards */}
         <div className={styles.infoGrid}>
@@ -92,9 +90,15 @@ export default function ContactPage() {
             <h3>Live Chat</h3>
             <p>Chat with our team</p>
 
-            <div className={styles.chatButtonContainer}><Link href="/autobot" className={styles.chatButton}>Start Chat</Link></div>
+            <div className={styles.chatButtonContainer}>
+              <Link href="/autobot" className={styles.chatButton}>
+              Start Chat
+              </Link>
+              </div>
           </div>
         </div>
+
+
 
         {/* Contact Form & Map Section */}
         <div className={styles.formMapGrid}>

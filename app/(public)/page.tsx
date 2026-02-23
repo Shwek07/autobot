@@ -8,6 +8,7 @@ import Parts from "@/components/PopularParts/PopularParts";
 import Footer from "@/components/footer/footer";
 import Cars from "@/components/cars/Cars";
 
+
 export default function Home() {
   return (
    <div>
