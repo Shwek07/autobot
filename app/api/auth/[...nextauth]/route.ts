@@ -47,10 +47,11 @@ const handler = NextAuth({
         }
 
         return true;
-      } catch (error) {
-        console.error("SignIn error:", error);
-        return false;
-      }
+      } catch (error: any) {
+          console.error("SignIn error message:", error.message);
+          console.error("SignIn full stack:", error.stack);
+          return false;
+        }
     },
 
     async jwt({ token }) {
@@ -84,5 +85,6 @@ const handler = NextAuth({
 
   secret: process.env.NEXTAUTH_SECRET,
 });
+
 
 export { handler as GET, handler as POST };
