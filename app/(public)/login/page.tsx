@@ -91,29 +91,22 @@ export default function LoginPage() {
           </p>
 
           {/* Social Buttons */}
-       <button
-      className={styles.googleButton}
-      onClick={async () => {
-        console.log("Google sign-in clicked");
-        const result = await signIn("google", { redirect: false });
-        console.log("signIn result:", result);
-
-        if (result?.ok || result?.url) {
-          // Navigate manually after OAuth
-          router.push("/admin/admin");
-        } else {
-          console.error("Login failed:", result?.error);
-        }
-      }}
-    >
-      <Image
-        src="https://www.svgrepo.com/show/475656/google-color.svg"
-        alt="Google"
-        width={20}
-        height={20}
-      />
-      <span>Doorgaan met Google</span>
-    </button>
+           <button
+            className={styles.googleButton}
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: "/admin/admin", // this tells NextAuth where to go after login
+              })
+            }
+          >
+            <Image
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              width={20}
+              height={20}
+            />
+            <span>Doorgaan met Google</span>
+          </button>
 
          
 
