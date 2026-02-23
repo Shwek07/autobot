@@ -8,6 +8,12 @@ export const runtime = "nodejs";
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
+
+  const isUserPath = req.nextUrl.pathname.startsWith("/users");
+
+if (isUserPath && token?.role !== "USER") {
+  return NextResponse.redirect(new URL("/", req.url));
+}
   // Bescherm admin pagina's en API routes
   const isAdminPath =
     req.nextUrl.pathname.startsWith("/admin") ||

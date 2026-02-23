@@ -6,9 +6,21 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styles from "./login.module.css";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function LoginPage() {
    const router = useRouter();
+   const { data: session } = useSession();
+
+    // Automatically redirect if logged in
+  useEffect(() => {
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin/admin");
+    } else if (session?.user?.role === "USER") {
+      router.push("/users/dashboard");
+    }
+  }, [session, router]);
   return (
     <div className={styles.wrapper}>
       {/* Background animations */}
@@ -91,22 +103,21 @@ export default function LoginPage() {
           </p>
 
           {/* Social Buttons */}
-           <button
-            className={styles.googleButton}
-            onClick={() =>
-              signIn("google", {
-                callbackUrl: "/admin/admin", // this tells NextAuth where to go after login
-              })
-            }
-          >
-            <Image
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              width={20}
-              height={20}
-            />
-            <span>Doorgaan met Google</span>
-          </button>
+          <button
+      onClick={async () => {
+        const result = await signIn("google", { redirect: false });
+        // After signIn, session will update and useEffect triggers redirect
+      }}
+            >
+              <Image
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                width={20}
+                height={20}
+              />
+              <span>Doorgaan met Google</span>
+            </button>
+
 
          
 
