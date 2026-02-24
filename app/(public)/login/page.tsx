@@ -11,18 +11,19 @@ import { useSession } from "next-auth/react";
 
 export default function LoginPage() {
    const router = useRouter();
-   const { data: session } = useSession();
+   const { data: session, status } = useSession();
 
-    // Automatically redirect if logged in
-  useEffect(() => {
-    if (session?.user?.role === "ADMIN") {
-      router.push("/admin/admin");
-    } else if (session?.user?.role === "USER") {
-      router.push("/users/dashboard");
-    }
-  }, [session, router]);
-  return (
-    <div className={styles.wrapper}>
+        useEffect(() => {
+        if (status === "authenticated") {
+          if (session.user.role === "ADMIN") {
+            router.replace("/admin");
+          } else if (session.user.role === "USER") {
+            router.replace("/users/dashboard");
+          }
+        }
+      }, [status, session, router]);
+      return (
+      <div className={styles.wrapper}>
       {/* Background animations */}
       <div className={styles.bgGrid}></div>
       <div className={styles.bgGradient}></div>
