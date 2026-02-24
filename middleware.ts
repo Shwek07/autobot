@@ -31,8 +31,7 @@ export async function middleware(req: NextRequest) {
 
 
   // Protect User Routes
- 
-  if (pathname.startsWith("/users")) {
+  if (pathname.startsWith("/dashboard")) {
     if (!token || token.role !== "USER") {
       return NextResponse.redirect(new URL("/", req.url));
     }
