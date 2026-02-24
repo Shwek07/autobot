@@ -6,11 +6,24 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styles from "./login.module.css";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function LoginPage() {
    const router = useRouter();
-  return (
-    <div className={styles.wrapper}>
+   const { data: session, status } = useSession();
+
+        useEffect(() => {
+        if (status === "authenticated") {
+          if (session.user.role === "ADMIN") {
+            router.replace("/admin");
+          } else if (session.user.role === "USER") {
+            router.replace("/users/dashboard");
+          }
+        }
+      }, [status, session, router]);
+      return (
+      <div className={styles.wrapper}>
       {/* Background animations */}
       <div className={styles.bgGrid}></div>
       <div className={styles.bgGradient}></div>
@@ -91,29 +104,21 @@ export default function LoginPage() {
           </p>
 
           {/* Social Buttons */}
-       <button
-      className={styles.googleButton}
+          <button
       onClick={async () => {
-        console.log("Google sign-in clicked");
         const result = await signIn("google", { redirect: false });
-        console.log("signIn result:", result);
-
-        if (result?.ok || result?.url) {
-          // Navigate manually after OAuth
-          router.push("/admin/admin");
-        } else {
-          console.error("Login failed:", result?.error);
-        }
+        // After signIn, session will update and useEffect triggers redirect
       }}
-    >
-      <Image
-        src="https://www.svgrepo.com/show/475656/google-color.svg"
-        alt="Google"
-        width={20}
-        height={20}
-      />
-      <span>Doorgaan met Google</span>
-    </button>
+            >
+              <Image
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                width={20}
+                height={20}
+              />
+              <span>Doorgaan met Google</span>
+            </button>
+
 
          
 

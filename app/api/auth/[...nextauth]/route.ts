@@ -23,48 +23,37 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     // Handle user sign-in (Google OAuth)
-    async signIn({ user, account }) {
-      try {
-        console.log("Attempting sign-in for user:", user.email);
+   async signIn({ user, account }) {
+  try {
+    console.log("Attempting sign-in for user:", user.email);
 
-        // Check if user already exists
-        const result = await query("SELECT * FROM users WHERE email = $1", [user.email]);
-        console.log("Database query result:", result.rows);
+    const result = await query("SELECT * FROM users WHERE email = $1", [user.email]);
 
-        if (result.rows.length === 0) {
-          // Assign role: ADMIN for your email, else USER
-          const role = user.email === "your@email.com" ? "ADMIN" : "USER";
+    const role = user.email === "ramdhiansing.shakeel.natin@gmail.com" ? "ADMIN" : "USER";
 
-          // Split first and last name safely
-          const [firstName, ...rest] = user.name?.split(" ") || [];
-          const lastName = rest.join(" ") || "";
-
-          // Insert new user into DB
-          await query(
-            `INSERT INTO users
-             (first_name, last_name, email, image, provider, provider_id, roles, passwords, created_at, is_active)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,'',NOW(),1)`,
-            [
-              firstName,
-              lastName,
-              user.email,
-              user.image,
-              account?.provider,
-              account?.providerAccountId,
-              role,
-            ]
-          );
-
-          console.log("New user inserted successfully:", user.email);
-        }
-
-        return true;
-      } catch (error: any) {
-        console.error("SignIn error message:", error.message);
-        console.error("SignIn full stack:", error.stack);
-        return false;
+    if (result.rows.length === 0) {
+      // Insert new user
+      const [firstName, ...rest] = user.name?.split(" ") || [];
+      const lastName = rest.join(" ") || "";
+      await query(
+        `INSERT INTO users
+         (first_name, last_name, email, image, provider, provider_id, roles, passwords, created_at, is_active)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,'',NOW(),1)`,
+        [firstName, lastName, user.email, user.image, account?.provider, account?.providerAccountId, role]
+      );
+    } else {
+      // Update existing user role if it should be ADMIN
+      if (role === "ADMIN" && result.rows[0].roles !== "ADMIN") {
+        await query(`UPDATE users SET roles = 'ADMIN' WHERE email = $1`, [user.email]);
       }
-    },
+    }
+
+    return true;
+  } catch (error: any) {
+    console.error("SignIn error message:", error.message);
+    return false;
+  }
+},
 
     // Attach user ID and role to JWT
     async jwt({ token }) {
