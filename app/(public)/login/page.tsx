@@ -1,10 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
+  const [mounted, setMounted] = useState(false);
+
+  // Only render after hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // prevents server-client mismatch
+
   return (
     <div className={styles.wrapper}>
       {/* Background */}
@@ -26,24 +36,9 @@ export default function LoginPage() {
             </h2>
 
             <div className={styles.statsContainer}>
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>1000+</span>
-                <span className={styles.statLabel}>Onderdelen</span>
-              </div>
-
-              <div className={styles.statDivider}></div>
-
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>24/7</span>
-                <span className={styles.statLabel}>Beschikbaar</span>
-              </div>
-
-              <div className={styles.statDivider}></div>
-
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>98%</span>
-                <span className={styles.statLabel}>Tevreden</span>
-              </div>
+              <Stat number="1000+" label="Onderdelen" />
+              <Stat number="24/7" label="Beschikbaar" />
+              <Stat number="98%" label="Tevreden" />
             </div>
 
             <div className={styles.featureList}>
@@ -103,7 +98,6 @@ export default function LoginPage() {
             <a href="/forgot-password" className={styles.link}>
               Wachtwoord vergeten?
             </a>
-
             <span className={styles.footerText}>
               Nog geen account?{" "}
               <a href="/register" className={styles.link}>
@@ -120,7 +114,8 @@ export default function LoginPage() {
             en{" "}
             <a href="/privacy" className={styles.link}>
               Privacy Policy
-            </a>.
+            </a>
+            .
           </p>
         </div>
       </div>
@@ -128,6 +123,7 @@ export default function LoginPage() {
   );
 }
 
+// Components
 function Feature({ text }: { text: string }) {
   return (
     <div className={styles.featureItem}>
@@ -135,6 +131,15 @@ function Feature({ text }: { text: string }) {
         <path d="M20 6L9 17L4 12" strokeLinecap="round" />
       </svg>
       <span>{text}</span>
+    </div>
+  );
+}
+
+function Stat({ number, label }: { number: string; label: string }) {
+  return (
+    <div className={styles.statItem}>
+      <span className={styles.statNumber}>{number}</span>
+      <span className={styles.statLabel}>{label}</span>
     </div>
   );
 }
