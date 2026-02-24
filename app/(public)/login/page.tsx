@@ -10,13 +10,10 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 export default function LoginPage() {
-   const router = useRouter();
-   const { data: session, status } = useSession();
-      
-     if (status === "loading") {
-        return null;
-      }
-        useEffect(() => {
+      const router = useRouter();
+      const { data: session, status } = useSession();
+    
+      useEffect(() => {
         if (status === "authenticated") {
           const role = session?.user?.role;
         
@@ -29,6 +26,15 @@ export default function LoginPage() {
           }
         }
       }, [status, session, router]);
+    
+      // AFTER all hooks
+      if (status === "loading") {
+        return null;
+      }
+    
+      if (status === "authenticated") {
+        return null;
+      }
       return (
       <div className={styles.wrapper}>
       {/* Background animations */}
