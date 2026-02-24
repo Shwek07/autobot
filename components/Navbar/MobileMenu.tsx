@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import styles from "./navbar.module.css";
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function MobileMenu() {
       <button onClick={() => setOpen((v) => !v)}>☰</button>
 
       {open && (
-        <div className="mobile-panel">
+        <div className={styles.mobilePanel}>
           <Link href="/" onClick={close}>Home</Link>
           <Link href="/autobot" onClick={close}>AutoBot</Link>
           <Link href="/onderdelen" onClick={close}>Onderdelen</Link>

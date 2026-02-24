@@ -1,9 +1,8 @@
-// next.config.js
-
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-   reactStrictMode: true,
+  reactStrictMode: true,
+  turbopack: {}, // empty object satisfies the type
   webpack: (config, { dev }) => {
     if (!dev) {
       config.optimization.minimize = false;
@@ -13,3 +12,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
