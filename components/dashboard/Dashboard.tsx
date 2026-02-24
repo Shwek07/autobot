@@ -21,55 +21,48 @@ export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState('');
-
   const [error, setError] = useState<string | null>(null);
 
- async function fetchProducts() {
-  try {
-    setLoading(true);
-    setError(null);
+  async function fetchProducts() {
+    try {
+      setLoading(true);
+      setError(null);
 
-    const res = await fetch("/api/admin/products", {
-      cache: "no-store",
-    });
+      const res = await fetch("/api/admin/products", { cache: "no-store" });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch products");
+      if (!res.ok) throw new Error("Failed to fetch products");
+
+      const data = await res.json();
+      setProducts(data);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-    setProducts(data);
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
   }
-}
 
-useEffect(() => {
-  fetchProducts();
+  useEffect(() => {
+    fetchProducts();
 
-  const updateTime = () => {
-    const now = new Date();
-    setCurrentTime(
-      now.toLocaleString("nl-NL", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
-  };
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleString("nl-NL", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
+    };
 
-  updateTime();
-  const timer = setInterval(updateTime, 60000);
-
-  return () => clearInterval(timer);
-}, []);
-
+    updateTime();
+    const timer = setInterval(updateTime, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   if (loading) return (
     <div className={styles.loadingContainer}>
@@ -77,8 +70,8 @@ useEffect(() => {
       <p>Dashboard laden...</p>
     </div>
   );
-if (error)
-  return (
+
+  if (error) return (
     <div className={styles.loadingContainer}>
       <p style={{ color: "red" }}>Error: {error}</p>
       <button onClick={fetchProducts}>Retry</button>
@@ -86,43 +79,10 @@ if (error)
   );
 
   const lowStock = products.filter(p => p.stock_quantity < 10);
-  const outOfStock = products.filter(p => p.stock_quantity === 0);
-  const totalValue = products.reduce(
-  (sum, p) =>
-    sum +
-    Number(p.verkoop_prijs || 0) *
-      Number(p.stock_quantity || 0),
-  0
-);
-  
-  // New statistics
-  const averagePrice = products.length > 0 
-    ? products.reduce((sum, p) => sum + p.verkoop_prijs, 0) / products.length 
-    : 0;
-  
-  const totalItems = products.reduce((sum, p) => sum + p.stock_quantity, 0);
-  const categories = [...new Set(products.map(p => p.product_merk))].length;
-
-
-async function handleDelete(id: number) {
-  if (!confirm("Weet je zeker dat je dit product wilt verwijderen?")) return;
-
-  try {
-    await fetch(`/api/admin/products/${id}`, {
-      method: "DELETE",
-    });
-
-    // Optimistic update
-    setProducts(prev => prev.filter(p => p.product_id !== id));
-  } catch (err) {
-    console.error(err);
-  }
-}
-
+  const totalItems = products.reduce((sum, p) => sum + (p.stock_quantity || 0), 0);
 
   return (
     <div className={styles.dashboard}>
-     
       {/* Header */}
       <div className={styles.header}>
         <div>
@@ -136,31 +96,14 @@ async function handleDelete(id: number) {
         </div>
       </div>
 
-      {/* Stats Grid - Top Row (3 cards) */}
+      {/* Stats Grid */}
       <div className={styles.statsGridTop}>
-        <StatCard 
-          label="Totaal Producten" 
-          value={products.length} 
-          icon="📦"
-          color="#3b82f6"
-        />
-        <StatCard 
-          label="Lage Voorraad" 
-          value={lowStock.length} 
-          icon="⚠️"
-          color="#f59e0b"
-        />
-         <StatCard 
-          label="Totaal Artikelen" 
-          value={totalItems.toLocaleString('nl-NL')} 
-          icon="📊"
-          color="#ec4899"
-        />
+        <StatCard label="Totaal Producten" value={products.length} icon="📦" color="#3b82f6" />
+        <StatCard label="Lage Voorraad" value={lowStock.length} icon="⚠️" color="#f59e0b" />
+        <StatCard label="Totaal Artikelen" value={totalItems.toLocaleString('nl-NL')} icon="📊" color="#ec4899" />
       </div>
-    
 
-
-      {/* Alert Banner */}
+      {/* Low Stock Alert */}
       {lowStock.length > 0 && (
         <div className={styles.alertBanner}>
           <span className={styles.alertIcon}>⚠️</span>
@@ -171,23 +114,19 @@ async function handleDelete(id: number) {
         </div>
       )}
 
-      {/* Recent Products Table - Full Width */}
+      {/* Recent Products Table */}
       <div className={styles.fullWidthSection}>
         <div className={`${styles.card} ${styles.tableCard}`}>
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>
-              <span className={styles.cardIcon}>🕒</span>
-              Recente Producten
+              <span className={styles.cardIcon}>🕒</span> Recente Producten
             </h2>
             <Link href="/admin/products/">
               <button className={styles.viewAllButton}>Add New Product</button>
             </Link>
-
-             <Link href="/admin/products/">
+            <Link href="/admin/products/">
               <button className={styles.viewAllButton}>Bekijk alles →</button>
             </Link>
-           
-            
           </div>
 
           <div className={styles.tableWrapper}>
@@ -200,28 +139,23 @@ async function handleDelete(id: number) {
                   <th>Voorraad</th>
                   <th>Prijs</th>
                   <th>Status</th>
+                  <th>Acties</th> {/* new */}
                 </tr>
               </thead>
               <tbody>
                 {products.slice(0, 5).map(p => (
-                  <tr key={p.product_id} className={styles.tableRow}>
+                  <tr key={p.product_id}>
                     <td>
                       <div className={styles.productInfo}>
-                        <div className={styles.productAvatar}>
-                          {p.product_name.charAt(0)}
-                        </div>
+                        <div className={styles.productAvatar}>{p.product_name.charAt(0)}</div>
                         <div>
                           <div className={styles.productName}>{p.product_name}</div>
                           <div className={styles.productDescription}>{p.description}</div>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span className={styles.brand}>{p.product_merk}</span>
-                    </td>
-                    <td>
-                      <code className={styles.partNumber}>{p.part_number}</code>
-                    </td>
+                    <td>{p.product_merk}</td>
+                    <td><code className={styles.partNumber}>{p.part_number}</code></td>
                     <td>
                       <span
                         className={`${styles.stockBadge} ${
@@ -237,29 +171,15 @@ async function handleDelete(id: number) {
                         {p.stock_quantity}
                       </span>
                     </td>
-                    <td className={styles.price}>
-                      €{Number(p.verkoop_prijs).toFixed(2)}
+                    <td>€{p.verkoop_prijs.toFixed(2)}</td>
+                    <td className={p.stock_quantity > 10 ? styles.statusActive : styles.statusWarning}>
+                      {p.stock_quantity > 10 ? 'Actief' : 'Attention'}
                     </td>
                     <td>
-                      <span className={`${styles.status} ${
-                        p.stock_quantity > 10 ? styles.statusActive : styles.statusWarning
-                      }`}>
-                        {p.stock_quantity > 10 ? 'Actief' : 'Attention'}
-                      </span>
-                    </td>
-                    <td>
-                    <button
-                      onClick={() => handleDelete(p.product_id)}
-                      className={styles.deleteButton}
-                    >
-                      🗑
-                    </button>
-                  </td>
-                   <td>
-                     <Link href={`/admin/products/${p.product_id}`}>
-                      <button className={styles.updateButton}>✏️</button>
-                    </Link>
-
+                      <button onClick={() => handleDelete(p.product_id)} className={styles.deleteButton}>🗑</button>
+                      <Link href={`/admin/products/${p.product_id}`}>
+                        <button className={styles.updateButton}>✏️</button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -271,14 +191,13 @@ async function handleDelete(id: number) {
 
       <RecentCarModels />
 
-      {/* Low Stock Section - Only show if there are items with low stock */}
+      {/* Low Stock Section */}
       {lowStock.length > 0 && (
         <div className={styles.fullWidthSection}>
           <div className={`${styles.card} ${styles.lowStockCard}`}>
             <div className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>
-                <span className={styles.cardIcon}>📉</span>
-                Lage Voorraad Alert
+                <span className={styles.cardIcon}>📉</span> Lage Voorraad Alert
               </h2>
             </div>
             <div className={styles.lowStockGrid}>
@@ -289,9 +208,7 @@ async function handleDelete(id: number) {
                     <span className={styles.lowStockMerk}>{p.product_merk}</span>
                   </div>
                   <div className={styles.lowStockValue}>
-                    <span className={`${styles.stockBadge} ${styles.stockCritical}`}>
-                      {p.stock_quantity}
-                    </span>
+                    <span className={`${styles.stockBadge} ${styles.stockCritical}`}>{p.stock_quantity}</span>
                     <button className={styles.orderButton}>Bestel</button>
                   </div>
                 </div>
@@ -302,6 +219,17 @@ async function handleDelete(id: number) {
       )}
     </div>
   );
+
+  async function handleDelete(id: number) {
+    if (!confirm("Weet je zeker dat je dit product wilt verwijderen?")) return;
+
+    try {
+      await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      setProducts(prev => prev.filter(p => p.product_id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
 function StatCard({ label, value, icon, color }: { label: string; value: string | number; icon: string; color: string }) {
@@ -310,7 +238,7 @@ function StatCard({ label, value, icon, color }: { label: string; value: string 
       <div className={styles.statIcon}>{icon}</div>
       <div className={styles.statContent}>
         <span className={styles.statLabel}>{label}</span>
-        <span className={styles.statValue}>{value}</span>
+        <span className={styles.statValue}>{value ?? 0}</span>
       </div>
     </div>
   );
