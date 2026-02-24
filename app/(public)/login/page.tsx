@@ -12,12 +12,19 @@ import { useSession } from "next-auth/react";
 export default function LoginPage() {
    const router = useRouter();
    const { data: session, status } = useSession();
-
+      
+     if (status === "loading") {
+        return null;
+      }
         useEffect(() => {
         if (status === "authenticated") {
-          if (session.user.role === "ADMIN") {
+          const role = session?.user?.role;
+        
+          if (!role) return;
+        
+          if (role === "ADMIN") {
             router.replace("/admin");
-          } else if (session.user.role === "USER") {
+          } else {
             router.replace("/users/dashboard");
           }
         }
