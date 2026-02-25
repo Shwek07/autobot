@@ -1,5 +1,5 @@
 "use client";
-import styles from "../Dashboard.module.css";
+import styles from "./Dashboard.module.css";
 
 export default function Topbar() {
   function toggleTheme() {

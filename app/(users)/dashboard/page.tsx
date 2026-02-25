@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import Layout from "./DashboardLayout";
 import StatsCard from "./StatsCard";
 import RecentOrders from "./RecentOrders";
-import styles from "./dashboard.module.css";
+import styles from "./Dashboard.module.css";
 
 export default async function UserDashboardPage() {
   const session = await getServerSession(authOptions);

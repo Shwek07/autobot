@@ -1,4 +1,4 @@
-import styles from "../Dashboard.module.css";
+import styles from "./Dashboard.module.css";
 
 export default function RecentOrders() {
   const orders = [
