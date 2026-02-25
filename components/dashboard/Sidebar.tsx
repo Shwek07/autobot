@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./Dashboard.module.css";
+import { signOut } from "next-auth/react";
+
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -13,8 +15,13 @@ export default function Sidebar() {
     { href: "/admin/products", label: "Producten", icon: "📦" },
     { href: "/admin/cars", label: "Auto's", icon: "🛒" },
     { href: "/admin/users", label: "Gebruikers", icon: "👥" },
-    { href: "/admin/messages", label: "Berichten", icon: "💬" },
   ];
+
+ async function handleLogout() {
+  await fetch("/api/logout", { method: "POST" });
+  await signOut({ callbackUrl: "/" });
+}
+
 
   return (
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.sidebarCollapsed : ''}`}>
@@ -66,7 +73,13 @@ export default function Sidebar() {
               <span className={styles.userRole}>Super Admin</span>
             </div>
           </div>
-          
+          <button
+  onClick={handleLogout}
+  className={styles.logoutButton}
+>
+  🚪 Uitloggen
+</button>
+
           <div className={styles.footerStats}>
             <div className={styles.statItem}>
               <span className={styles.statValue}>23</span>
@@ -79,10 +92,7 @@ export default function Sidebar() {
             </div>
           </div>
 
-          <Link href="/admin/settings" className={styles.settingsLink}>
-            <span className={styles.settingsIcon}>⚙️</span>
-            Instellingen
-          </Link>
+         
         </div>
       )}
 
