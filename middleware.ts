@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   // -------------------------------
   if (pathname === "/login" && token) {
     const response = NextResponse.redirect(
-      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url)
+      new URL(token.role === "ADMIN" ? "/admin" : "/users/dashboard", req.url)
     );
 
     // Mark that the user has been redirected once
@@ -55,7 +55,7 @@ export async function middleware(req: NextRequest) {
   // -------------------------------
   if (pathname === "/" && token && !redirected) {
     const response = NextResponse.redirect(
-      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url)
+      new URL(token.role === "ADMIN" ? "/admin" : "/users/dashboard", req.url)
     );
 
     // Mark that the user has been redirected once
