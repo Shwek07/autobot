@@ -26,7 +26,16 @@ export async function GET(
     return Response.json({ error: "Not found" }, { status: 404 });
   }
 
-  return Response.json(result[0]);
+ const product = {
+  ...result[0],
+  verkoop_prijs: Number(result[0].verkoop_prijs),
+  inkoop_prijs: result[0].inkoop_prijs
+    ? Number(result[0].inkoop_prijs)
+    : null,
+  stock_quantity: Number(result[0].stock_quantity),
+};
+
+return Response.json(product);
 }
 
 /* ---------------- POST ---------------- */

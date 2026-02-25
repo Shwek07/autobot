@@ -1,3 +1,4 @@
+// app/api/admin/products/route.ts
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 
@@ -11,7 +12,14 @@ export async function GET() {
       ORDER BY product_id DESC
     `;
 
-    return NextResponse.json(products);
+    const formatted = products.map((p: any) => ({
+      ...p,
+      verkoop_prijs: Number(p.verkoop_prijs),
+      inkoop_prijs: p.inkoop_prijs !== null ? Number(p.inkoop_prijs) : null,
+      stock_quantity: Number(p.stock_quantity),
+    }));
+
+    return NextResponse.json(formatted);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
