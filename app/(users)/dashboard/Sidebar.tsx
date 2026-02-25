@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import styles from "./Dashboard.module.css";
+import styles from "./dashboard.module.css";
 
 export default function Sidebar() {
   const pathname = usePathname();

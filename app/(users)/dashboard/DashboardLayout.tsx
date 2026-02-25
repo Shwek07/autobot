@@ -1,5 +1,5 @@
 "use client";
-import styles from "../Dashboard.module.css";
+import styles from "./dashboard.module.css";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { useEffect } from "react";
