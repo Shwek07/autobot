@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   // -------------------------------
   if (pathname === "/login" && token) {
     const response = NextResponse.redirect(
-      new URL(token.role === "ADMIN" ? "/admin" : "/users/dashboard", req.url)
+      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url) // Changed from "/users/dashboard" to "/dashboard"
     );
 
     // Mark that the user has been redirected once
@@ -42,9 +42,9 @@ export async function middleware(req: NextRequest) {
   }
 
   // -------------------------------
-  // Protect User Routes (/users/dashboard)
+  // Protect Dashboard Routes
   // -------------------------------
-  if (pathname.startsWith("/users")) {
+  if (pathname.startsWith("/dashboard")) { // Changed from "/users" to "/dashboard"
     if (!token || token.role !== "USER") {
       return NextResponse.redirect(new URL("/", req.url));
     }
@@ -55,7 +55,7 @@ export async function middleware(req: NextRequest) {
   // -------------------------------
   if (pathname === "/" && token && !redirected) {
     const response = NextResponse.redirect(
-      new URL(token.role === "ADMIN" ? "/admin" : "/users/dashboard", req.url)
+      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url) // Changed from "/users/dashboard" to "/dashboard"
     );
 
     // Mark that the user has been redirected once
@@ -72,5 +72,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/admin/:path*", "/users/:path*"],
+  matcher: ["/", "/login", "/admin/:path*", "/dashboard/:path*"], // Changed from "/users/:path*" to "/dashboard/:path*"
 };
