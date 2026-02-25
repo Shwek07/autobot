@@ -3,7 +3,24 @@
   --foreground: #171717;
   --navbar-height: 80px; 
   --navbar-height-mobile: 70px;
+  --bg: #f4f6f9;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --secondary-text: #64748b;
+  --accent: #e10600;
+  --border: #e2e8f0;
 }
+
+
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #f1f5f9;
+  --secondary-text: #94a3b8;
+  --border: #334155;
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {

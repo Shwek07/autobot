@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import DashboardLayout from "./dashboard/DashboardLayout";
+import "../globals.css";
 
 export default function UsersLayout({
   children,
