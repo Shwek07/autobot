@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Layout from "./layout";
+import Layout from "./DashboardLayout";
 import StatsCard from "./StatsCard";
 import RecentOrders from "./RecentOrders";
 import styles from "./dashboard.module.css";
