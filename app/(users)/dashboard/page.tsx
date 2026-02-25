@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Layout from "./DashboardLayout";
+import Layout from "./Layout";
 import StatsCard from "./StatsCard";
 import RecentOrders from "./RecentOrders";
 import styles from "./dashboard.module.css";
@@ -14,7 +14,7 @@ export default async function UserDashboardPage() {
   if (session.user?.role === "ADMIN") return redirect("/admin/admin");
 
   return (
-    <Layout>
+      <>
       <div className={styles.statsGrid}>
         <StatsCard title="Bestellingen" value="12" icon="📦" />
         <StatsCard title="Mijn Auto's" value="2" icon="🚗" />
@@ -22,6 +22,7 @@ export default async function UserDashboardPage() {
       </div>
 
       <RecentOrders />
-    </Layout>
+    </>
   );
+
 }

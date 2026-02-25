@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import styles from "./dashboard.module.css";
 
 export default function Sidebar() {
@@ -12,6 +13,10 @@ export default function Sidebar() {
     { href: "/users/vehicles", label: "Mijn Auto’s", icon: "🚗" },
     { href: "/users/favorites", label: "Favorieten", icon: "⭐" },
   ];
+   async function handleLogout() {
+  await fetch("/api/logout", { method: "POST" });
+  await signOut({ callbackUrl: "/" });
+}
 
   return (
     <aside className={styles.sidebar}>
@@ -32,6 +37,12 @@ export default function Sidebar() {
             {item.label}
           </Link>
         ))}
+         <button
+  onClick={handleLogout}
+  className={styles.logoutButton}
+>
+  🚪 Uitloggen
+</button>
       </nav>
     </aside>
   );

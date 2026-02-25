@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import styles from './Dashboard.module.css';
 import Link from 'next/link';
 import RecentCarModels from '../carmodels/RecentCarModels';
-import Sidebar from './Sidebar';
-import Topbar from './Topbar';
+
 
 interface Product {
   product_id: number;
