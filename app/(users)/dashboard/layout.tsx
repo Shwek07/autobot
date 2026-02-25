@@ -11,10 +11,7 @@ export default function UsersLayout({
 }) {
   return (
     <div className={styles.layout}>
-      <Sidebar />
-
       <div className={styles.main}>
-
         <div className={styles.content}>
           {children}
         </div>
