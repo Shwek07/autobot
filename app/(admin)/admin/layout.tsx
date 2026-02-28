@@ -6,12 +6,14 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import Topbar from "@/components/dashboard/Topbar";
 import styles from "@/components/dashboard/Dashboard.module.css";
 
-interface AdminLayoutProps {
+// Simplified props - remove the interface or make it a type
+export default function AdminLayout({
+  children,
+  session
+}: {
   children: ReactNode;
   session?: any; // optional if you prefetch session server-side
-}
-
-export default function AdminLayout({ children, session }: AdminLayoutProps) {
+}) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   // Toggle body scroll when sidebar is open
