@@ -6,27 +6,15 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import Topbar from "@/components/dashboard/Topbar";
 import styles from "@/components/dashboard/Dashboard.module.css";
 
-// Simplified props - remove the interface or make it a type
-export default function AdminLayout({
-  children,
-  session
-}: {
-  children: ReactNode;
-  session?: any; // optional if you prefetch session server-side
-}) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Toggle body scroll when sidebar is open
   useEffect(() => {
-    if (isMobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = isMobileOpen ? "hidden" : "auto";
   }, [isMobileOpen]);
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <div className={styles.layout}>
         <Sidebar isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
 
