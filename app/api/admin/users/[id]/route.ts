@@ -1,3 +1,4 @@
+// app/api/admin/users/[id]/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -5,8 +6,9 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export async function PATCH(request: Request, { params }: { params: any }) {
-  // OR just: export async function PATCH(request: Request, { params }) {
+export async function PATCH(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+  // Unwrap params if it’s a Promise
+  const resolvedParams = params instanceof Promise ? await params : params;
 
   const session = await getServerSession(authOptions);
 
@@ -22,7 +24,7 @@ export async function PATCH(request: Request, { params }: { params: any }) {
     SET 
       is_active = ${is_active},
       roles = ${roles}
-    WHERE user_id = ${params.id}
+    WHERE user_id = ${resolvedParams.id}
   `;
 
   return NextResponse.json({ success: true });
