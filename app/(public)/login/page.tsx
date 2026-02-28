@@ -7,13 +7,11 @@ import styles from "./login.module.css";
 
 export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
-
-  // Only render after hydration
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; // prevents server-client mismatch
+  if (!mounted) return null; 
 
   return (
     <div className={styles.wrapper}>
@@ -61,7 +59,7 @@ export default function LoginPage() {
             className={styles.googleButton}
             onClick={() =>
               signIn("google", {
-                callbackUrl: "/", // middleware decides where to send user
+                callbackUrl: "/", 
               })
             }
           >

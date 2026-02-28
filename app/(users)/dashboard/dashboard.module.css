@@ -1,5 +1,6 @@
-
-
+/* ========================================
+   LAYOUT
+   ======================================== */
 .layout {
   display: flex;
   min-height: 100vh;
@@ -7,11 +8,26 @@
   color: var(--text);
 }
 
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  padding: 30px;
+}
+
+/* ========================================
+   SIDEBAR - DESKTOP
+   ======================================== */
 .sidebar {
   width: 250px;
   background: var(--card-bg);
   border-right: 1px solid var(--border);
   padding: 20px;
+  transition: transform 0.3s ease;
+  z-index: 99;
 }
 
 .logo {
@@ -41,12 +57,30 @@
   color: white;
 }
 
-.main {
-  flex: 1;
+/* Logout button */
+.logoutButton {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--error);
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  transition: 0.2s;
 }
 
+.logoutButton:hover {
+  background: var(--error-bg);
+}
+
+/* ========================================
+   TOPBAR
+   ======================================== */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -64,8 +98,15 @@
 .themeBtn {
   padding: 8px 12px;
   border-radius: 6px;
-  border: none;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.themeBtn:hover {
+  background: var(--border);
 }
 
 .avatar {
@@ -79,14 +120,80 @@
   color: white;
 }
 
-.content {
-  padding: 30px;
+/* ========================================
+   MOBIELE HEADER & HAMBURGER
+   ======================================== */
+.mobileHeader {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
 }
 
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hamburgerLine {
+  width: 25px;
+  height: 3px;
+  background: var(--text);
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+/* Hamburger animatie - wordt toegevoegd via JS */
+.hamburger.active .hamburgerLine:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.active .hamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburgerLine:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Overlay voor mobiel */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========================================
+   STATS CARDS
+   ======================================== */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
+  margin-bottom: 30px;
 }
 
 .statCard {
@@ -96,25 +203,55 @@
   display: flex;
   gap: 15px;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.statIcon {
+  font-size: 2rem;
+}
+
+.statTitle {
+  color: var(--secondary-text);
+  font-size: 0.9rem;
 }
 
 .statValue {
-  font-size: 22px;
+  font-size: 1.8rem;
   font-weight: bold;
+  color: var(--text);
 }
 
+/* ========================================
+   CARDS & ORDERS
+   ======================================== */
 .card {
   margin-top: 30px;
   background: var(--card-bg);
   padding: 20px;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--text);
 }
 
 .orderRow {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.orderRow:last-child {
+  border-bottom: none;
+}
+
+.orderRow p {
+  margin: 5px 0 0;
+  color: var(--secondary-text);
 }
 
 .status {
@@ -122,13 +259,253 @@
   font-weight: 600;
 }
 
-/* MOBILE */
+/* ========================================
+   RESERVATIES TABEL
+   ======================================== */
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap; 
+}
+
+.note {
+  color: var(--secondary-text);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.empty {
+  color: var(--secondary-text);
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.reservationsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+.reservationsTable th {
+  text-align: left;
+  padding: 12px;
+  background: var(--card-bg);
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.reservationsTable td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.reservationsTable tr:hover {
+  background: var(--border);
+}
+
+.expiredRow {
+  opacity: 0.7;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.expiredTitle {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.countdown {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.productDescription {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+  margin: 4px 0 0 0;
+  font-style: italic;
+}
+
+/* Status badges */
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.statusBadge.pending {
+  background: rgba(243, 156, 18, 0.2);
+  color: #f39c12;
+}
+
+.statusBadge.expired {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+/* Action buttons */
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+.editButton {
+  background: rgba(243, 156, 18, 0.2);
+  color: #f39c12;
+}
+
+.deleteButton {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.saveButton {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+}
+
+.cancelButton {
+  background: var(--border);
+  color: var(--text);
+}
+
+.editInput {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-text);
+}
+
+/* ========================================
+   RESPONSIVE - MOBILE
+   ======================================== */
 @media (max-width: 768px) {
+  /* Header */
+  .mobileHeader {
+    display: flex;
+  }
+
+  /* Sidebar - verberg standaard, toon via transform */
   .sidebar {
-    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    width: 280px;
+    border-right: 1px solid var(--border);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    background: var(--card-bg);
+    display: block; /* Zorg dat het zichtbaar is als open */
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Content aanpassingen */
+  .content {
+    margin-top: 70px;
+    padding: 20px;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .main {
+    width: 100%;
+  }
+
+  /* Stats grid */
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Tabellen */
+  .reservationsTable {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
+
+  .reservationsTable td,
+  .reservationsTable th {
+    min-width: 120px;
+  }
+
+  /* Action buttons */
+  .actionButtons {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Cards */
+  .statCard {
+    padding: 15px;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+}
+
+/* Zeer kleine schermen */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
   }
 
   .content {
+    padding: 15px;
+  }
+
+  .statValue {
+    font-size: 1.3rem;
+  }
+
+  .card {
     padding: 15px;
   }
 }
