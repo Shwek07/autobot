@@ -5,10 +5,23 @@
   --navbar-height-mobile: 70px;
   --bg: #f4f6f9;
   --card-bg: #ffffff;
-  --text: #1e293b;
-  --secondary-text: #64748b;
-  --accent: #e10600;
   --border: #e2e8f0;
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --secondary-text: #64748b;
+  --accent: #6366f1;
+  --accent-light: #eef2ff;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
 }
 
 
