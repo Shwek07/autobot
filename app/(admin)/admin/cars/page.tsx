@@ -10,7 +10,6 @@ export default function CarsPage() {
       <main className="main">
         <Cars />
       </main>
-      <Footer />
     </div>
   );
 }

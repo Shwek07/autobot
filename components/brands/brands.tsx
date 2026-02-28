@@ -17,7 +17,7 @@ export default function Brands() {
     { name: "Subaru", logo: "/images/cars/logo/subaru.svg" },
     { name: "Kia", logo: "/images/cars/logo/kia.svg" },
     { name: "BMW", logo: "/images/cars/logo/bwm.svg" },
-    { name: "Mercedes-Benz", logo: "/images/cars/logo/mercedes-benz.svg" },
+    { name: "Mercedes-Benz", logo: "/images/cars/logo/mercedes-Benz.svg" },
     { name: "Porsche", logo: "/images/cars/logo/porsche.svg" },
     { name: "Lamborghini", logo: "/images/cars/logo/lamborghini.svg" },
     { name: "McLaren", logo: "/images/cars/logo/mclaren.svg" },

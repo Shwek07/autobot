@@ -1,4 +1,4 @@
-// middleware.ts
+// app/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
@@ -6,36 +6,71 @@ import { getToken } from "next-auth/jwt";
 export const runtime = "nodejs";
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
+  const { pathname } = req.nextUrl;
+  const redirected = req.cookies.get("redirect_done")?.value;
 
-  const isUserPath = req.nextUrl.pathname.startsWith("/users");
+  // -------------------------------
+  // Redirect logged-in users away from /login
+  // -------------------------------
+  if (pathname === "/login" && token) {
+    const response = NextResponse.redirect(
+      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url) 
+    );
 
-if (isUserPath && token?.role !== "USER") {
-  return NextResponse.redirect(new URL("/", req.url));
-}
-  // Bescherm admin pagina's en API routes
-  const isAdminPath =
-    req.nextUrl.pathname.startsWith("/admin") ||
-    req.nextUrl.pathname.startsWith("/api/admin");
+    // Mark that the user has been redirected once
+    response.cookies.set("redirect_done", "true", {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+    });
 
-  if (isAdminPath) {
+    return response;
+  }
+
+  // -------------------------------
+  // Protect Admin Routes
+  // -------------------------------
+  if (pathname.startsWith("/admin")) {
     if (!token || token.role !== "ADMIN") {
-      // Redirect voor pagina's, 401 voor API calls
-      if (req.nextUrl.pathname.startsWith("/api")) {
-        return new NextResponse(
-          JSON.stringify({ message: "Unauthorized" }),
-          { status: 401, headers: { "Content-Type": "application/json" } }
-        );
-      } else {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
+      return NextResponse.redirect(new URL("/", req.url));
     }
+  }
+
+  // -------------------------------
+  // Protect Dashboard Routes
+  // -------------------------------
+  if (pathname.startsWith("/dashboard")) { 
+    if (!token || token.role !== "USER") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  // -------------------------------
+  // Redirect "/" based on role (once)
+  // -------------------------------
+  if (pathname === "/" && token && !redirected) {
+    const response = NextResponse.redirect(
+      new URL(token.role === "ADMIN" ? "/admin" : "/dashboard", req.url)
+    );
+
+    // Mark that the user has been redirected once
+    response.cookies.set("redirect_done", "true", {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/", "/login", "/admin/:path*", "/dashboard/:path*"], 
 };

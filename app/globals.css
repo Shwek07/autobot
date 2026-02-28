@@ -3,7 +3,37 @@
   --foreground: #171717;
   --navbar-height: 80px; 
   --navbar-height-mobile: 70px;
+  --bg: #f4f6f9;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --secondary-text: #64748b;
+  --accent: #6366f1;
+  --accent-light: #eef2ff;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
 }
+
+
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #f1f5f9;
+  --secondary-text: #94a3b8;
+  --border: #334155;
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -17,6 +47,14 @@ body {
 
     margin: 0;
   padding: 0;
+}
+
+body.root-body {
+  background-color: #0f0f12;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
 }
 
 body {
@@ -87,10 +125,9 @@ a {
 main {
   background-color: transparent;
 }
-
-
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -99,12 +136,13 @@ main {
 
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 
 
 @media (prefers-color-scheme: dark) {

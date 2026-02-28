@@ -1,6 +1,6 @@
 .formContainer {
   max-width: 700px;
-  margin: 2rem auto;
+  margin: 40px auto;
   padding: 2rem;
 }
 
@@ -8,14 +8,14 @@
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: #ff0000;
 }
 
 .formCard {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  background: #111114;
+  background: #ffffff;
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   font-weight: 500;
-  color: #cbd5e1;
+  color: #fb0000;
   font-size: 0.9rem;
 }
 
@@ -35,7 +35,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   border: 1px solid #334155;
-  background: #1e293b;
+  background: #3a424f;
   color: #fff;
   font-size: 0.95rem;
 }
@@ -43,7 +43,7 @@
 .formCard input:focus,
 .formCard textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #f63b3b;
   box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
 }
 
@@ -57,7 +57,7 @@
   padding: 0.75rem 1.25rem;
   border: none;
   border-radius: 10px;
-  background: #3b82f6;
+  background: #f80000;
   color: white;
   font-size: 1rem;
   font-weight: 600;
@@ -66,6 +66,6 @@
 }
 
 .submitButton:hover {
-  background: #2563eb;
+  background: #980c0c;
   transform: translateY(-2px);
 }

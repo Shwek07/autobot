@@ -1,312 +1,276 @@
-/* RecentCarModels.module.css */
+/* ============================= */
+/* CONTAINER (Same style as dashboard cards) */
+/* ============================= */
 
 .container {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: #1f2937;
-  border-radius: 1rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  border: 1px solid #374151;
+  margin-top: 40px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  padding: 0;
+  border: 1px solid #e2e8f0;
 }
 
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
 .header {
+  padding: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
 }
 
 .title {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #f3f4f6;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
+  color: #0f172a;
 }
 
 .titleIcon {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .count {
-  background: #2d3748;
-  color: #9ca3af;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  background: #eef2ff;
+  color: #6366f1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-/* Filter Section */
+.viewAllButton {
+  background: #eef2ff;
+  color: #6366f1;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewAllButton:hover {
+  background: #6366f1;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ============================= */
+/* FILTERS */
+/* ============================= */
+
 .filters {
+  padding: 0 24px 20px 24px;
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 16px;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.searchWrapper {
+.searchWrapper,
+.yearWrapper {
   position: relative;
-  flex: 2;
+  flex: 1;
   min-width: 200px;
 }
 
 .searchIcon {
   position: absolute;
-  left: 1rem;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
-  font-size: 0.875rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
 }
 
-.searchInput {
+.searchInput,
+.yearInput {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  background: #2d3748;
-  border: 1px solid #4b5563;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: #f3f4f6;
+  padding: 10px 14px 10px 36px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  background: #f8fafc;
   transition: all 0.2s ease;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-  background: #374151;
-}
-
-.searchInput::placeholder {
-  color: #6b7280;
-}
-
-.yearWrapper {
-  flex: 1;
-  min-width: 120px;
 }
 
 .yearInput {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: #2d3748;
-  border: 1px solid #4b5563;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: #f3f4f6;
-  transition: all 0.2s ease;
+  padding-left: 14px;
 }
 
+.searchInput:focus,
 .yearInput:focus {
   outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-  background: #374151;
-}
-.viewAllButton {
-  padding: 0.5rem 1rem;
-  background: #f1f5f9;
-  border: none;
-  border-radius: 6px;
-  color: #475569;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.viewAllButton:hover {
-  background: #e2e8f0;
-  color: #1e293b;
-}
-
-
-.yearInput[type="number"]::-webkit-inner-spin-button,
-.yearInput[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.yearInput[type="number"] {
-  -moz-appearance: textfield;
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .clearButton {
-  padding: 0.5rem 1rem;
-  background: #374151;
-  border: 1px solid #4b5563;
-  border-radius: 0.5rem;
-  color: #9ca3af;
-  font-size: 0.875rem;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
 .clearButton:hover {
-  background: #4b5563;
-  color: #f3f4f6;
-  border-color: #6b7280;
+  background: #e2e8f0;
 }
 
-/* Table Styles */
+/* ============================= */
+/* TABLE */
+/* ============================= */
+
 .tableWrapper {
   overflow-x: auto;
-  border-radius: 0.5rem;
-  border: 1px solid #374151;
-  background: #2d3748;
+  border-top: 1px solid #e2e8f0;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
-  min-width: 800px;
 }
 
 .table th {
   text-align: left;
-  padding: 1rem;
-  background: #374151;
-  color: #f3f4f6;
-  font-weight: 600;
+  padding: 14px 20px;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid #4b5563;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
   cursor: default;
+  background: #f8fafc;
   white-space: nowrap;
 }
 
 .table th.sortable {
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .table th.sortable:hover {
-  background: #4b5563;
+  background: #eef2ff;
 }
 
 .table td {
-  padding: 1rem;
-  color: #d1d5db;
-  border-bottom: 1px solid #374151;
-}
-
-.table tr:last-child td {
-  border-bottom: none;
+  padding: 18px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #0f172a;
 }
 
 .table tbody tr {
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .table tbody tr:hover {
-  background: #374151;
+  background: #f8fafc;
 }
 
-/* Cell Styles */
-.merkCell {
-  font-weight: 500;
-}
+/* ============================= */
+/* CELL STYLING */
+/* ============================= */
 
 .merkBadge {
-  background: #2563eb;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
+  background: #e0e7ff;
+  color: #4338ca;
+  padding: 6px 12px;
+  border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 500;
-  display: inline-block;
+  font-weight: 600;
 }
 
 .modelCell {
-  font-weight: 500;
-  color: #f3f4f6;
+  font-weight: 600;
 }
 
 .yearBadge {
-  background: #2d3748;
-  color: #9ca3af;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.vinCell {
-  font-family: monospace;
-  font-size: 0.75rem;
+  background: #f1f5f9;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
 }
 
 .vin {
-  background: #2d3748;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  color: #9ca3af;
-  cursor: help;
+  font-family: monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #475569;
 }
 
 .emptyValue {
-  color: #6b7280;
+  color: #94a3b8;
   font-style: italic;
 }
 
-/* Empty State */
+/* ============================= */
+/* EMPTY STATE */
+/* ============================= */
+
 .emptyState {
+  padding: 60px 20px;
   text-align: center;
-  padding: 3rem 1rem;
 }
 
 .emptyStateContent {
   display: flex;
   flex-direction: column;
+  gap: 14px;
   align-items: center;
-  gap: 1rem;
-  color: #9ca3af;
+  color: #64748b;
 }
 
 .emptyIcon {
-  font-size: 3rem;
-  opacity: 0.5;
+  font-size: 2.5rem;
+  opacity: 0.4;
 }
 
 .emptyStateButton {
-  padding: 0.5rem 1rem;
-  background: #374151;
-  border: 1px solid #4b5563;
-  border-radius: 0.5rem;
-  color: #d1d5db;
-  font-size: 0.875rem;
+  padding: 10px 18px;
+  background: #eef2ff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .emptyStateButton:hover {
-  background: #4b5563;
-  color: #f3f4f6;
+  background: #6366f1;
+  color: white;
 }
 
-/* Loading State */
+/* ============================= */
+/* LOADING */
+/* ============================= */
+
 .loadingContainer {
+  padding: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: #1f2937;
-  border-radius: 1rem;
-  border: 1px solid #374151;
-  color: #9ca3af;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #374151;
-  border-top-color: #60a5fa;
+  width: 36px;
+  height: 36px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #6366f1;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -315,71 +279,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-    margin-top: 1rem;
-  }
-
-  .title {
-    font-size: 1.125rem;
-  }
-
-  .filters {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .searchWrapper,
-  .yearWrapper {
-    width: 100%;
-  }
-
-  .clearButton {
-    width: 100%;
-  }
-
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    font-size: 0.8125rem;
-  }
-
-  .merkBadge {
-    font-size: 0.6875rem;
-    padding: 0.2rem 0.5rem;
-  }
-
-  .yearBadge {
-    font-size: 0.6875rem;
-  }
-}
-
-/* Tablet Adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .container {
-    padding: 1.25rem;
-  }
-}
-
-/* Dark mode scrollbar for table wrapper */
-.tableWrapper::-webkit-scrollbar {
-  height: 8px;
-}
-
-.tableWrapper::-webkit-scrollbar-track {
-  background: #2d3748;
-  border-radius: 0 0 0.5rem 0.5rem;
-}
-
-.tableWrapper::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border-radius: 4px;
-}
-
-.tableWrapper::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
 }

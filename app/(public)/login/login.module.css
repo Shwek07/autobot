@@ -46,6 +46,7 @@
 /* ===== MAIN CONTAINER (flex row) ===== */
 .container {
   max-width: 1000px;
+  height: 550px;
   width: 100%;
   background: rgba(18, 18, 22, 0.7);
   backdrop-filter: blur(12px);
