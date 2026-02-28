@@ -5,10 +5,9 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: Request, { params }: { params: any }) {
+  // OR just: export async function PATCH(request: Request, { params }) {
+
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== "ADMIN") {
