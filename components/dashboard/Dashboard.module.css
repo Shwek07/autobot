@@ -1,4 +1,3 @@
-
 /* ============================= */
 /* MAIN DASHBOARD */
 /* ============================= */
@@ -9,7 +8,6 @@
   padding: 40px;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text);
-  
 }
 
 /* ============================= */
@@ -18,8 +16,7 @@
 .layout {
   display: flex;
   flex-direction: row;
-  min-height: 100vh; /* allows page to grow on mobile */
-  /* removed overflow: hidden */
+  min-height: 100vh;
 }
 
 .main {
@@ -35,12 +32,13 @@
   overflow-y: auto; 
   padding: 40px;
 }
+
 /* ============================= */
 /*  SIDEBAR */
 /* ============================= */
 
 .sidebar {
-   position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
@@ -55,7 +53,6 @@
 }
 
 /* Logo */
-
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
@@ -65,7 +62,6 @@
 }
 
 /* Navigation */
-
 .nav {
   display: flex;
   flex-direction: column;
@@ -90,15 +86,11 @@
   font-size: 1.1rem;
 }
 
-/* Hover effect */
-
 .navLink:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
   transform: translateX(4px);
 }
-
-/* Active state */
 
 .navLinkActive {
   background: rgba(99, 102, 241, 0.15);
@@ -115,8 +107,6 @@
   border-radius: 4px;
   background: var(--accent);
 }
-
-/* Push logout to bottom */
 
 .logoutButton {
   margin-top: auto;
@@ -177,8 +167,6 @@
   border-radius: 999px;
   font-weight: 600;
 }
-
-
 
 /* ============================= */
 /* HEADER */
@@ -565,6 +553,7 @@
 /* ============================= */
 /* RESPONSIVE */
 /* ============================= */
+
 @media (max-width: 1024px) {
   .sidebar {
     position: fixed;
@@ -585,22 +574,145 @@
   .layout {
     flex-direction: column;
   }
+  
   .main {
     margin-left: 0;
   }
+  
+  .content {
+    padding: 30px;
+  }
 }
+
 @media (max-width: 768px) {
   .dashboard {
-    padding: 20px;
+    padding: 15px; /* Minder padding op mobiel */
   }
 
   .statsGridTop {
     grid-template-columns: 1fr;
+    gap: 15px; /* Kleinere gap tussen stats cards */
+    margin-bottom: 25px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .title {
+    font-size: 1.5rem; /* Kleinere titel op mobiel */
+  }
+
+  .headerActions {
+    width: 100%;
+  }
+
+  .refreshButton {
+    width: 100%;
+    justify-content: center;
   }
 
   .cardHeader {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
+    padding: 18px; /* Minder padding op mobiel */
+  }
+
+  .card {
+    padding: 0; /* Kaarten hebben geen padding nodig op mobiel */
+  }
+
+  .fullWidthSection {
+    margin-bottom: 25px; /* Minder marge tussen secties */
+  }
+
+  .table td,
+  .table th {
+    padding: 12px 10px; /* Kleinere padding in tabel op mobiel */
+  }
+
+  .statCard {
+    padding: 18px; /* Kleinere padding op mobiel */
+  }
+
+  .statValue {
+    font-size: 1.5rem; /* Kleinere statistieken op mobiel */
+  }
+
+  .lowStockGrid {
+    gap: 12px; /* Kleinere gap tussen low stock items */
+    padding: 18px; /* Padding voor low stock grid */
+  }
+
+  .content {
+    padding: 15px; /* Minder padding in content area */
+  }
+
+  .alertBanner {
+    padding: 12px 15px; /* Kleinere padding op mobiel */
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 10px; /* Nog minder padding op zeer kleine schermen */
+  }
+
+  .content {
+    padding: 10px;
+  }
+
+  .statsGridTop {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .statCard {
+    padding: 15px;
+  }
+
+  .statIcon {
+    font-size: 1.5rem;
+  }
+
+  .statValue {
+    font-size: 1.3rem;
+  }
+
+  .cardHeader {
+    padding: 15px;
+  }
+
+  .table td,
+  .table th {
+    padding: 10px 8px; /* Nog kleinere padding */
+    font-size: 0.85rem;
+  }
+
+  .productAvatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .deleteButton,
+  .updateButton,
+  .orderButton {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  .lowStockGrid {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .lowStockItem {
+    padding: 12px;
   }
 }

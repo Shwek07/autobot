@@ -75,38 +75,6 @@ export default function Cars() {
 
   return (
     <div className={styles.container}>
-      {/* Error Message */}
-      {error && (
-        <div className={styles.error}>
-          <span>{error}</span>
-          <button onClick={() => {
-            fetchCategories();
-            fetchCars();
-          }}>
-            Retry
-          </button>
-        </div>
-      )}
-
-      {/* Filter Bar */}
-      <div className={styles.filterBar}>
-        <button 
-          onClick={() => setSelectedCategory(null)}
-          className={selectedCategory === null ? styles.active : ""}
-        >
-          All Cars
-        </button>
-
-        {categories.map(cat => (
-          <button
-            key={cat.category_id}
-            onClick={() => setSelectedCategory(cat.category_id)}
-            className={selectedCategory === cat.category_id ? styles.active : ""}
-          >
-            {cat.category_name}
-          </button>
-        ))}
-      </div>
 
       {/* Cars Grid */}
       {loading.cars ? (
