@@ -3,12 +3,10 @@
 /* ============================= */
 
 .container {
-  margin-top: 40px;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-  padding: 0;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 /* ============================= */
@@ -28,7 +26,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #0f172a;
+   color: var(--text-primary);
 }
 
 .titleIcon {
@@ -141,15 +139,14 @@
 }
 
 .table th {
-  text-align: left;
-  padding: 14px 20px;
+   text-align: left;
+  padding: 16px 24px;
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-  border-bottom: 1px solid #e2e8f0;
-  cursor: default;
-  background: #f8fafc;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background: transparent;
   white-space: nowrap;
 }
 
@@ -163,10 +160,10 @@
 }
 
 .table td {
-  padding: 18px 20px;
-  border-bottom: 1px solid #f1f5f9;
+ padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .table tbody tr {
@@ -174,7 +171,7 @@
 }
 
 .table tbody tr:hover {
-  background: #f8fafc;
+    background: var(--accent-light);
 }
 
 /* ============================= */

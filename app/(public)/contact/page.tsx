@@ -35,7 +35,7 @@ export default function ContactPage() {
         body: JSON.stringify(formData)
       });
       
-      if (!res.ok) throw new Error("Failed to send message");
+      if (!res.ok) throw new Error("Bericht verzenden mislukt");
       
       setSuccess(true);
       setFormData({
@@ -46,11 +46,10 @@ export default function ContactPage() {
         message: ""
       });
       
-      // Reset success message after 5 seconds
       setTimeout(() => setSuccess(false), 5000);
       
     } catch (err) {
-      setError("Something went wrong. Please try again later.");
+      setError("Er is iets misgegaan. Probeer het later opnieuw.");
     } finally {
       setLoading(false);
     }
@@ -59,56 +58,57 @@ export default function ContactPage() {
   return (
     <div className={styles.container}>
       <div className={styles.hero}>
-        <h1>Contact Us</h1>
-        <p>We're here to help with all your auto parts needs</p>
+        <h1>Contact</h1>
+        <p>Wij helpen u graag met al uw auto-onderdelen</p>
       </div>
+
       <div className={styles.content}>
-        {/* Contact Information Cards */}
+        
+        {/* Contactinformatie */}
         <div className={styles.infoGrid}>
           <div className={styles.infoCard}>
             <div className={styles.icon}>📍</div>
-            <h3>Visit Us</h3>
-            <p>123 Automotive Street<br />Paramaribo, Suriname</p>
+            <h3>Bezoek ons</h3>
+            <p>Ramdhiansingstraat<br />Paramaribo, Suriname</p>
           </div>
 
           <div className={styles.infoCard}>
             <div className={styles.icon}>📞</div>
-            <h3>Call Us</h3>
+            <h3>Bel ons</h3>
             <p>+597 868-5952</p>
-            <p className={styles.small}>Mon-Fri: 8:00 - 18:00</p>
+            <p className={styles.small}>Ma - Vr: 08:00 - 18:00</p>
           </div>
 
           <div className={styles.infoCard}>
             <div className={styles.icon}>✉️</div>
-            <h3>Email Us</h3>
+            <h3>E-mail ons</h3>
             <p>info@autobot.com</p>
             <p>support@autobot.com</p>
           </div>
 
-        <div className={styles.infoCard}>
-          <div className={styles.icon}>💬</div>
-            <h3>Live Chat</h3>
-            <p>Chat with our team</p>
+          <div className={styles.infoCard}>
+            <div className={styles.icon}>💬</div>
+            <h3>Live chat</h3>
+            <p>Chat met ons team</p>
 
             <div className={styles.chatButtonContainer}>
               <Link href="/autobot" className={styles.chatButton}>
-              Start Chat
+                Start chat
               </Link>
-              </div>
+            </div>
           </div>
         </div>
 
-
-
-        {/* Contact Form & Map Section */}
+        {/* Formulier & Kaart */}
         <div className={styles.formMapGrid}>
-          {/* Contact Form */}
+          
+          {/* Contactformulier */}
           <div className={styles.formContainer}>
-            <h2>Send us a Message</h2>
+            <h2>Stuur ons een bericht</h2>
             
             {success && (
               <div className={styles.successMessage}>
-                ✓ Message sent successfully! We'll get back to you soon.
+                ✓ Bericht succesvol verzonden! Wij nemen zo spoedig mogelijk contact met u op.
               </div>
             )}
             
@@ -121,7 +121,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label htmlFor="name">Full Name *</label>
+                  <label htmlFor="name">Volledige naam *</label>
                   <input
                     type="text"
                     id="name"
@@ -129,12 +129,12 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="John Doe"
+                    placeholder="Jan Jansen"
                   />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="email">Email *</label>
+                  <label htmlFor="email">E-mailadres *</label>
                   <input
                     type="email"
                     id="email"
@@ -142,14 +142,14 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="john@example.com"
+                    placeholder="jan@email.com"
                   />
                 </div>
               </div>
 
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label htmlFor="phone">Phone Number</label>
+                  <label htmlFor="phone">Telefoonnummer</label>
                   <input
                     type="tel"
                     id="phone"
@@ -161,7 +161,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="subject">Subject *</label>
+                  <label htmlFor="subject">Onderwerp *</label>
                   <select
                     id="subject"
                     name="subject"
@@ -169,18 +169,18 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Select a subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="support">Technical Support</option>
-                    <option value="parts">Parts Information</option>
-                    <option value="order">Order Status</option>
+                    <option value="">Selecteer een onderwerp</option>
+                    <option value="general">Algemene vraag</option>
+                    <option value="support">Technische ondersteuning</option>
+                    <option value="parts">Informatie over onderdelen</option>
+                    <option value="order">Bestelstatus</option>
                     <option value="feedback">Feedback</option>
                   </select>
                 </div>
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="message">Message *</label>
+                <label htmlFor="message">Bericht *</label>
                 <textarea
                   id="message"
                   name="message"
@@ -188,7 +188,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   rows={6}
-                  placeholder="How can we help you?"
+                  placeholder="Hoe kunnen wij u helpen?"
                 />
               </div>
 
@@ -197,77 +197,77 @@ export default function ContactPage() {
                 className={styles.submitButton}
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send Message"}
+                {loading ? "Verzenden..." : "Bericht verzenden"}
               </button>
             </form>
           </div>
 
-          {/* Map */}
+          {/* Kaart */}
           <div className={styles.mapContainer}>
-            <h2>Find Us</h2>
+            <h2>Onze locatie</h2>
             <div className={styles.map}>
-             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3271.4753591227122!2d-55.22092962602925!3d5.829735730838518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8d09cb510df14999%3A0xf50be9ee58f8dfe6!2sRamdhiansingstraat%2C%20Paramaribo%2C%20Suriname!5e1!3m2!1sen!2s!4v1771337738270!5m2!1sen!2s"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="AutoBot Location"
-            />
+              <iframe
+                src="https://www.google.com/maps/embed?..."
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Locatie AutoBot"
+              />
             </div>
             
-            {/* Business Hours */}
             <div className={styles.hoursCard}>
-              <h3>Business Hours</h3>
+              <h3>Openingstijden</h3>
               <div className={styles.hoursGrid}>
                 <div>
-                  <p><strong>Monday - Friday</strong></p>
-                  <p>8:00 AM - 6:00 PM</p>
+                  <p><strong>Maandag - Vrijdag</strong></p>
+                  <p>08:00 - 18:00</p>
                 </div>
                 <div>
-                  <p><strong>Saturday</strong></p>
-                  <p>9:00 AM - 4:00 PM</p>
+                  <p><strong>Zaterdag</strong></p>
+                  <p>09:00 - 16:00</p>
                 </div>
                 <div>
-                  <p><strong>Sunday</strong></p>
-                  <p>Closed</p>
+                  <p><strong>Zondag</strong></p>
+                  <p>Gesloten</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* FAQ Section */}
+        {/* FAQ */}
         <div className={styles.faqSection}>
-          <h2>Frequently Asked Questions</h2>
+          <h2>Veelgestelde vragen</h2>
           <div className={styles.faqGrid}>
             <div className={styles.faqItem}>
-              <h3>How quickly do you respond?</h3>
-              <p>We aim to respond to all inquiries within 24 hours during business days.</p>
+              <h3>Hoe snel reageren jullie?</h3>
+              <p>Wij streven ernaar om tijdens werkdagen binnen 24 uur te reageren.</p>
             </div>
             <div className={styles.faqItem}>
-              <h3>Do you offer international shipping?</h3>
-              <p>Yes! We ship to most countries worldwide. Contact us for specific rates.</p>
+              <h3>Bieden jullie internationale verzending aan?</h3>
+              <p>Ja, wij verzenden wereldwijd. Neem contact met ons op voor specifieke tarieven.</p>
             </div>
             <div className={styles.faqItem}>
-              <h3>Can I return parts?</h3>
-              <p>We offer a 30-day return policy for unused items in original packaging.</p>
+              <h3>Kan ik onderdelen retourneren?</h3>
+              <p>Wij hanteren een retourtermijn van 30 dagen voor ongebruikte artikelen in originele verpakking.</p>
             </div>
             <div className={styles.faqItem}>
-              <h3>Do you have a physical store?</h3>
-              <p>Yes, visit us at our location in Paramaribo during business hours.</p>
+              <h3>Hebben jullie een fysieke winkel?</h3>
+              <p>Ja, u bent welkom op onze locatie in Paramaribo tijdens openingstijden.</p>
             </div>
           </div>
           <div className={styles.faqCTA}>
-            <p>Still have questions?</p>
+            <p>Heeft u nog vragen?</p>
             <Link href="/faq" className={styles.faqButton}>
-              Visit our FAQ Page →
+              Bekijk onze FAQ-pagina →
             </Link>
           </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );
