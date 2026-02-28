@@ -1,19 +1,24 @@
 // app/api/admin/users/[id]/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } } // <- plain object
-) {
+export async function PATCH(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  // Extract id from the URL
+  const url = new URL(request.url);
+  const id = url.pathname.split("/").pop(); // last segment of the path
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing user id" }, { status: 400 });
   }
 
   const body = await request.json();
@@ -24,7 +29,7 @@ export async function PATCH(
     SET 
       is_active = ${is_active},
       roles = ${roles}
-    WHERE user_id = ${params.id}
+    WHERE user_id = ${id}
   `;
 
   return NextResponse.json({ success: true });
