@@ -6,10 +6,10 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export async function PATCH(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
-  // Unwrap params if it’s a Promise
-  const resolvedParams = params instanceof Promise ? await params : params;
-
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } } // <- plain object
+) {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== "ADMIN") {
@@ -24,7 +24,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     SET 
       is_active = ${is_active},
       roles = ${roles}
-    WHERE user_id = ${resolvedParams.id}
+    WHERE user_id = ${params.id}
   `;
 
   return NextResponse.json({ success: true });
