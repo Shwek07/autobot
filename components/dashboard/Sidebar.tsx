@@ -33,7 +33,10 @@ export default function Sidebar({
           isMobileOpen ? styles.open : ""
         }`}
       >
-        <div className={styles.logo}>AdminPanel</div>
+        <div className={styles.logo}>
+          <span className={styles.logoMain}># CARPARTS</span>
+          <span className={styles.logoExpert}>EXPERT</span>
+        </div>
 
         <nav className={styles.nav}>
           {menuItems.map((item) => {

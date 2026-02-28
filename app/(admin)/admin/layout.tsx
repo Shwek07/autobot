@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
+import { SessionProvider } from "next-auth/react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Topbar from "@/components/dashboard/Topbar";
 import styles from "@/components/dashboard/Dashboard.module.css";
 
+// Simplified props - remove the interface or make it a type
 export default function AdminLayout({
   children,
+  session
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
+  session?: any; // optional if you prefetch session server-side
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -22,13 +26,15 @@ export default function AdminLayout({
   }, [isMobileOpen]);
 
   return (
-    <div className={styles.layout}>
-      <Sidebar isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
+    <SessionProvider session={session}>
+      <div className={styles.layout}>
+        <Sidebar isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
 
-      <div className={styles.main}>
-        <Topbar onMenuClick={() => setIsMobileOpen(true)} />
-        <div className={styles.content}>{children}</div>
+        <div className={styles.main}>
+          <Topbar onMenuClick={() => setIsMobileOpen(true)} />
+          <div className={styles.content}>{children}</div>
+        </div>
       </div>
-    </div>
+    </SessionProvider>
   );
 }

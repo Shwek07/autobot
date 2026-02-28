@@ -108,3 +108,22 @@
   color: #6b7280;
   font-size: 1rem;
 }
+.whatsappButton {
+  margin-top: 1.3em;
+  display: inline-flex;
+  align-items: center;
+  background-color: #25D366;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.whatsappButton:hover {
+  background-color: #1ebe5d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}

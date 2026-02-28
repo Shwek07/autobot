@@ -3,7 +3,7 @@
 /* ============================= */
 
 .dashboard {
-  background: var(--bg);
+  background: var(--text);
   min-height: 100vh;
   padding: 40px;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -23,7 +23,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: var(--text);
   margin-left: 260px; 
 }
 
@@ -54,11 +54,23 @@
 
 /* Logo */
 .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   margin-bottom: 40px;
-  letter-spacing: -0.5px;
+}
+
+.logoMain {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.logoExpert {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #1e88e5;
+  letter-spacing: 1px;
 }
 
 /* Navigation */
@@ -161,11 +173,15 @@
 }
 
 .profile {
-  background: #eef2ff;
-  color: #6366f1;
+  background: #ffff;
+  color: var(--text);
   padding: 8px 14px;
   border-radius: 999px;
   font-weight: 600;
+}
+.topbarTitle{
+  color: #ffff;
+  
 }
 
 /* ============================= */
@@ -182,6 +198,7 @@
 .title {
   font-size: 2rem;
   font-weight: 700;
+  color: #e5e7eb;
 }
 
 .date {
@@ -325,10 +342,10 @@
 }
 
 .card {
-  background: var(--card-bg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 .tableCard {
@@ -347,6 +364,7 @@
   font-weight: 600;
   display: flex;
   gap: 8px;
+  color: white;
   align-items: center;
 }
 
@@ -381,13 +399,14 @@
   text-align: left;
   font-size: 0.8rem;
   text-transform: uppercase;
-  color: var(--secondary-text);
+  color: white;
   padding: 14px 20px;
   border-bottom: 1px solid var(--border);
 }
 
 .table td {
   padding: 18px 20px;
+  color: rgb(210, 210, 210);
   border-bottom: 1px solid var(--border);
 }
 
@@ -428,6 +447,7 @@
 
 .partNumber {
   background: #f1f5f9;
+  color: #0f172a;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
@@ -494,11 +514,11 @@
 }
 
 .deleteButton {
-  background: #fee2e2;
+  background: #f80303;
 }
 
 .updateButton {
-  background: #e0e7ff;
+  background: #f2f2f2;
 }
 
 .orderButton {

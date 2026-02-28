@@ -85,7 +85,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Admin Dashboard</h1>
+          <h1 className={styles.title}>Welcome terug!</h1>
           <p className={styles.date}>{currentTime}</p>
         </div>
         <div className={styles.headerActions}>
