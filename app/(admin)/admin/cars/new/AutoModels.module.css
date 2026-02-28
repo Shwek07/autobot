@@ -1,87 +1,81 @@
-/* AutoModels.module.css */
+/* ============================= */
+/* PAGE CONTAINER */
+/* ============================= */
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 50px;
+  background: #f8fafc;
   min-height: 100vh;
-  background: #0a0c0f;
-  color: #e5e7eb;
 }
 
 .title {
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: #0f172a;
+  margin-bottom: 30px;
 }
 
-.subtitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #f3f4f6;
-}
+/* ============================= */
+/* FORM CARD */
+/* ============================= */
 
 .form {
-  background: #1f2937;
-  padding: 2rem;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  border: 1px solid #374151;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  margin-bottom: 40px;
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: 24px;
+  margin-bottom: 28px;
 }
+
+/* ============================= */
+/* INPUTS */
+/* ============================= */
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .inputGroup label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #9ca3af;
-  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #64748b;
 }
 
 .inputGroup input {
-  padding: 0.75rem 1rem;
-  background: #2d3748;
-  border: 1px solid #4b5563;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  color: #f3f4f6;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
 .inputGroup input:focus {
   outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-  background: #374151;
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .inputGroup input::placeholder {
-  color: #6b7280;
+  color: #94a3b8;
 }
 
-.inputGroup input:hover {
-  border-color: #9ca3af;
-}
-
-/* Remove number input arrows */
+/* Remove number arrows */
 .inputGroup input[type="number"]::-webkit-inner-spin-button,
 .inputGroup input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -91,209 +85,157 @@
   -moz-appearance: textfield;
 }
 
+/* ============================= */
+/* SUBMIT BUTTON */
+/* ============================= */
+
 .submitButton {
   width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  padding: 14px;
+  background: var(--accent);
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  font-size: 1.125rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.25);
 }
 
 .submitButton:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-  background: #4b5563;
 }
 
 .loadingSpinner {
-  display: inline-block;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
   to {
     transform: rotate(360deg);
   }
 }
 
+/* ============================= */
+/* LIST SECTION */
+/* ============================= */
+
 .list {
-  margin-top: 2rem;
+  margin-top: 10px;
 }
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+/* ============================= */
+/* CARD GRID */
+/* ============================= */
 
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: 20px;
 }
 
 .card {
-  background: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
   transition: all 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  border-color: #4b5563;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
+
+/* ============================= */
+/* CARD CONTENT */
+/* ============================= */
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #374151;
+  margin-bottom: 14px;
 }
 
 .cardHeader strong {
-  font-size: 1.125rem;
-  color: #f3f4f6;
+  font-size: 1rem;
+  color: #0f172a;
 }
 
 .badge {
-  background: #2d3748;
-  color: #9ca3af;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  background: #eef2ff;
+  color: #6366f1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .cardDetails {
-  color: #9ca3af;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  color: #475569;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .cardDetails p {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .vin {
   font-family: monospace;
-  background: #2d3748;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  color: #d1d5db;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
   font-size: 0.75rem;
+  color: #475569;
 }
 
+/* ============================= */
+/* EMPTY STATE */
+/* ============================= */
+
 .emptyMessage {
-  color: #6b7280;
+  padding: 40px;
   text-align: center;
-  padding: 2rem;
-  background: #1f2937;
-  border-radius: 0.5rem;
-  border: 2px dashed #374151;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #64748b;
   font-style: italic;
 }
 
-/* Mobile Responsive */
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
-  }
-
-  .title {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .form {
-    padding: 1.25rem;
+    padding: 30px 20px;
   }
 
   .formGrid {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .inputGroup input {
-    padding: 0.625rem 0.875rem;
-    font-size: 0.875rem;
-  }
-
-  .submitButton {
-    padding: 0.875rem;
-    font-size: 1rem;
   }
 
   .cardGrid {
     grid-template-columns: 1fr;
-  }
-
-  .card {
-    padding: 1rem;
-  }
-
-  .cardHeader strong {
-    font-size: 1rem;
-  }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
-  .container {
-    padding: 0.75rem;
-  }
-
-  .form {
-    padding: 1rem;
-  }
-
-  .inputGroup label {
-    font-size: 0.75rem;
-  }
-
-  .badge {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
-  }
-
-  .cardDetails {
-    font-size: 0.75rem;
-  }
-
-  .vin {
-    font-size: 0.7rem;
-  }
-}
-
-/* Tablet specific */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .container {
-    padding: 1.5rem;
-  }
-
-  .cardGrid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

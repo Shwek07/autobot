@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./NewProduct.module.css";
+import styles from "./NewProducts.module.css";
 
 interface Product {
   product_id: number;

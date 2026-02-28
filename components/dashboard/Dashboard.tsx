@@ -121,7 +121,7 @@ export default function Dashboard() {
               <span className={styles.cardIcon}>🕒</span> Recente Producten
             </h2>
             <Link href="/admin/products/">
-              <button className={styles.viewAllButton}>Add New Product</button>
+              <button className={styles.viewAllButton}>+ Add New Product</button>
             </Link>
             <Link href="/admin/products/">
               <button className={styles.viewAllButton}>Bekijk alles →</button>

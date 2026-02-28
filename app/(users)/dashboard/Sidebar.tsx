@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import styles from "./dashboard.module.css";
 
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function Sidebar() {
       {isMobile && (
         <div className={styles.mobileHeader}>
           <div className={styles.logo}>🔧 AutoParts Pro</div>
+     
           <button 
             className={styles.hamburger}
             onClick={() => setIsOpen(!isOpen)}
@@ -57,6 +59,7 @@ export default function Sidebar() {
             <span className={styles.hamburgerLine}></span>
           </button>
         </div>
+      
       )}
 
       {/* Sidebar - conditioneel zichtbaar op mobiel */}

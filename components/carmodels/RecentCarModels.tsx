@@ -109,10 +109,13 @@ export default function RecentCarModels() {
           <span className={styles.titleIcon}>🚗</span>
           Recente Auto Modellen
         </h2>
-         <Link href="/admin/cars/">
-              <button className={styles.viewAllButton}>Bekijk alle auto's </button>
+       
+             <Link href="/admin/cars/new">
+              <button className={styles.viewAllButton}>+ Add new car</button>
             </Link>
-        <span className={styles.count}>{filtered.length} modellen</span>
+              <Link href="/admin/cars/">
+              <button className={styles.viewAllButton}>Bekijk alles →</button>
+            </Link>
       </div>
 
       {/* Filter Section */}
