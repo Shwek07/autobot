@@ -1,0 +1,294 @@
+/* components/pos/ProductSearch.module.css */
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionTitle svg {
+  color: #667eea;
+}
+
+.searchContainer {
+  margin-bottom: 2rem;
+}
+
+.searchTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.searchTab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px 10px 0 0;
+  transition: all 0.3s ease;
+}
+
+.searchTab:hover {
+  color: #667eea;
+  background: #f8f9fa;
+}
+
+.activeTab {
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+  background: #f0f3ff;
+}
+
+.searchInputWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  color: black;
+  border: 2px solid #f0f0f0;
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.barcodeHint {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.barcodeHint svg {
+  color: #667eea;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  border: 3px solid #f0f0f0;
+  border-top-color: #667eea;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.productCard {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+}
+
+.productImage {
+  height: 140px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.productImage svg {
+  width: 50px;
+  height: 50px;
+  color: #a0aec0;
+}
+
+.stockBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stockHigh {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.stockLow {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.productInfo {
+  padding: 1.5rem;
+}
+
+.productTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+}
+
+.productMerk {
+  font-size: 0.875rem;
+  color: #667eea;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.productPartNumber {
+  font-size: 0.75rem;
+  color: #999;
+  margin: 0 0 1rem 0;
+  font-family: monospace;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.productPrice {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 1rem 0;
+}
+
+.productPrice span {
+  font-size: 0.875rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.inCart {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #667eea;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background: #f0f3ff;
+  border-radius: 5px;
+}
+
+.addToCartContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.quantityInput {
+  width: 70px;
+  padding: 0.75rem;
+  border: 2px solid #f0f0f0;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.addButton {
+  flex: 1;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.addButton:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ccc;
+}
+
+.noResults {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #999;
+}
+
+.noResults svg {
+  color: #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.noResults p {
+  font-size: 1.125rem;
+  margin: 0.5rem 0;
+}
+
+.noResultsSmall {
+  font-size: 0.875rem !important;
+  color: #cbd5e0 !important;
+}

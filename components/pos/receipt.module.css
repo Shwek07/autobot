@@ -1,0 +1,474 @@
+/* components/pos/ReceiptModal.module.css */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContainer {
+  background: white;
+  border-radius: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Receipt Container - Print versie */
+.receiptContainer {
+  background: white;
+  padding: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Print styles */
+@media print {
+  .modalOverlay {
+    background: none;
+    backdrop-filter: none;
+    padding: 0;
+    position: absolute;
+  }
+  
+  .modalContainer {
+    box-shadow: none;
+    max-height: none;
+    overflow: visible;
+  }
+  
+  .actionButtons {
+    display: none !important;
+  }
+  
+  .receiptContainer {
+    padding: 0.5rem;
+  }
+}
+
+/* Receipt Header */
+.receiptHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed #e2e8f0;
+}
+
+.storeName {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.5px;
+}
+.logo {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  color: black;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.logoMain {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.logoExpert {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #1e88e5;
+  letter-spacing: 1px;
+}
+.storeSubtitle {
+  font-size: 0.875rem;
+  color: #667eea;
+  margin: 0 0 0.75rem 0;
+  font-weight: 500;
+}
+
+.storeInfo {
+  font-size: 0.75rem;
+  color: #718096;
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.storeInfo svg {
+  color: #667eea;
+}
+
+.storeInfo span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Receipt Info Section */
+.receiptInfo {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.infoRow:last-child {
+  margin-bottom: 0;
+}
+
+.infoLabel {
+  color: #718096;
+  font-weight: 500;
+}
+
+.infoValue {
+  color: #333;
+  font-weight: 600;
+}
+
+.infoValue.mono {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #667eea;
+}
+
+/* Items Table */
+.itemsTable {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+}
+
+.itemsTable th {
+  text-align: left;
+  padding: 0.75rem 0;
+  border-bottom: 2px solid #e2e8f0;
+  color: #718096;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.itemsTable th:last-child {
+  text-align: right;
+}
+
+.itemsTable td {
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed #e2e8f0;
+  font-size: 0.875rem;
+}
+
+.itemsTable td:last-child {
+  text-align: right;
+  font-weight: 600;
+}
+
+.productName {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.productDetails {
+  font-size: 0.7rem;
+  color: #718096;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.productMerk {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.productPartNumber {
+  font-family: monospace;
+  background: #f0f0f0;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* Totals Section */
+.totalsSection {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.grandTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #667eea;
+  color: #333;
+}
+
+.grandTotal span:last-child {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Receipt Footer */
+.receiptFooter {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed #e2e8f0;
+}
+
+.footerText {
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.footerSmall {
+  font-size: 0.7rem;
+  color: #a0aec0;
+  margin: 0.25rem 0;
+}
+
+.footerDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  color: #cbd5e0;
+}
+
+.footerDivider svg {
+  width: 16px;
+  height: 16px;
+}
+
+.copyright {
+  font-size: 0.6rem;
+  color: #cbd5e0;
+  margin-top: 0.5rem;
+}
+
+/* Action Buttons */
+.actionButtons {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  border-radius: 0 0 24px 24px;
+}
+
+.printButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.printButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.printButton svg {
+  font-size: 1.1rem;
+}
+
+.downloadButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  box-shadow: 0 5px 15px rgba(72, 187, 120, 0.3);
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(72, 187, 120, 0.4);
+}
+
+.closeButton {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #718096;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.closeButton:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .modalContainer {
+    border-radius: 16px;
+  }
+  
+  .receiptContainer {
+    padding: 1.5rem;
+  }
+  
+  .storeName {
+    font-size: 1.5rem;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .printButton,
+  .downloadButton,
+  .closeButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .itemsTable {
+    font-size: 0.8rem;
+  }
+  
+  .itemsTable th {
+    font-size: 0.7rem;
+  }
+}
+
+/* Print specific styles for thermal printer */
+@media print {
+  .receiptContainer {
+    width: 80mm;
+    padding: 2mm;
+    font-size: 10px;
+  }
+  
+  .storeName {
+    font-size: 14px;
+  }
+  
+  .storeSubtitle {
+    font-size: 9px;
+  }
+  
+  .storeInfo {
+    font-size: 8px;
+  }
+  
+  .itemsTable {
+    font-size: 9px;
+  }
+  
+  .itemsTable th {
+    font-size: 8px;
+  }
+  
+  .itemsTable td {
+    font-size: 8px;
+  }
+  
+  .totalRow {
+    font-size: 9px;
+  }
+  
+  .grandTotal {
+    font-size: 11px;
+  }
+  
+  .footerText {
+    font-size: 9px;
+  }
+  
+  .footerSmall {
+    font-size: 7px;
+  }
+}
