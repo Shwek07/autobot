@@ -52,12 +52,13 @@
 
 .userCard {
 
-  background: white;
+   background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   border-radius: 20px;
    padding: 0.75rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   animation: slideIn 0.3s ease;
 }
@@ -103,7 +104,7 @@
 .userName {
   font-weight: 700;
   font-size: 1.2rem;
-  color: #1f2937;
+  color: #ffffff;
   margin: 0 0 0.25rem 0;
 }
 

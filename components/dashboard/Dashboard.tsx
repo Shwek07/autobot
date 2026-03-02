@@ -170,7 +170,7 @@ export default function Dashboard() {
                         {p.stock_quantity}
                       </span>
                     </td>
-                    <td>€{p.verkoop_prijs.toFixed(2)}</td>
+                    <td>SRD{p.verkoop_prijs.toFixed(2)}</td>
                     <td className={p.stock_quantity > 10 ? styles.statusActive : styles.statusWarning}>
                       {p.stock_quantity > 10 ? 'Actief' : 'Attention'}
                     </td>

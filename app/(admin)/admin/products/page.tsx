@@ -90,7 +90,7 @@ export default function ProductsPage() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(price);
+    return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'SRD' }).format(price);
   };
 
   return (

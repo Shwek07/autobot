@@ -13,13 +13,10 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  // Extract id from the URL
+  // Extract user ID from URL
   const url = new URL(request.url);
-  const id = url.pathname.split("/").pop(); // last segment of the path
-
-  if (!id) {
-    return NextResponse.json({ error: "Missing user id" }, { status: 400 });
-  }
+  const id = url.pathname.split("/").pop();
+  if (!id) return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
 
   const body = await request.json();
   const { is_active, roles } = body;
