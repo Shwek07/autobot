@@ -11,6 +11,7 @@ export async function searchProducts(searchTerm: string) {
         product_name, 
         product_merk,
         part_number,
+        description,
         sku,
         verkoop_prijs,
         stock_quantity

@@ -195,11 +195,23 @@
 
 .productPartNumber {
   font-size: 0.75rem;
-  color: #999;
+  color: #ffffff;
   margin: 0 0 1rem 0;
   font-family: monospace;
-  background: #f8f9fa;
+  background:  #0a0092;
   padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.productDescription {
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: #f1f1f1;
+  background: #1505fc;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0 0.5rem 0;
+  font-family: monospace;
   border-radius: 5px;
   display: inline-block;
 }

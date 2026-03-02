@@ -11,6 +11,7 @@ interface Product {
   product_name: string;
   product_merk: string;
   part_number: string;
+  description: string;
   verkoop_prijs: number;
   stock_quantity: number;
   sku: string;
@@ -139,6 +140,7 @@ export default function ProductSearch({ onAddToCart, cartItems }: Props) {
               <div className={styles.productInfo}>
                 <h3 className={styles.productTitle}>{product.product_name}</h3>
                 <p className={styles.productMerk}>{product.product_merk}</p>
+                <p className={styles.productDescription}>Beschrijving: {product.description}</p> <br />
                 <p className={styles.productPartNumber}>Art. nr: {product.part_number}</p>
                 
                 <div className={styles.productPrice}>
