@@ -214,6 +214,7 @@ export default function POSPage() {
             />
           </div>
           
+          
           {/* Rechter kolom - Winkelwagen */}
           <div className={styles.rightColumn}>
             <ShoppingCart
@@ -250,6 +251,7 @@ export default function POSPage() {
         )}
       </div>
       <SalesHistory />
+      
     </div>
   );
 }

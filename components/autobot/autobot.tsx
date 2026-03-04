@@ -1,110 +1,178 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./autobot.module.css";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+type Sender = "user" | "bot";
+
 interface Message {
   id: string;
   text: string;
-  sender: "user" | "bot";
+  sender: Sender;
   timestamp: Date;
   suggestions?: string[];
 }
 
+interface ChatbotApiResponse {
+  message: string;
+  suggestions?: string[];
+  sessionId?: string;
+  intent?: "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK";
+}
+
+const BOT_AVATAR = "/images/ai-agent.webp";
+
+const INITIAL_SUGGESTIONS = ["Remmen vervangen", "Olie verversen", "Apk keuring", "Onderdelen zoeken"];
+
 export default function AutoBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: "1",
+      id: "init",
       text: "Hallo! Ik ben AutoBot, jouw AI-assistent voor auto-onderdelen. Waarmee kan ik je helpen?",
       sender: "bot",
       timestamp: new Date(),
-      suggestions: ["Remmen vervangen", "Olie verversen", "Apk keuring", "Onderdelen zoeken"]
+      suggestions: INITIAL_SUGGESTIONS,
     },
   ]);
+
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Prevent double-send & handle request cancelation
+  const inFlightRef = useRef(false);
+  const abortRef = useRef<AbortController | null>(null);
 
+  const chatSessionId = useMemo(() => {
+    // sessionStorage exists only client-side (this is a client component)
+    return typeof window !== "undefined" ? sessionStorage.getItem("chatSessionId") : null;
+  }, []);
 
-    // Auto-scroll naar nieuwste bericht
-     useEffect(() => {
-       if (messages.length > 1) {
-         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-       }
-     }, [messages]);
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages, isTyping]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputMessage.trim()) return;
+  useEffect(() => {
+    // Cleanup: abort request if component unmounts
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
+  const formatTime = (date: Date) =>
+    date.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" });
+
+  const addMessage = (msg: Message) => setMessages((prev) => [...prev, msg]);
+
+  const sendMessage = async (text: string) => {
+    const clean = text.trim();
+    if (!clean) return;
+    if (inFlightRef.current) return; // avoid accidental double-send
+
+    // Abort any previous request (optional: keep, helps if user spams)
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+
+    inFlightRef.current = true;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputMessage,
+      id: `${Date.now()}_user`,
+      text: clean,
       sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    addMessage(userMessage);
     setInputMessage("");
     setIsTyping(true);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          message: inputMessage,
-          conversationId: sessionStorage.getItem('chatSessionId') 
+      const conversationId =
+        typeof window !== "undefined" ? sessionStorage.getItem("chatSessionId") : null;
+
+      const res = await fetch("/api/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: abortRef.current.signal,
+        body: JSON.stringify({
+          message: clean,
+          conversationId,
         }),
       });
 
-      if (!response.ok) throw new Error('Network response was not ok');
-      
-      const data = await response.json();
-      
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: data.message,
-        sender: "bot",
-        timestamp: new Date(),
-        suggestions: data.suggestions,
-      };
-      
-      setMessages((prev) => [...prev, botResponse]);
-      
-      if (data.sessionId) {
-        sessionStorage.setItem('chatSessionId', data.sessionId);
+      // Always try to read JSON (even on errors), so we keep server error codes/messages
+      const data: Partial<ChatbotApiResponse> = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const serverMsg = (data?.message || "").toString();
+        // Keep the actual server message in the thrown error so catch can decide what to show
+        throw new Error(serverMsg || `HTTP_${res.status}`);
       }
-    } catch (error) {
-      console.error('Error:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Sorry, er is een verbindingsprobleem. Probeer het later opnieuw.",
+
+      const botText = (data?.message || "").toString().trim();
+
+      const botMessage: Message = {
+        id: `${Date.now()}_bot`,
+        text: botText.length ? botText : "Ik kon geen antwoord genereren.",
         sender: "bot",
         timestamp: new Date(),
+        suggestions: data?.suggestions,
       };
-      setMessages((prev) => [...prev, errorMessage]);
+
+      addMessage(botMessage);
+
+      if (data?.sessionId && typeof window !== "undefined") {
+        sessionStorage.setItem("chatSessionId", data.sessionId);
+      }
+    } catch (err: any) {
+      // If aborted, silently stop (no error bubble)
+      if (err?.name === "AbortError") {
+        return;
+      }
+
+      console.error("❌ AutoBot sendMessage error:", err);
+
+      const msg = String(err?.message || "");
+
+      const isAiDown =
+        msg.includes("AI_SERVICE_DOWN") ||
+        msg.includes("HTTP_503") ||
+        msg.toLowerCase().includes("quota") ||
+        msg.toLowerCase().includes("unauthorized") ||
+        msg.toLowerCase().includes("api key");
+
+      const botError: Message = {
+        id: `${Date.now()}_bot_error`,
+        text: isAiDown
+          ? "🚨 AutoBot is tijdelijk niet beschikbaar. Probeer later opnieuw."
+          : "Sorry, er is een verbindingsprobleem. Probeer het later opnieuw.",
+        sender: "bot",
+        timestamp: new Date(),
+        suggestions: isAiDown ? ["Probeer opnieuw", "Onderdelen zoeken"] : ["Probeer opnieuw"],
+      };
+
+      addMessage(botError);
     } finally {
       setIsTyping(false);
+      inFlightRef.current = false;
+      // Refocus input
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInputMessage(suggestion);
-    setTimeout(() => {
-      const form = document.querySelector('form');
-      if (form) form.dispatchEvent(new Event('submit', { cancelable: true }));
-    }, 100);
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendMessage(inputMessage);
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+  const handleSuggestionClick = (suggestion: string) => {
+    sendMessage(suggestion);
   };
 
   return (
@@ -117,15 +185,15 @@ export default function AutoBot() {
 
         <div className={styles.chatLayout}>
           {/* Robot afbeelding - linkerkant */}
-          <motion.div 
+          <motion.div
             className={styles.robotColumn}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
             <div className={styles.robotWrapper}>
-              <Image 
-                src="/images/ai-agent.webp" 
+              <Image
+                src={BOT_AVATAR}
                 alt="AutoBot AI Robot"
                 width={400}
                 height={400}
@@ -139,15 +207,14 @@ export default function AutoBot() {
             </div>
           </motion.div>
 
-          {/* Chatbox - rechterkant - ALTIJD OPEN */}
-          <motion.div 
+          {/* Chatbox - rechterkant */}
+          <motion.div
             className={styles.chatColumn}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
             <div className={styles.chatContainer}>
-              {/* Chat Header  */}
               <div className={styles.chatHeader}>
                 <div className={styles.chatHeaderInfo}>
                   <h3>AutoBot Assistent</h3>
@@ -158,9 +225,8 @@ export default function AutoBot() {
                 </div>
               </div>
 
-              {/* Chat Messages - ALTIJD ZICHTBAAR */}
               <div className={styles.chatMessages}>
-                <div className={styles.messagesContainer}>
+                <div ref={scrollContainerRef} className={styles.messagesContainer}>
                   {messages.map((message) => (
                     <motion.div
                       key={message.id}
@@ -169,53 +235,44 @@ export default function AutoBot() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      {message.sender === 'bot' && (
+                      {message.sender === "bot" && (
                         <div className={styles.botAvatar}>
-                          <Image 
-                            src="/images/ai-agent.webp" 
-                            alt="Bot"
-                            width={40}
-                            height={40}
-                          />
+                          <Image src={BOT_AVATAR} alt="Bot" width={40} height={40} />
                         </div>
                       )}
+
                       <div className={styles.messageContent}>
-                        <div className={styles.messageText}>
-                          {message.text}
-                        </div>
-                        {message.suggestions && message.sender === 'bot' && (
+                        <div className={styles.messageText}>{message.text}</div>
+
+                        {message.suggestions && message.sender === "bot" && (
                           <div className={styles.suggestions}>
                             {message.suggestions.map((suggestion, index) => (
                               <button
-                                key={index}
+                                key={`${message.id}_s_${index}`}
+                                type="button"
                                 className={styles.suggestionButton}
                                 onClick={() => handleSuggestionClick(suggestion)}
+                                disabled={isTyping}
                               >
                                 {suggestion}
                               </button>
                             ))}
                           </div>
                         )}
-                        <span className={styles.timestamp}>
-                          {formatTime(message.timestamp)}
-                        </span>
+
+                        <span className={styles.timestamp}>{formatTime(message.timestamp)}</span>
                       </div>
                     </motion.div>
                   ))}
-                  
+
                   {isTyping && (
-                    <motion.div 
+                    <motion.div
                       className={`${styles.message} ${styles.bot}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                     >
                       <div className={styles.botAvatar}>
-                        <Image 
-                          src="/images/ai-agent-small.webp" 
-                          alt="Bot"
-                          width={30}
-                          height={30}
-                        />
+                        <Image src={BOT_AVATAR} alt="Bot" width={30} height={30} />
                       </div>
                       <div className={styles.typingIndicator}>
                         <span></span>
@@ -224,11 +281,8 @@ export default function AutoBot() {
                       </div>
                     </motion.div>
                   )}
-                  
-                  <div ref={messagesEndRef} />
                 </div>
 
-                {/* Chat Input */}
                 <form onSubmit={handleSendMessage} className={styles.chatInputForm}>
                   <input
                     ref={inputRef}
@@ -239,15 +293,26 @@ export default function AutoBot() {
                     className={styles.chatInput}
                     disabled={isTyping}
                   />
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className={styles.sendButton}
                     disabled={!inputMessage.trim() || isTyping}
                     aria-label="Verstuur bericht"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path
+                        d="M22 2L11 13"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M22 2L15 22L11 13L2 9L22 2Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </button>
                 </form>

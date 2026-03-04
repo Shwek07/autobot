@@ -1,3 +1,5 @@
+// lib/db.ts
+
 import { Pool } from 'pg';
 
 // Maak een connection pool naar je Neon database
