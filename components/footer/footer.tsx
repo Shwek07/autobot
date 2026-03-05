@@ -1,5 +1,6 @@
 import styles from "./footer.module.css";
 import Link from "next/link";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -8,7 +9,7 @@ export default function Footer() {
 
         {/* Column 1 */}
         <div className={styles.col}>
-          <h2 className={styles.logo}>CARPARTS <span>expert</span></h2>
+          <img src="/logo.png" alt="Logo" className={styles.logoImage} />
           <p>
             Jouw betrouwbare plek voor auto onderdelen. Kwaliteit, snelheid en
             de beste prijzen op één plek.
@@ -40,9 +41,9 @@ export default function Footer() {
           <p>Tel: +597 868-5952</p>
 
           <div className={styles.socials}>
-            <span>FB</span>
-            <span>IG</span>
-            <span>WA</span>
+            <FaFacebookF />
+            <FaInstagram />
+            <FaWhatsapp />
           </div>
         </div>
 
