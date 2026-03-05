@@ -4,19 +4,16 @@
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { redirect } from 'next/navigation';
+
 import ProductSearch from '@/components/pos/ProductSearch';
 import ShoppingCart from '@/components/pos/ShoppingCart';
 import PaymentModal from '@/components/pos/PaymentModal';
 import ReceiptModal from '@/components/pos/ReceiptModal';
-import styles from './pos.module.css';
-import { 
-  FiShoppingBag, 
-  FiUser, 
-  FiCalendar, 
-  FiClock,
-  FiLogOut 
-} from 'react-icons/fi';
 import SalesHistory from '@/components/pos/SalesHistory';
+
+import styles from './pos.module.css'; // ✅ FIX: dit was receipt.module.css
+
+import { FiUser, FiCalendar, FiClock, FiLogOut } from 'react-icons/fi';
 
 interface CartItem {
   product_id: number;
@@ -30,7 +27,10 @@ interface CartItem {
 
 export default function POSPage() {
   const { data: session, status } = useSession();
+
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [receiptCart, setReceiptCart] = useState<CartItem[]>([]); // ✅ snapshot voor bon
+
   const [showPayment, setShowPayment] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
@@ -49,41 +49,44 @@ export default function POSPage() {
       );
       if (!confirmLogout) return;
     }
-    
+
     await signOut({ callbackUrl: '/login' });
   };
 
   const addToCart = (product: any, quantity: number) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.product_id === product.product_id);
-      
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product_id === product.product_id);
+
       if (existing) {
         if (existing.quantity + quantity > product.stock_quantity) {
           alert(`Niet genoeg voorraad! Maximaal ${product.stock_quantity} stuks beschikbaar.`);
           return prev;
         }
-        
-        return prev.map(item =>
+
+        return prev.map((item) =>
           item.product_id === product.product_id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      
+
       if (quantity > product.stock_quantity) {
         alert(`Niet genoeg voorraad! Maximaal ${product.stock_quantity} stuks beschikbaar.`);
         return prev;
       }
-      
-      return [...prev, {
-        product_id: product.product_id,
-        product_name: product.product_name,
-        product_merk: product.product_merk,
-        verkoop_prijs: parseFloat(product.verkoop_prijs),
-        quantity,
-        stock_quantity: product.stock_quantity,
-        part_number: product.part_number
-      }];
+
+      return [
+        ...prev,
+        {
+          product_id: product.product_id,
+          product_name: product.product_name,
+          product_merk: product.product_merk,
+          verkoop_prijs: parseFloat(product.verkoop_prijs),
+          quantity,
+          stock_quantity: product.stock_quantity,
+          part_number: product.part_number,
+        },
+      ];
     });
   };
 
@@ -93,23 +96,20 @@ export default function POSPage() {
       return;
     }
 
-    setCart(prev => {
-      const item = prev.find(i => i.product_id === productId);
+    setCart((prev) => {
+      const item = prev.find((i) => i.product_id === productId);
+
       if (item && newQuantity > item.stock_quantity) {
         alert(`Niet genoeg voorraad! Maximaal ${item.stock_quantity} stuks beschikbaar.`);
         return prev;
       }
 
-      return prev.map(item =>
-        item.product_id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      );
+      return prev.map((i) => (i.product_id === productId ? { ...i, quantity: newQuantity } : i));
     });
   };
 
   const removeFromCart = (productId: number) => {
-    setCart(prev => prev.filter(item => item.product_id !== productId));
+    setCart((prev) => prev.filter((item) => item.product_id !== productId));
   };
 
   const clearCart = () => {
@@ -119,9 +119,11 @@ export default function POSPage() {
   };
 
   const calculateSubtotal = () => {
-    return cart.reduce((sum, item) => sum + (item.verkoop_prijs * item.quantity), 0);
+    return cart.reduce((sum, item) => sum + item.verkoop_prijs * item.quantity, 0);
   };
 
+  // LET OP: jouw UI zegt "BTW 10%" maar code gebruikt 21%.
+  // Als je 10% wil: return subtotal * 0.10
   const calculateBTW = (subtotal: number) => {
     return subtotal * 0.21;
   };
@@ -132,9 +134,14 @@ export default function POSPage() {
   };
 
   const handlePaymentComplete = (transaction: any) => {
+    // ✅ snapshot maken vóór cart leegmaken (zodat bon items houdt)
+    setReceiptCart(cart.map((item) => ({ ...item })));
+
     setLastTransaction(transaction);
     setShowPayment(false);
     setShowReceipt(true);
+
+    // live cart reset
     setCart([]);
   };
 
@@ -156,7 +163,6 @@ export default function POSPage() {
   return (
     <div className={styles.container}>
       <div className={styles.contentWrapper}>
-        {/* Moderne header met logout button */}
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <div className={styles.headerLeft}>
@@ -164,58 +170,47 @@ export default function POSPage() {
                 <span className={styles.logoMain}># CARPARTS</span>
                 <span className={styles.logoExpert}>EXPERT</span>
               </div>
-              
+
               <p className={styles.headerSubtitle}>
                 <FiUser />
                 Ingelogd als: <span className={styles.userBadge}>{session?.user?.name}</span>
               </p>
             </div>
-            <button 
-                onClick={handleLogout}
-                className={styles.logoutButton}
-                title="Uitloggen"
-              >
-                <FiLogOut />
-                <span>Uitloggen</span>
-              </button>
-              
+
+            <button onClick={handleLogout} className={styles.logoutButton} title="Uitloggen">
+              <FiLogOut />
+              <span>Uitloggen</span>
+            </button>
+
             <div className={styles.headerRight}>
-                
               <div className={styles.headerDateTime}>
                 <p className={styles.headerDate}>
                   <FiCalendar />
-                  {new Date().toLocaleDateString('nl-NL', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {new Date().toLocaleDateString('nl-NL', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
                   })}
                 </p>
                 <p className={styles.headerTime}>
                   <FiClock />
-                  {new Date().toLocaleTimeString('nl-NL', { 
-                    hour: '2-digit', 
+                  {new Date().toLocaleTimeString('nl-NL', {
+                    hour: '2-digit',
                     minute: '2-digit',
-                    second: '2-digit'
+                    second: '2-digit',
                   })}
                 </p>
-              </div>  
-            </div>  
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Main content grid */}
         <div className={styles.gridContainer}>
-          {/* Linker kolom - Producten */}
           <div className={styles.leftColumn}>
-            <ProductSearch 
-              onAddToCart={addToCart} 
-              cartItems={cart}
-            />
+            <ProductSearch onAddToCart={addToCart} cartItems={cart} />
           </div>
-          
-          
-          {/* Rechter kolom - Winkelwagen */}
+
           <div className={styles.rightColumn}>
             <ShoppingCart
               items={cart}
@@ -230,7 +225,6 @@ export default function POSPage() {
           </div>
         </div>
 
-        {/* Modals */}
         {showPayment && (
           <PaymentModal
             cart={cart}
@@ -245,13 +239,13 @@ export default function POSPage() {
         {showReceipt && lastTransaction && (
           <ReceiptModal
             transaction={lastTransaction}
-            cart={cart}
+            cart={receiptCart}
             onClose={() => setShowReceipt(false)}
           />
         )}
       </div>
+
       <SalesHistory />
-      
     </div>
   );
 }

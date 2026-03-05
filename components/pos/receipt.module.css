@@ -227,6 +227,9 @@
   font-weight: 500;
 }
 
+.producten{
+ color: #000000;
+}
 .productPartNumber {
   font-family: monospace;
   background: #f0f0f0;
@@ -429,46 +432,23 @@
   .receiptContainer {
     width: 80mm;
     padding: 2mm;
-    font-size: 10px;
-  }
-  
-  .storeName {
     font-size: 14px;
+     margin: 0 auto !important;
+    display: block !important;
+    line-height: 1.25;   
   }
-  
-  .storeSubtitle {
-    font-size: 9px;
-  }
-  
-  .storeInfo {
-    font-size: 8px;
-  }
-  
-  .itemsTable {
-    font-size: 9px;
-  }
-  
-  .itemsTable th {
-    font-size: 8px;
-  }
-  
-  .itemsTable td {
-    font-size: 8px;
-  }
-  
-  .totalRow {
-    font-size: 9px;
-  }
-  
-  .grandTotal {
-    font-size: 11px;
-  }
-  
-  .footerText {
-    font-size: 9px;
-  }
-  
-  .footerSmall {
-    font-size: 7px;
-  }
+
+  .storeName { font-size: 14px; }
+  .storeSubtitle { font-size: 10px; }
+  .storeInfo { font-size: 9px; }
+
+  .itemsTable { font-size: 10px; }
+  .itemsTable th { font-size: 9px; }
+  .itemsTable td { font-size: 9px; }
+
+  .totalRow { font-size: 10px; }
+  .grandTotal { font-size: 13px; }
+
+  .footerText { font-size: 10px; }
+  .footerSmall { font-size: 8px; }
 }

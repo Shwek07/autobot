@@ -3,11 +3,10 @@
 
 import { useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { 
-  FiX, 
-  FiPrinter, 
-  FiDownload, 
-  FiCheckCircle,
+import {
+  FiX,
+  FiPrinter,
+  FiDownload,
   FiInfo,
   FiClock,
   FiHash,
@@ -15,7 +14,8 @@ import {
   FiDollarSign,
   FiMinus,
   FiStar,
-  FiMap
+  FiMap,
+  FiPackage
 } from 'react-icons/fi';
 import styles from './receipt.module.css';
 
@@ -78,32 +78,14 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
   });
 
   const handleDownloadPDF = async () => {
-    // Hier zou je een PDF generatie bibliotheek kunnen gebruiken
-    // Voor nu simuleren we het met een alert
     alert('PDF wordt gegenereerd en gedownload...');
-    
-    // In een echte implementatie zou je hier iets doen als:
-    // const pdf = await generatePDF(receiptRef.current);
-    // download(pdf, `bon-${transaction.order_id}.pdf`);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('nl-NL', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
   };
 
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString('nl-NL', {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     });
   };
 
@@ -111,41 +93,41 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
     return new Date(dateString).toLocaleDateString('nl-NL', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
   const getPaymentMethodDutch = (method: string) => {
     switch (method) {
-      case 'contant': 
-        return { 
-          label: 'Contant', 
+      case 'contant':
+        return {
+          label: 'Contant',
           icon: <FiDollarSign />,
-          color: '#48bb78'
+          color: '#48bb78',
         };
-      case 'pin': 
-        return { 
-          label: 'Pin', 
+      case 'pin':
+        return {
+          label: 'Pin',
           icon: <FiCreditCard />,
-          color: '#667eea'
+          color: '#667eea',
         };
-      case 'ideal': 
-        return { 
-          label: 'iDEAL', 
+      case 'ideal':
+        return {
+          label: 'iDEAL',
           icon: <FiCreditCard />,
-          color: '#9f7aea'
+          color: '#9f7aea',
         };
-      case 'creditcard': 
-        return { 
-          label: 'Creditcard', 
+      case 'creditcard':
+        return {
+          label: 'Creditcard',
           icon: <FiCreditCard />,
-          color: '#ed8936'
+          color: '#ed8936',
         };
-      default: 
-        return { 
-          label: method, 
+      default:
+        return {
+          label: method,
           icon: <FiInfo />,
-          color: '#718096'
+          color: '#718096',
         };
     }
   };
@@ -154,7 +136,7 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
     return new Intl.NumberFormat('nl-NL', {
       style: 'currency',
       currency: 'EUR',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -167,26 +149,26 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
         <div ref={receiptRef} className={styles.receiptContainer}>
           {/* Header */}
           <div className={styles.receiptHeader}>
-             <div className={styles.logo}>
-          <span className={styles.logoMain}># CARPARTS</span>
-          <span className={styles.logoExpert}>EXPERT</span>
-        </div>
+            <div className={styles.logo}>
+              <span className={styles.logoMain}># CARPARTS</span>
+              <span className={styles.logoExpert}>EXPERT</span>
+            </div>
+
             <p className={styles.storeSubtitle}>Auto-Onderdelen Specialist</p>
+
             <div className={styles.storeInfo}>
               <span>
-                <FiMap size={12} />
-                Ramdhiansing straat 29
+                <FiMap size={12} /> Ramdhiansing straat 29
               </span>
               <FiMinus size={12} />
               <span>
-                <FiInfo size={12} />
-                BTW: 10%
+                <FiInfo size={12} /> BTW: 10%
               </span>
             </div>
+
             <div className={styles.storeInfo}>
               <span>
-                <FiStar size={12} />
-                Tel: 012-3456789
+                <FiStar size={12} /> Tel: 012-3456789
               </span>
             </div>
           </div>
@@ -202,6 +184,7 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
                 #{transaction.order_id.toString().padStart(6, '0')}
               </span>
             </div>
+
             <div className={styles.infoRow}>
               <span className={styles.infoLabel}>
                 <FiClock style={{ marginRight: '0.25rem' }} />
@@ -211,21 +194,20 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
                 {formatDateShort(transaction.created_at)}
               </span>
             </div>
+
             <div className={styles.infoRow}>
               <span className={styles.infoLabel}>Tijd:</span>
               <span className={styles.infoValue}>
                 {formatTime(transaction.created_at)}
               </span>
             </div>
+
             <div className={styles.infoRow}>
               <span className={styles.infoLabel}>
                 {paymentInfo.icon}
                 Betaalmethode:
               </span>
-              <span 
-                className={styles.infoValue}
-                style={{ color: paymentInfo.color }}
-              >
+              <span className={styles.infoValue} style={{ color: paymentInfo.color }}>
                 {paymentInfo.label}
               </span>
             </div>
@@ -240,24 +222,33 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
                 <th>Bedrag</th>
               </tr>
             </thead>
-            <tbody>
-              {cart.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.quantity}x</td>
-                  <td>
-                    <div className={styles.productName}>{item.product_name}</div>
-                    <div className={styles.productDetails}>
-                      <span className={styles.productMerk}>{item.product_merk}</span>
-                      {item.part_number && (
-                        <span className={styles.productPartNumber}>
-                          Art.nr: {item.part_number}
-                        </span>
-                      )}
-                    </div>
+
+            <tbody className={styles.producten}>
+              {cart.length === 0 ? (
+                <tr>
+                  <td colSpan={3} style={{ textAlign: 'center', padding: '1rem', opacity: 0.7 }}>
+                    Geen items gevonden voor deze bon.
                   </td>
-                  <td>{formatCurrency(item.verkoop_prijs * item.quantity)}</td>
                 </tr>
-              ))}
+              ) : (
+                cart.map((item) => (
+                  <tr key={`${transaction.order_id}-${item.product_id}`}>
+                    <td>{item.quantity}x</td>
+                    <td>
+                      <div className={styles.productName}>{item.product_name}</div>
+                      <div className={styles.productDetails}>
+                        <span className={styles.productMerk}>{item.product_merk}</span>
+                        {item.part_number && (
+                          <span className={styles.productPartNumber}>
+                            Art.nr: {item.part_number}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td>{formatCurrency(item.verkoop_prijs * item.quantity)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
 
@@ -282,13 +273,13 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
             <p className={styles.footerText}>Bedankt voor uw aankoop!</p>
             <p className={styles.footerSmall}>Bewaar dit bonnetje voor garantie</p>
             <p className={styles.footerSmall}>Retourneren mogelijk binnen 7 dagen</p>
-            
+
             <div className={styles.footerDivider}>
               <FiMinus />
               <FiStar />
               <FiMinus />
             </div>
-            
+
             <p className={styles.copyright}>
               © {new Date().getFullYear()} Autoname - Alle rechten voorbehouden
             </p>
@@ -297,24 +288,17 @@ export default function ReceiptModal({ transaction, cart, onClose }: Props) {
 
         {/* Action Buttons */}
         <div className={styles.actionButtons}>
-          <button
-            onClick={handlePrint}
-            className={styles.printButton}
-          >
+          <button onClick={handlePrint} className={styles.printButton}>
             <FiPrinter />
             Bon printen
           </button>
-          <button
-            onClick={handleDownloadPDF}
-            className={styles.downloadButton}
-          >
+
+          <button onClick={handleDownloadPDF} className={styles.downloadButton}>
             <FiDownload />
             Download PDF
           </button>
-          <button
-            onClick={onClose}
-            className={styles.closeButton}
-          >
+
+          <button onClick={onClose} className={styles.closeButton}>
             <FiX />
             Sluiten
           </button>
