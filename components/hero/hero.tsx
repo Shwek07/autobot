@@ -118,13 +118,13 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.overlay} />
       <div className={styles.content}>
-        <div className={styles.logo}>
+        {/* <div className={styles.logo}>
           <span className={styles.logoMain}># CARPARTS</span>
           <span className={styles.logoExpert}>EXPERT</span>
-        </div>
+        </div> */}
         
-        <h1>Vind onderdelen voor jouw auto in seconden</h1>
-        <p>Selecteer je auto om de juiste onderdelen te vinden</p>
+        <h1 className={styles.heroTitle}>Vind <span className={styles.highlight}>onderdelen</span> voor jouw auto in seconden</h1>
+        <p className={styles.heroSubtitle}>Selecteer je auto en ontdek direct de juiste onderdelen.</p>
 
         <div className={styles.searchBox}>
           <select 

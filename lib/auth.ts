@@ -3,6 +3,13 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { query } from "@/lib/db";
 
+console.log(' DEBUG INFO ');
+console.log('AUTH_GOOGLE_ID:', process.env.AUTH_GOOGLE_ID ? '✅ GEVONDEN' : '❌ NIET GEVONDEN');
+console.log('AUTH_GOOGLE_ID lengte:', process.env.AUTH_GOOGLE_ID?.length || 0);
+console.log('AUTH_GOOGLE_SECRET:', process.env.AUTH_GOOGLE_SECRET ? '✅ GEVONDEN' : '❌ NIET GEVONDEN');
+console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log(' EINDE DEBUG ');
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({

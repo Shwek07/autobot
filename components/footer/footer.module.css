@@ -35,6 +35,12 @@
     font-size: 1.1rem;
 }
 
+.logoImage {
+  max-width: 120px; 
+  height: auto;
+  margin-bottom: 12px;
+}
+
 .col p{
     font-size: 0.95rem;
     line-height: 1.6;
@@ -63,9 +69,9 @@
     margin-top: 14px;
 }
 
-.socials span{
-    width: 36px;
-    height: 36px;
+.socials svg{
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: rgba(255,255,255,0.08);
     display: grid;
@@ -74,7 +80,7 @@
     transition: background .3s ease, transform .3s ease;
 }
 
-.socials span:hover{
+.socials svg:hover{
     background: rgba(255,255,255,0.2);
     transform: translateY(-3px);
 }

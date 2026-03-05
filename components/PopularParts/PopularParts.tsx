@@ -23,7 +23,7 @@ export default function Parts(){
       <div className={styles.bgGlow}></div>
             <div className={styles.content}>
              <div className={styles.header}>
-               <h1>Populaire onderdelen voor jou auto </h1>
+               <h1>Populaire onderdelen voor jouw auto </h1>
                <p>Zie de meest gezochte onderdelen</p>
              </div>
 

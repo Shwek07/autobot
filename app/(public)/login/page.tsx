@@ -24,10 +24,6 @@ export default function LoginPage() {
         {/* LEFT SIDE */}
         <div className={styles.brandSide}>
           <div className={styles.brandContent}>
-            <div className={styles.brandHeader}>
-              <span className={styles.brandMain}>CARPARTS</span>
-              <span className={styles.brandExpert}>EXPERT</span>
-            </div>
 
             <h2 className={styles.brandTitle}>
               Vind onderdelen voor<br />jouw auto in seconden
@@ -125,7 +121,7 @@ export default function LoginPage() {
 function Feature({ text }: { text: string }) {
   return (
     <div className={styles.featureItem}>
-      <svg width="20" height="20" fill="none" stroke="#1e88e5" strokeWidth="2.5">
+      <svg width="20" height="20" fill="none" stroke="#34ebeb" strokeWidth="2.5">
         <path d="M20 6L9 17L4 12" strokeLinecap="round" />
       </svg>
       <span>{text}</span>
