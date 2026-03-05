@@ -1,32 +1,50 @@
+// app/(public)/login/page.tsx
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; 
+  // ✅ Respect callbackUrl from query string (used by reserve flow)
+  const callbackUrl = useMemo(() => {
+    const cb = searchParams.get("callbackUrl");
+    // fallback if none provided
+    return cb && cb.trim().length > 0 ? cb : "/";
+  }, [searchParams]);
+
+  if (!mounted) return null;
+
+  const handleGoogleLogin = () => {
+    // ✅ this is the key fix: do NOT hardcode "/"
+    signIn("google", { callbackUrl });
+  };
 
   return (
     <div className={styles.wrapper}>
       {/* Background */}
-      <div className={styles.bgGrid}></div>
-      <div className={styles.bgGradient}></div>
-      <div className={styles.bgGlow}></div>
+      <div className={styles.bgGrid} />
+      <div className={styles.bgGradient} />
+      <div className={styles.bgGlow} />
 
       <div className={styles.container}>
         {/* LEFT SIDE */}
         <div className={styles.brandSide}>
           <div className={styles.brandContent}>
-
             <h2 className={styles.brandTitle}>
-              Vind onderdelen voor<br />jouw auto in seconden
+              Vind onderdelen voor
+              <br />
+              jouw auto in seconden
             </h2>
 
             <div className={styles.statsContainer}>
@@ -47,18 +65,11 @@ export default function LoginPage() {
         <div className={styles.loginCard}>
           <h1 className={styles.loginTitle}>Welkom terug</h1>
           <p className={styles.loginSubtitle}>
-            Log in om toegang te krijgen tot je persoonlijke dashboard
+            Log in om verder te gaan.
           </p>
 
           {/* Google Button */}
-          <button
-            className={styles.googleButton}
-            onClick={() =>
-              signIn("google", {
-                callbackUrl: "/", 
-              })
-            }
-          >
+          <button className={styles.googleButton} onClick={handleGoogleLogin}>
             <Image
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
@@ -72,16 +83,25 @@ export default function LoginPage() {
             <span>of log in met e-mail</span>
           </div>
 
-          <form className={styles.emailForm}>
+          {/* Email login is UI-only for now (no submit handler) */}
+          <form
+            className={styles.emailForm}
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Email login is nog niet gekoppeld. Gebruik voorlopig Google login.");
+            }}
+          >
             <input
               type="email"
               placeholder="E-mailadres"
               className={styles.input}
+              autoComplete="email"
             />
             <input
               type="password"
               placeholder="Wachtwoord"
               className={styles.input}
+              autoComplete="current-password"
             />
             <button type="submit" className={styles.loginButton}>
               Inloggen

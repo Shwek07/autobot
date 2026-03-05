@@ -1,0 +1,350 @@
+.page {
+  padding: 30px 18px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  margin: 0 0 18px 0;
+}
+
+.helperText {
+  opacity: 0.9;
+  margin: 6px 0;
+}
+
+/* Summary header card */
+.summaryCard {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 14px 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.summaryTitle {
+  font-weight: 900;
+  font-size: 16px;
+}
+/* --- Reserve button (Primary CTA) --- */
+.btnPrimary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 11px 14px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 170, 255, 0.30),
+    rgba(0, 170, 255, 0.12)
+  );
+
+  color: rgba(255, 255, 255, 0.96);
+  cursor: pointer;
+
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+  transition: transform 140ms ease, background 140ms ease, opacity 140ms ease,
+    border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 170, 255, 0.42),
+    rgba(0, 170, 255, 0.16)
+  );
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+.btnPrimary:active {
+  transform: translateY(0px);
+  opacity: 0.95;
+}
+
+/* Focus (keyboard) */
+.btnPrimary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.22), 0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+/* Disabled */
+.btnPrimary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Optional: loading spinner inside the button */
+.btnPrimaryLoading::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.summaryStrong {
+  font-weight: 950;
+}
+
+.summaryYear {
+  opacity: 0.9;
+  font-weight: 800;
+}
+
+.summarySubtitle {
+  opacity: 0.85;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+/* Layout */
+.resultsWrap {
+  display: grid;
+  gap: 16px;
+}
+
+/* Modern product grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Card */
+.card {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.32);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Media */
+.media {
+  position: relative;
+  height: 150px;
+  background: radial-gradient(700px 220px at 10% 20%, rgba(0, 170, 255, 0.25), transparent 60%),
+              radial-gradient(700px 220px at 90% 0%, rgba(255, 255, 255, 0.08), transparent 55%),
+              rgba(255, 255, 255, 0.02);
+}
+
+.imagePlaceholder {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02)),
+    radial-gradient(800px 240px at 50% 20%, rgba(0,0,0,0.25), transparent 60%);
+}
+
+.badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badgeBrand,
+.badgeStockOk,
+.badgeStockLow {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.28);
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+.badgeBrand {
+  letter-spacing: 0.3px;
+}
+
+.badgeStockOk {
+  opacity: 0.95;
+}
+
+.badgeStockLow {
+  opacity: 0.95;
+}
+
+/* Body */
+.body {
+  padding: 14px 16px 16px 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+/* Meta */
+.meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.metaItem {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 10px 10px;
+}
+
+.metaLabel {
+  display: block;
+  font-size: 11px;
+  opacity: 0.75;
+  margin-bottom: 4px;
+}
+
+.metaValue {
+  font-size: 13px;
+  font-weight: 850;
+  opacity: 0.95;
+}
+
+/* Description */
+.desc {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.88;
+  line-height: 1.35;
+}
+
+.descMuted {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+/* Footer */
+.footer {
+  margin-top: 2px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.priceWrap {
+  display: grid;
+  gap: 2px;
+}
+
+.priceLabel {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: 0.3px;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnPrimary,
+.btnSecondary {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 900;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: transform 140ms ease, opacity 140ms ease, background 140ms ease;
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.95;
+}
+
+.btnPrimary {
+  background: rgba(0, 170, 255, 0.22);
+}
+
+.btnPrimary:hover,
+.btnSecondary:hover {
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .pageTitle {
+    font-size: 26px;
+  }
+  .media {
+    height: 130px;
+  }
+  .meta {
+    grid-template-columns: 1fr;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions {
+    justify-content: stretch;
+  }
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+  }
+}

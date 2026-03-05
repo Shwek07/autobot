@@ -1,14 +1,11 @@
-// app/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export const runtime = "nodejs";
 
-// Definieer een type voor de roles
 type UserRole = "ADMIN" | "POS" | "USER";
 
-// Role-based route configuratie met types
 const routePermissions: Record<string, UserRole[]> = {
   "/admin": ["ADMIN"],
   "/pos": ["POS", "ADMIN"],
@@ -24,78 +21,75 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const { pathname } = req.nextUrl;
+  const { pathname, searchParams } = req.nextUrl;
   const redirected = req.cookies.get("redirect_done")?.value;
 
-  // -------------------------------
-  // Redirect logged-in users away from /login
-  // -------------------------------
+  // Helper: read callbackUrl (NextAuth uses callbackUrl)
+  const callbackUrl = searchParams.get("callbackUrl");
+
+  // ---------------------------------------
+  // 1) If user is logged in and visits /login
+  //    => redirect to callbackUrl if present
+  // ---------------------------------------
   if (pathname === "/login" && token) {
+    if (callbackUrl) {
+      return NextResponse.redirect(new URL(callbackUrl, req.url));
+    }
+
     const redirectPath = getRoleBasedRedirectPath(token.role as UserRole | undefined);
-    const response = NextResponse.redirect(
-      new URL(redirectPath, req.url)
-    );
-    
-    response.cookies.set("redirect_done", "true", {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-    });
-    return response;
+    return NextResponse.redirect(new URL(redirectPath, req.url));
   }
 
-  // -------------------------------
-  // Check of de huidige route beschermd is
-  // -------------------------------
-  const protectedRoute = Object.keys(routePermissions).find(route => 
+  // ---------------------------------------
+  // 2) Protect routes: if not logged in => go to login WITH callbackUrl
+  // ---------------------------------------
+  const protectedRoute = Object.keys(routePermissions).find((route) =>
     pathname.startsWith(route)
   );
 
-  // -------------------------------
-  // Check toegang voor beschermde routes
-  // -------------------------------
   if (protectedRoute) {
     const allowedRoles = routePermissions[protectedRoute];
-    
-    // Als er geen token is, redirect naar login
+
     if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname + req.nextUrl.search);
+      return NextResponse.redirect(loginUrl);
     }
 
-    // Check of de user role is toegestaan (met type checking)
     const userRole = token.role as UserRole | undefined;
-    
     if (!userRole || !allowedRoles.includes(userRole)) {
-      // Redirect naar geschikte pagina op basis van role
       const redirectPath = getRoleBasedRedirectPath(userRole);
       return NextResponse.redirect(new URL(redirectPath, req.url));
     }
   }
 
-  // -------------------------------
-  // Redirect "/" based on role (once)
-  // -------------------------------
+  // ---------------------------------------
+  // 3) Role redirect for "/" (only if NO callbackUrl intent)
+  //    IMPORTANT: Do not override if the user is coming back from login flow
+  // ---------------------------------------
   if (pathname === "/" && token && !redirected) {
-    const redirectPath = getRoleBasedRedirectPath(token.role as UserRole | undefined);
-    const response = NextResponse.redirect(
-      new URL(redirectPath, req.url)
-    );
-    
-    response.cookies.set("redirect_done", "true", {
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-    });
-    return response;
+    // If someone explicitly navigates to "/" we can redirect.
+    // But do NOT do anything if a callbackUrl exists (rare on "/"), just in case.
+    if (!callbackUrl) {
+      const redirectPath = getRoleBasedRedirectPath(token.role as UserRole | undefined);
+      const response = NextResponse.redirect(new URL(redirectPath, req.url));
+
+      response.cookies.set("redirect_done", "true", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+      });
+
+      return response;
+    }
   }
 
   return NextResponse.next();
 }
 
-// Helper function met betere type handling
 function getRoleBasedRedirectPath(role: UserRole | undefined): string {
   if (!role) return "/dashboard";
-  
+
   switch (role) {
     case "ADMIN":
       return "/admin";
@@ -111,9 +105,9 @@ function getRoleBasedRedirectPath(role: UserRole | undefined): string {
 export const config = {
   matcher: [
     "/",
-    "/login", 
-    "/admin/:path*", 
-    "/pos/:path*", 
+    "/login",
+    "/admin/:path*",
+    "/pos/:path*",
     "/dashboard/:path*",
-  ], 
+  ],
 };
