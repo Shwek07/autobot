@@ -10,7 +10,6 @@ import styles from "@/app/(public)/login/login.module.css";
 export default function LoginClient() {
   const searchParams = useSearchParams();
 
-  // ✅ Respect callbackUrl from query string (reserve flow depends on this)
   const callbackUrl = useMemo(() => {
     const cb = searchParams.get("callbackUrl");
     return cb && cb.trim().length > 0 ? cb : "/";

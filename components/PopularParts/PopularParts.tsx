@@ -18,9 +18,7 @@ export default function Parts(){
     return (
         <section className={styles.categories}>
                {/* Background animations */}
-      <div className={styles.bgGrid}></div>
-      <div className={styles.bgGradient}></div>
-      <div className={styles.bgGlow}></div>
+      
             <div className={styles.content}>
              <div className={styles.header}>
                <h1>Populaire onderdelen voor jouw auto </h1>
