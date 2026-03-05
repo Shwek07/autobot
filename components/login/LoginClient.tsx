@@ -1,0 +1,145 @@
+// app/(public)/login/LoginClient.tsx
+"use client";
+
+import { useMemo } from "react";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import styles from "@/app/(public)/login/login.module.css";
+
+export default function LoginClient() {
+  const searchParams = useSearchParams();
+
+  // ✅ Respect callbackUrl from query string (reserve flow depends on this)
+  const callbackUrl = useMemo(() => {
+    const cb = searchParams.get("callbackUrl");
+    return cb && cb.trim().length > 0 ? cb : "/";
+  }, [searchParams]);
+
+  const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl });
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      {/* Background */}
+      <div className={styles.bgGrid} />
+      <div className={styles.bgGradient} />
+      <div className={styles.bgGlow} />
+
+      <div className={styles.container}>
+        {/* LEFT SIDE */}
+        <div className={styles.brandSide}>
+          <div className={styles.brandContent}>
+            <h2 className={styles.brandTitle}>
+              Vind onderdelen voor
+              <br />
+              jouw auto in seconden
+            </h2>
+
+            <div className={styles.statsContainer}>
+              <Stat number="1000+" label="Onderdelen" />
+              <Stat number="24/7" label="Beschikbaar" />
+              <Stat number="98%" label="Tevreden" />
+            </div>
+
+            <div className={styles.featureList}>
+              <Feature text="Directe levering uit voorraad" />
+              <Feature text="7 dagen retourrecht" />
+              <Feature text="Persoonlijke ondersteuning" />
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className={styles.loginCard}>
+          <h1 className={styles.loginTitle}>Welkom terug</h1>
+          <p className={styles.loginSubtitle}>Log in om verder te gaan.</p>
+
+          <button className={styles.googleButton} onClick={handleGoogleLogin}>
+            <Image
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              width={20}
+              height={20}
+            />
+            <span>Doorgaan met Google</span>
+          </button>
+
+          <div className={styles.divider}>
+            <span>of log in met e-mail</span>
+          </div>
+
+          {/* Email login UI-only */}
+          <form
+            className={styles.emailForm}
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Email login is nog niet gekoppeld. Gebruik voorlopig Google login.");
+            }}
+          >
+            <input
+              type="email"
+              placeholder="E-mailadres"
+              className={styles.input}
+              autoComplete="email"
+            />
+            <input
+              type="password"
+              placeholder="Wachtwoord"
+              className={styles.input}
+              autoComplete="current-password"
+            />
+            <button type="submit" className={styles.loginButton}>
+              Inloggen
+            </button>
+          </form>
+
+          <div className={styles.loginFooter}>
+            <a href="/forgot-password" className={styles.link}>
+              Wachtwoord vergeten?
+            </a>
+            <span className={styles.footerText}>
+              Nog geen account?{" "}
+              <a href="/register" className={styles.link}>
+                Registreer
+              </a>
+            </span>
+          </div>
+
+          <p className={styles.termsText}>
+            Door door te gaan ga je akkoord met onze{" "}
+            <a href="/terms" className={styles.link}>
+              Algemene Voorwaarden
+            </a>{" "}
+            en{" "}
+            <a href="/privacy" className={styles.link}>
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Feature({ text }: { text: string }) {
+  return (
+    <div className={styles.featureItem}>
+      <svg width="20" height="20" fill="none" stroke="#34ebeb" strokeWidth="2.5">
+        <path d="M20 6L9 17L4 12" strokeLinecap="round" />
+      </svg>
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function Stat({ number, label }: { number: string; label: string }) {
+  return (
+    <div className={styles.statItem}>
+      <span className={styles.statNumber}>{number}</span>
+      <span className={styles.statLabel}>{label}</span>
+    </div>
+  );
+}
