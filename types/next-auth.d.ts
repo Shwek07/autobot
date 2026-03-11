@@ -5,23 +5,23 @@ import { DefaultSession } from "next-auth";
 declare module "next-auth" {
   interface Session {
     user: {
-      id?: string;
+      id?: number;
       role?: string;
-      is_active?: number; // <- add this
+      is_active?: number; 
     } & DefaultSession["user"];
   }
 
   interface User {
-    id?: string;
+    id?: number;
     role?: string;
-    is_active?: number; // <- add this
+    is_active?: number; 
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id?: string;
+    id?: number;
     role?: string;
-    is_active?: number; // <- add this
+    is_active?: number; 
   }
 }
