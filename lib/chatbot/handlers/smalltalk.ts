@@ -19,6 +19,9 @@ Voorbeeldstijl:
 - "Hallo! Waarmee kan ik je helpen? Je kunt bijvoorbeeld zoeken op onderdeelnaam of part number."
 - "Graag gedaan! Heb je een onderdeel nodig of een vraag over je auto?"
 
+CHAT SUMMARY:
+${body.chatSummary || "(geen samenvatting)"}
+
 Gebruiker:
 ${message}
 

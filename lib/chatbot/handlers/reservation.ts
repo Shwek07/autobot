@@ -23,6 +23,9 @@ Jouw taak:
 GESCHIEDENIS:
 ${history || "(geen geschiedenis)"}
 
+CHAT SUMMARY:
+${body.chatSummary || "(geen samenvatting)"}
+
 GEBRUIKER:
 ${message}
 

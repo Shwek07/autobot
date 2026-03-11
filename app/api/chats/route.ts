@@ -3,6 +3,7 @@ import { query } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth"; // pas dit pad aan naar jouw auth config
 
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);

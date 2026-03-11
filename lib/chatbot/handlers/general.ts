@@ -25,9 +25,12 @@ Regels:
     .map((m) => `${m.sender === "user" ? "Gebruiker" : "Assistant"}: ${m.text}`)
     .join("\n");
 
-  return `
+return `
 SYSTEM:
 ${system}
+
+CHAT SUMMARY:
+${body.chatSummary || "(geen samenvatting)"}
 
 GESCHIEDENIS:
 ${history || "(geen geschiedenis)"}

@@ -1,4 +1,5 @@
 // lib/chatbot/extractSearchJson.ts
+
 import Groq from "groq-sdk";
 import { z } from "zod";
 
@@ -12,7 +13,22 @@ const SearchExtractSchema = z.object({
 
 export type SearchExtractResult = z.infer<typeof SearchExtractSchema>;
 
-export async function extractSearchJson(message: string): Promise<SearchExtractResult> {
+interface SearchStateLike {
+  part?: string;
+  partNumber?: string;
+  brand?: string;
+  model?: string;
+  year?: string;
+}
+
+interface ExtractSearchJsonParams {
+  message: string;
+  currentSearchState?: SearchStateLike;
+}
+
+export async function extractSearchJson(
+  params: string | ExtractSearchJsonParams
+): Promise<SearchExtractResult> {
   const apiKey = (process.env.GROQ_API_KEY || "").trim();
   const modelName = (process.env.GROQ_MODEL || "llama-3.3-70b-versatile").trim();
 
@@ -20,13 +36,22 @@ export async function extractSearchJson(message: string): Promise<SearchExtractR
     throw new Error("GROQ_API_KEY ontbreekt");
   }
 
+  const normalized =
+    typeof params === "string"
+      ? { message: params, currentSearchState: {} }
+      : {
+          message: params.message || "",
+          currentSearchState: params.currentSearchState || {},
+        };
+
   const client = new Groq({ apiKey });
 
   const prompt = `
 Je bent een JSON data extractor voor een autopart chatbot.
 
-Jouw taak:
-Haal uit de input van de gebruiker alleen de relevante zoekvelden.
+Doel:
+Haal uit de NIEUWE user input alleen de relevante zoekvelden.
+Gebruik de huidige search state als context om korte antwoorden beter te begrijpen.
 
 Geef ALLEEN geldige JSON terug.
 Geen uitleg.
@@ -43,16 +68,26 @@ Gebruik exact dit JSON formaat:
 }
 
 Regels:
-- Als iets niet in de input staat, laat het leeg als ""
+- Vul alleen in wat je met redelijke zekerheid uit de NIEUWE user input kunt halen
+- Als iets niet uit de nieuwe input blijkt, laat het ""
+- Gebruik context alleen om korte antwoorden te interpreteren
+- Gebruik context NIET om oude waarden opnieuw te kopiëren
 - Gebruik altijd strings
 - part = naam van het onderdeel
 - partNumber = onderdeelnummer / OEM nummer / product code
 - brand = automerk
 - model = automodel
 - year = bouwjaar als string
+- Als user alleen "2012" zegt, dan year = "2012"
+- Als user alleen "Hilux" zegt, dan model = "Hilux"
+- Als user alleen "Toyota" zegt, dan brand = "Toyota"
+- Als user alleen een onderdeel noemt zoals "sparkplug", dan part = "sparkplug"
 
-Gebruiker input:
-${message}
+HUIDIGE SEARCH STATE:
+${JSON.stringify(normalized.currentSearchState, null, 2)}
+
+NIEUWE USER INPUT:
+${normalized.message}
 `.trim();
 
   const completion = await client.chat.completions.create({
@@ -73,6 +108,5 @@ ${message}
     throw new Error("Geen content ontvangen van Groq");
   }
 
-  const parsed = SearchExtractSchema.parse(JSON.parse(content));
-  return parsed;
+  return SearchExtractSchema.parse(JSON.parse(content));
 }
