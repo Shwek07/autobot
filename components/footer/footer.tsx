@@ -9,7 +9,7 @@ export default function Footer() {
 
         {/* Column 1 */}
         <div className={styles.col}>
-          <img src="/logo.png" alt="Logo" className={styles.logoImage} />
+          <img src="./logo.png" alt="Logo" className={styles.logoImage1} />
           <p>
             Jouw betrouwbare plek voor auto onderdelen. Kwaliteit, snelheid en
             de beste prijzen op één plek.
@@ -40,10 +40,33 @@ export default function Footer() {
           <p>Email: info@autoparts.com</p>
           <p>Tel: +597 868-5952</p>
 
-          <div className={styles.socials}>
-            <FaFacebookF />
-            <FaInstagram />
-            <FaWhatsapp />
+         <div className={styles.socials}>
+            <a
+              href="https://www.facebook.com/597SharpEdgeVisuals"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <FaFacebookF />
+            </a>
+
+            <a
+              href="https://www.instagram.com/shwek07_"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <FaInstagram />
+            </a>
+
+            <a
+              href="https://wa.me/5978685952"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <FaWhatsapp />
+            </a>
           </div>
         </div>
 

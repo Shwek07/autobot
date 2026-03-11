@@ -544,6 +544,8 @@ export default function AutoBot() {
                           placeholder="Typ je vraag over auto-onderdelen..."
                           className={styles.chatInput}
                           disabled={isTyping}
+                          maxLength={500}
+                          autoComplete="off"
                         />
                         <button
                           type="submit"
