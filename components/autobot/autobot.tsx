@@ -1,3 +1,4 @@
+// app/components/autobot/autobot.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";

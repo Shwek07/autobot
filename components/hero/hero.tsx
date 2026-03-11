@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./hero.module.css";
+import Link from "next/link";
+import Image from "next/image";
 
 interface AutoModel {
   auto_merk: string;
@@ -118,10 +120,11 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.overlay} />
       <div className={styles.content}>
-        {/* <div className={styles.logo}>
-          <span className={styles.logoMain}># CARPARTS</span>
-          <span className={styles.logoExpert}>EXPERT</span>
-        </div> */}
+         <div className={styles.logo}>
+         
+          {/* <span className={styles.logoMain}># CARPARTS</span>
+          <span className={styles.logoExpert}>EXPERT</span> */}
+        </div> 
         
         <h1 className={styles.heroTitle}>Vind <span className={styles.highlight}>onderdelen</span> voor jouw auto in seconden</h1>
         <p className={styles.heroSubtitle}>Selecteer je auto en ontdek direct de juiste onderdelen.</p>

@@ -16,9 +16,11 @@ export default function Sidebar({
 
   const menuItems = [
     { href: "/admin", label: "Dashboard", icon: "📊" },
+    { href: "/", label: "Website", icon: "🌐" },
     { href: "/admin/products", label: "Producten", icon: "📦" },
     { href: "/admin/cars", label: "Auto's", icon: "🚗" },
     { href: "/admin/users", label: "Gebruikers", icon: "👥" },
+    
   ];
 
   async function handleLogout() {

@@ -12,7 +12,7 @@ export default async function UserDashboardPage() {
 
   if (!session) return redirect("/login");
 
-  if (session.user?.role === "ADMIN") return redirect("/admin/admin");
+  if (session.user?.role === "ADMIN") return redirect("/admin");
 
   return (
       <>

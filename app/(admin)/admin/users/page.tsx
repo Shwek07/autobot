@@ -1,3 +1,4 @@
+// app/(admin)/admin/users/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -73,9 +74,11 @@ export default function UsersPage() {
     }
   };
 
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-  };
+  const getInitials = (firstName?: string | null, lastName?: string | null) => {
+  const first = firstName?.charAt(0) || "";
+  const last = lastName?.charAt(0) || "";
+  return `${first}${last}`.toUpperCase() || "?";
+};
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('nl-NL', {

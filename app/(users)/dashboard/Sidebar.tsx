@@ -32,6 +32,8 @@ export default function Sidebar() {
 
   const menu = [
     { href: "/dashboard", label: "Dashboard", icon: "🏎️" },
+      { href: "/", label: "Website", icon: "🌐" },
+      { href: "/chatbot", label: "Chatbot", icon: "🤖" },
     { href: "/reserveringen", label: "Reserveringen", icon: "📦" },
     { href: "/vehicles", label: "Mijn Auto's", icon: "🚗" },
     { href: "/favorites", label: "Favorieten", icon: "⭐" },

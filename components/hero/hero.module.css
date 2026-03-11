@@ -22,8 +22,10 @@
   z-index: 2;
   max-width: 900px;
 }
-
-/* .logo {
+/*
+.logo {
+  width: 10%;
+  height: auto;
   display: flex;
   align-items: baseline;
   gap: 8px;
