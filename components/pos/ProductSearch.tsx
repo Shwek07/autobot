@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { searchProducts } from '@/app/actions/products';
 import styles from './productsearch.module.css';
 import { FiSearch, FiCode, FiPackage, FiShoppingCart } from 'react-icons/fi';
-import { FaBeer } from 'react-icons/fa';
+
 
 interface Product {
   product_id: number;

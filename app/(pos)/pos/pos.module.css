@@ -29,74 +29,118 @@
 }
 
 /* Header met moderne uitstraling */
+/* Header */
 .header {
-  background:  #1e293b;
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 1.5rem 2rem;
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 1.2rem 1.8rem;
   margin-bottom: 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #334155;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
 }
 
 .headerContent {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 1rem;
 }
 
+/* Left side */
 .headerLeft {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
-.headerTitle {
-  font-size: 2rem;
-  font-weight: 800;
-  background: white;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-}
-
-.headerSubtitle {
-  font-size: 1rem;
-  color: #666;
+.logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
+}
+
+.logoMain {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: 1px;
+}
+
+.logoExpert {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3b82f6;
+  letter-spacing: 1px;
+}
+
+/* User */
+.headerSubtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .userBadge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
-  padding: 0.25rem 1rem;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
+/* Right side date/time */
 .headerRight {
-  background: #f8f9fa;
-  padding: 1rem 2rem;
-  border-radius: 15px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.headerDateTime {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
 }
 
 .headerDate {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
+  font-size: 1.5rem;
+  color: #fbfbfb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
 }
 
 .headerTime {
-  font-size: 1rem;
-  color: #666;
-  margin: 0.25rem 0 0 0;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* Logout button */
+.logoutButton {
+  background: #ef4444;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
 }
 
 /* Grid layout voor main content */

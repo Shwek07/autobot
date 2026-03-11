@@ -122,10 +122,9 @@ export default function POSPage() {
     return cart.reduce((sum, item) => sum + item.verkoop_prijs * item.quantity, 0);
   };
 
-  // LET OP: jouw UI zegt "BTW 10%" maar code gebruikt 21%.
-  // Als je 10% wil: return subtotal * 0.10
+  
   const calculateBTW = (subtotal: number) => {
-    return subtotal * 0.21;
+    return subtotal * 0.10;
   };
 
   const calculateTotal = () => {
@@ -134,14 +133,11 @@ export default function POSPage() {
   };
 
   const handlePaymentComplete = (transaction: any) => {
-    // ✅ snapshot maken vóór cart leegmaken (zodat bon items houdt)
     setReceiptCart(cart.map((item) => ({ ...item })));
 
     setLastTransaction(transaction);
     setShowPayment(false);
     setShowReceipt(true);
-
-    // live cart reset
     setCart([]);
   };
 
@@ -176,76 +172,76 @@ export default function POSPage() {
                 Ingelogd als: <span className={styles.userBadge}>{session?.user?.name}</span>
               </p>
             </div>
-
-            <button onClick={handleLogout} className={styles.logoutButton} title="Uitloggen">
-              <FiLogOut />
-              <span>Uitloggen</span>
-            </button>
-
             <div className={styles.headerRight}>
-              <div className={styles.headerDateTime}>
-                <p className={styles.headerDate}>
-                  <FiCalendar />
-                  {new Date().toLocaleDateString('nl-NL', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </p>
-                <p className={styles.headerTime}>
-                  <FiClock />
-                  {new Date().toLocaleTimeString('nl-NL', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  })}
-                </p>
-              </div>
+            <div className={styles.headerDateTime}>
+              <p className={styles.headerDate}>
+                <FiCalendar />
+                {new Date().toLocaleDateString('nl-NL', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              
+              <p className={styles.headerTime}>
+                <FiClock />
+                {new Date().toLocaleTimeString('nl-NL', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                })}
+              </p>
             </div>
-          </div>
-        </div>
-
-        <div className={styles.gridContainer}>
-          <div className={styles.leftColumn}>
-            <ProductSearch onAddToCart={addToCart} cartItems={cart} />
-          </div>
-
-          <div className={styles.rightColumn}>
-            <ShoppingCart
-              items={cart}
-              onUpdateQuantity={updateQuantity}
-              onRemove={removeFromCart}
-              onClearCart={clearCart}
-              subtotal={subtotal}
-              btw={btw}
-              total={total}
-              onCheckout={() => setShowPayment(true)}
-            />
-          </div>
-        </div>
-
-        {showPayment && (
-          <PaymentModal
-            cart={cart}
-            subtotal={subtotal}
-            btw={btw}
-            total={total}
-            onClose={() => setShowPayment(false)}
-            onComplete={handlePaymentComplete}
-          />
-        )}
-
-        {showReceipt && lastTransaction && (
-          <ReceiptModal
-            transaction={lastTransaction}
-            cart={receiptCart}
-            onClose={() => setShowReceipt(false)}
-          />
-        )}
-      </div>
-
-      <SalesHistory />
-    </div>
-  );
+              
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              <FiLogOut />
+              Uitloggen
+            </button>
+</          div>
+                    </div>
+                  </div>
+              
+                  <div className={styles.gridContainer}>
+                    <div className={styles.leftColumn}>
+                      <ProductSearch onAddToCart={addToCart} cartItems={cart} />
+                    </div>
+              
+                    <div className={styles.rightColumn}>
+                      <ShoppingCart
+                        items={cart}
+                        onUpdateQuantity={updateQuantity}
+                        onRemove={removeFromCart}
+                        onClearCart={clearCart}
+                        subtotal={subtotal}
+                        btw={btw}
+                        total={total}
+                        onCheckout={() => setShowPayment(true)}
+                      />
+                    </div>
+                  </div>
+              
+                  {showPayment && (
+                    <PaymentModal
+                      cart={cart}
+                      subtotal={subtotal}
+                      btw={btw}
+                      total={total}
+                      onClose={() => setShowPayment(false)}
+                      onComplete={handlePaymentComplete}
+                    />
+                  )}
+          
+                  {showReceipt && lastTransaction && (
+                    <ReceiptModal
+                      transaction={lastTransaction}
+                      cart={receiptCart}
+                      onClose={() => setShowReceipt(false)}
+                    />
+                  )}
+                
+                 <SalesHistory />
+                </div>
+              </div>
+            );
 }
