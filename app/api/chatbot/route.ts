@@ -6,7 +6,6 @@ import { authOptions } from "@/lib/auth";
 import { detectIntent } from "@/lib/chatbot/intent";
 import { handleSearch } from "@/lib/chatbot/handlers/search";
 import { handleReservation } from "@/lib/chatbot/handlers/reservation";
-import { handleSmalltalk } from "@/lib/chatbot/handlers/smalltalk";
 import { handleGeneral } from "@/lib/chatbot/handlers/general";
 import { getClient, query } from "@/lib/db";
 import {
@@ -22,7 +21,7 @@ import type {
   ChatHistorySender,
 } from "@/lib/chatbot/types";
 
-type ChatIntent = "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK";
+type ChatIntent = "SEARCH" | "RESERVATION" | "GENERAL";
 
 type SearchSummaryPayload = {
   intent?: string;
@@ -252,9 +251,6 @@ async function runIntentHandler(
         userId,
       });
       break;
-    case "SMALLTALK":
-      response = await handleSmalltalk(body);
-      break;
     default:
       response = await handleGeneral(body);
       break;
@@ -368,7 +364,8 @@ export async function POST(req: Request) {
       }
 
       if (!assistantMessageToStore) {
-        assistantMessageToStore = buildSearchFallbackAssistantMessage(summaryToSave);
+        assistantMessageToStore =
+          buildSearchFallbackAssistantMessage(summaryToSave);
       }
     } else {
       try {

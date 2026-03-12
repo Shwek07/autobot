@@ -1,7 +1,7 @@
 export type UiSender = "user" | "bot";
 export type ChatHistorySender = "user" | "assistant";
 
-export type IntentName = "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK";
+export type IntentName = "SEARCH" | "RESERVATION" | "GENERAL";
 
 export type RequiredSearchField =
   | "part"
