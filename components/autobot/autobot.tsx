@@ -62,6 +62,7 @@ export default function AutoBot() {
   const abortRef = useRef<AbortController | null>(null);
 
   const activeMessages = activeChatId ? messages[activeChatId] || [] : [];
+  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
 
   const loadMessages = async (chatId: string) => {
     try {
@@ -242,6 +243,52 @@ export default function AutoBot() {
     }
   };
 
+      const deleteChat = async (chatId: string) => {
+      const confirmed = window.confirm("Weet je zeker dat je deze chat volledig wilt verwijderen?");
+      if (!confirmed) return;
+      
+      try {
+        setDeletingChatId(chatId);
+      
+        const res = await fetch(`/api/chats/${chatId}`, {
+          method: "DELETE",
+        });
+      
+        const data = await res.json().catch(() => ({}));
+      
+        if (!res.ok) {
+          throw new Error(data?.message || `HTTP_${res.status}`);
+        }
+      
+        setChatSessions((prev) => {
+          const updated = prev.filter((chat) => chat.id !== chatId);
+        
+          if (activeChatId === chatId) {
+            const nextActive = updated.length > 0 ? updated[0].id : null;
+            setActiveChatId(nextActive);
+          
+            if (typeof window !== "undefined") {
+              sessionStorage.removeItem("chatSessionId");
+            }
+          }
+        
+          return updated;
+        });
+      
+        setMessages((prev) => {
+          const updated = { ...prev };
+          delete updated[chatId];
+          return updated;
+        });
+      } catch (error) {
+        console.error("deleteChat error:", error);
+        alert("Kon chat niet verwijderen.");
+      } finally {
+        setDeletingChatId(null);
+      }
+    };
+
+
   const sendMessage = async (text: string) => {
     const clean = text.trim();
     if (!clean || !activeChatId) return;
@@ -385,25 +432,62 @@ export default function AutoBot() {
                 </div>
               ) : (
                 chatSessions.map((chat) => (
-                  <button
+                  <div
                     key={chat.id}
-                    type="button"
-                    className={`${styles.chatListItem} ${
+                    className={`${styles.chatListItemRow} ${
                       activeChatId === chat.id ? styles.activeChatItem : ""
                     }`}
-                    onClick={() => setActiveChatId(chat.id)}
                   >
-                    <div className={styles.chatListTop}>
-                      <span className={styles.chatListTitle}>{chat.title}</span>
-                      <span className={styles.chatListDate}>
-                        {formatChatDate(chat.updatedAt)}
-                      </span>
-                    </div>
-
-                    <p className={styles.chatListPreview}>
-                      {chat.preview || "Geen preview beschikbaar"}
-                    </p>
-                  </button>
+                    <button
+                      type="button"
+                      className={styles.chatListItem}
+                      onClick={() => setActiveChatId(chat.id)}
+                    >
+                      <div className={styles.chatListTop}>
+                        <span className={styles.chatListTitle}>{chat.title}</span>
+                        <span className={styles.chatListDate}>
+                          {formatChatDate(chat.updatedAt)}
+                        </span>
+                      </div>
+                  
+                      <p className={styles.chatListPreview}>
+                        {chat.preview || "Geen preview beschikbaar"}
+                      </p>
+                    </button>
+                  
+                    <button
+                      type="button"
+                      className={styles.deleteChatButton}
+                      onClick={() => deleteChat(chat.id)}
+                      disabled={deletingChatId === chat.id}
+                      aria-label="Delete chat"
+                    >
+                      <svg
+                        className={styles.deleteIcon}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M3 6H21"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M8 6V4C8 3.4 8.4 3 9 3H15C15.6 3 16 3.4 16 4V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M19 6L18 20C18 21.1 17.1 22 16 22H8C6.9 22 6 21.1 6 20L5 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 ))
               )}
             </div>

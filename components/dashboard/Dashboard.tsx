@@ -1,3 +1,5 @@
+//app/components/dashboard/Dashboard.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -120,8 +122,8 @@ export default function Dashboard() {
             <h2 className={styles.cardTitle}>
               <span className={styles.cardIcon}>🕒</span> Recente Producten
             </h2>
-            <Link href="/admin/products/">
-              <button className={styles.viewAllButton}>+ Add New Product</button>
+            <Link href="/admin/products/" className={styles.viewAllButton}>
+              + Add New Product
             </Link>
             <Link href="/admin/products/">
               <button className={styles.viewAllButton}>Bekijk alles →</button>
@@ -129,62 +131,74 @@ export default function Dashboard() {
           </div>
 
           <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Merk</th>
-                  <th>Part Number</th>
-                  <th>Voorraad</th>
-                  <th>Prijs</th>
-                  <th>Status</th>
-                  <th>Acties</th> {/* new */}
-                </tr>
-              </thead>
-              <tbody>
-                {products.slice(0, 5).map(p => (
-                  <tr key={p.product_id}>
-                    <td>
-                      <div className={styles.productInfo}>
-                        <div className={styles.productAvatar}>{p.product_name.charAt(0)}</div>
-                        <div>
-                          <div className={styles.productName}>{p.product_name}</div>
-                          <div className={styles.productDescription}>{p.description}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{p.product_merk}</td>
-                    <td><code className={styles.partNumber}>{p.part_number}</code></td>
-                    <td>
-                      <span
-                        className={`${styles.stockBadge} ${
-                          p.stock_quantity > 10
-                            ? styles.stockOk
-                            : p.stock_quantity > 5
-                            ? styles.stockLow
-                            : p.stock_quantity > 0
-                            ? styles.stockCritical
-                            : styles.stockOut
-                        }`}
-                      >
-                        {p.stock_quantity}
-                      </span>
-                    </td>
-                    <td>SRD{p.verkoop_prijs.toFixed(2)}</td>
-                    <td className={p.stock_quantity > 10 ? styles.statusActive : styles.statusWarning}>
-                      {p.stock_quantity > 10 ? 'Actief' : 'Attention'}
-                    </td>
-                    <td>
-                      <button onClick={() => handleDelete(p.product_id)} className={styles.deleteButton}>🗑</button>
-                      <Link href={`/admin/products/${p.product_id}`}>
-                        <button className={styles.updateButton}>✏️</button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+  <table className={styles.table}>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Merk</th>
+        <th>Part Number</th>
+        <th>Voorraad</th>
+        <th>Prijs</th>
+        <th>Status</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      {products.slice(0, 5).map((p) => (
+        <tr key={p.product_id}>
+          <td>
+            <div className={styles.productInfo}>
+              <div className={styles.productAvatar}>{p.product_name.charAt(0)}</div>
+              <div>
+                <div className={styles.productName}>{p.product_name}</div>
+                <div className={styles.productDescription}>{p.description}</div>
+              </div>
+            </div>
+          </td>
+          <td>{p.product_merk}</td>
+          <td>
+            <code className={styles.partNumber}>{p.part_number}</code>
+          </td>
+          <td>
+            <span
+              className={`${styles.stockBadge} ${
+                p.stock_quantity > 10
+                  ? styles.stockOk
+                  : p.stock_quantity > 5
+                  ? styles.stockLow
+                  : p.stock_quantity > 0
+                  ? styles.stockCritical
+                  : styles.stockOut
+              }`}
+            >
+              {p.stock_quantity}
+            </span>
+          </td>
+          <td>SRD{p.verkoop_prijs.toFixed(2)}</td>
+          <td className={p.stock_quantity > 10 ? styles.statusActive : styles.statusWarning}>
+            {p.stock_quantity > 10 ? "Actief" : "Attention"}
+          </td>
+          <td>
+  <div className={styles.actionButtons}>
+    <button
+      onClick={() => handleDelete(p.product_id)}
+      className={styles.deleteButton}
+    >
+      🗑
+    </button>
+    <Link
+      href={`/admin/products/${p.product_id}`}
+      className={styles.updateButton}
+    >
+      ✏️
+    </Link>
+  </div>
+</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
         </div>
       </div>
 

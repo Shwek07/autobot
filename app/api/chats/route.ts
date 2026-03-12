@@ -1,7 +1,8 @@
+// app/api/chats/route.ts
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // pas dit pad aan naar jouw auth config
+import { authOptions } from "@/lib/auth"; 
 
 
 export async function POST(req: Request) {
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Zoek de user_id op basis van ingelogde email
+    
     const userResult = await query(
       `SELECT user_id FROM users WHERE email = $1 LIMIT 1`,
       [session.user.email]

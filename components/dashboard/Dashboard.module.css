@@ -501,7 +501,12 @@
 /* ============================= */
 /* ACTION BUTTONS */
 /* ============================= */
-
+.actionButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
 .deleteButton,
 .updateButton,
 .orderButton {
@@ -511,8 +516,18 @@
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
+.deleteButton,
+.updateButton {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+}
 .deleteButton {
   background: #f80303;
 }

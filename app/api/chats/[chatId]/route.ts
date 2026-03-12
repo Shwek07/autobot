@@ -1,4 +1,4 @@
-//app/api/chats/[chatId]/messages/route.ts
+// app/api/chats/[chatId]/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -10,7 +10,7 @@ interface RouteContext {
   }>;
 }
 
-export async function GET(_req: Request, context: RouteContext) {
+export async function DELETE(_req: Request, context: RouteContext) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -61,24 +61,23 @@ export async function GET(_req: Request, context: RouteContext) {
       );
     }
 
-    const messagesResult = await query(
+    await query(
       `
-      SELECT message_id, chat_id, role, content, sequence_number, created_at
-      FROM messages
-      WHERE chat_id = $1
-      ORDER BY sequence_number ASC, created_at ASC
+      DELETE FROM chats
+      WHERE chat_id = $1 AND user_id = $2
       `,
-      [chatId]
+      [chatId, userId]
     );
 
     return NextResponse.json({
-      messages: messagesResult.rows,
+      message: "Chat succesvol verwijderd.",
+      deletedChatId: Number(chatId),
     });
   } catch (error) {
-    console.error("❌ GET /api/chats/[chatId]/messages error:", error);
+    console.error("❌ DELETE /api/chats/[chatId] error:", error);
 
     return NextResponse.json(
-      { message: "Kon messages niet ophalen." },
+      { message: "Kon chat niet verwijderen." },
       { status: 500 }
     );
   }
