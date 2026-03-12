@@ -25,33 +25,59 @@ import type {
 type ChatIntent = "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK";
 
 type SearchSummaryPayload = {
-  status?: string;
   intent?: string;
-  flow?: string;
-  extractedFromCurrentMessage?: {
+  searchState?: {
     part?: string;
-    partNumber?: string;
     brand?: string;
+    autoBrand?: string;
     model?: string;
     year?: string;
+    missingFields?: string[];
+    readyForDbSearch?: boolean;
+    lastAskedField?: string;
   };
-  collected?: {
+  searchResults?: {
+    hasSearched?: boolean;
+    totalFound?: number;
+    items?: Array<{
+      productId?: number;
+      productName?: string;
+      productBrand?: string;
+      categoryName?: string;
+      partNumber?: string;
+      sku?: string;
+      salePrice?: number | null;
+      stockQuantity?: number | null;
+      autoBrand?: string;
+      autoModel?: string;
+      year?: number | null;
+      compatibilityId?: number | null;
+    }>;
+    lastQueryText?: string;
+  };
+  reservationState?: {
     part?: string;
-    partNumber?: string;
-    brand?: string;
-    model?: string;
-    year?: string;
+    quantity?: string;
+    pickupDate?: string;
+    selectedProductId?: number | null;
+    selectedProductName?: string;
+    status?: string;
+    reservationId?: number | null;
+    expiresAt?: string;
+    lastAction?: "created" | "failed" | "";
   };
-  missingFields?: string[];
-  readyForDbSearch?: boolean;
-  nextQuestion?: string;
-  summary?: unknown;
-  error?: string;
+  notes?: string[];
+  openQuestion?: string;
 };
 
 async function getUserIdByEmail(email: string): Promise<number | null> {
   const result = await query(
-    `SELECT user_id FROM users WHERE email = $1 LIMIT 1`,
+    `
+    SELECT user_id
+    FROM users
+    WHERE email = $1
+    LIMIT 1
+    `,
     [email]
   );
 
@@ -128,43 +154,69 @@ function tryParseJson<T = unknown>(value: string): T | null {
   }
 }
 
-function extractSearchSummaryFromAssistantMessage(
-  assistantMessage: string
+function extractSearchSummaryFromResponse(
+  response: ChatResponseBody & { intent?: ChatIntent }
 ): string | null {
-  const parsed = tryParseJson<SearchSummaryPayload>(assistantMessage);
+  if (response.intent !== "SEARCH") {
+    return null;
+  }
+
+  const rawSummary =
+    typeof response.summary === "string" ? response.summary.trim() : "";
+
+  if (!rawSummary) {
+    return null;
+  }
+
+  const parsed = tryParseJson<SearchSummaryPayload>(rawSummary);
 
   if (!parsed || typeof parsed !== "object") {
     return null;
   }
 
-  if (!parsed.summary) {
-    return null;
-  }
-
   try {
-    return JSON.stringify(parsed.summary, null, 2);
+    return JSON.stringify(parsed, null, 2);
   } catch {
     return null;
   }
 }
 
-function extractSearchNextQuestionFromAssistantMessage(
-  assistantMessage: string
-): string | null {
-  const parsed = tryParseJson<SearchSummaryPayload>(assistantMessage);
+function buildSearchFallbackAssistantMessage(summary?: string): string {
+  if (!summary?.trim()) {
+    return "Ik help je graag verder. Geef me het onderdeel, het merk, het automerk, het model en het bouwjaar.";
+  }
+
+  const parsed = tryParseJson<SearchSummaryPayload>(summary);
 
   if (!parsed || typeof parsed !== "object") {
-    return null;
+    return "Ik help je graag verder. Geef me het onderdeel, het merk, het automerk, het model en het bouwjaar.";
   }
 
-  const nextQuestion =
-    typeof parsed.nextQuestion === "string" ? parsed.nextQuestion.trim() : "";
+  if (parsed.searchResults?.hasSearched) {
+    const totalFound = Number(parsed.searchResults?.totalFound || 0);
 
-  if (!nextQuestion) {
-    return null;
+    if (totalFound > 0) {
+      return `Ik heb ${totalFound} resultaat${totalFound === 1 ? "" : "en"} gevonden in de database.`;
+    }
+
+    return "Ik heb geen passend resultaat gevonden in de database.";
   }
 
-  return nextQuestion;
+  const searchState = parsed.searchState;
+  const readyForDbSearch = Boolean(searchState?.readyForDbSearch);
+
+  if (readyForDbSearch) {
+    return "Top, ik heb genoeg informatie verzameld en ga nu zoeken in de database.";
+  }
+
+  const openQuestion =
+    typeof parsed.openQuestion === "string" ? parsed.openQuestion.trim() : "";
+
+  if (openQuestion) {
+    return openQuestion;
+  }
+
+  return "Ik help je graag verder. Geef me het onderdeel, het merk, het automerk, het model en het bouwjaar.";
 }
 
 function buildClientSafeResponse(
@@ -174,29 +226,17 @@ function buildClientSafeResponse(
     return response;
   }
 
-  const rawMessage = String(response.message || "").trim();
-  const parsed = tryParseJson<SearchSummaryPayload>(rawMessage);
-
-  if (!parsed || typeof parsed !== "object") {
-    return response;
-  }
-
-  const nextQuestion =
-    typeof parsed.nextQuestion === "string" ? parsed.nextQuestion.trim() : "";
-  const readyForDbSearch = Boolean(parsed.readyForDbSearch);
-
   return {
     ...response,
-    message: nextQuestion
-      ? nextQuestion
-      : readyForDbSearch
-      ? "Top, ik heb genoeg info verzameld om straks de database te doorzoeken."
-      : "Ik heb nog wat info nodig over het onderdeel en de auto.",
+    message:
+      String(response.message || "").trim() ||
+      buildSearchFallbackAssistantMessage(response.summary),
   };
 }
 
 async function runIntentHandler(
-  body: ChatRequestBody
+  body: ChatRequestBody,
+  userId?: number
 ): Promise<ChatResponseBody & { intent?: ChatIntent }> {
   const intentResult = await detectIntent(body);
 
@@ -207,7 +247,10 @@ async function runIntentHandler(
       response = await handleSearch(body);
       break;
     case "RESERVATION":
-      response = await handleReservation(body);
+      response = await handleReservation({
+        ...body,
+        userId,
+      });
       break;
     case "SMALLTALK":
       response = await handleSmalltalk(body);
@@ -311,33 +354,21 @@ export async function POST(req: Request) {
       history: recentHistory,
     };
 
-    const handlerResponse = await runIntentHandler(bodyWithContext);
+    const handlerResponse = await runIntentHandler(bodyWithContext, userId);
     const rawAssistantMessage = String(handlerResponse?.message || "").trim();
 
     let summaryToSave = "";
     let assistantMessageToStore = rawAssistantMessage;
 
     if (handlerResponse.intent === "SEARCH") {
-      const searchSummary = extractSearchSummaryFromAssistantMessage(
-        rawAssistantMessage
-      );
+      const searchSummary = extractSearchSummaryFromResponse(handlerResponse);
 
       if (searchSummary) {
         summaryToSave = searchSummary;
       }
 
-      const nextQuestion =
-        extractSearchNextQuestionFromAssistantMessage(rawAssistantMessage);
-
-      if (nextQuestion) {
-        assistantMessageToStore = nextQuestion;
-      } else {
-        const parsed = tryParseJson<SearchSummaryPayload>(rawAssistantMessage);
-        const readyForDbSearch = Boolean(parsed?.readyForDbSearch);
-
-        assistantMessageToStore = readyForDbSearch
-          ? "Top, ik heb genoeg info verzameld om straks de database te doorzoeken."
-          : "Ik heb nog wat info nodig over het onderdeel en de auto.";
+      if (!assistantMessageToStore) {
+        assistantMessageToStore = buildSearchFallbackAssistantMessage(summaryToSave);
       }
     } else {
       try {
@@ -408,6 +439,7 @@ export async function POST(req: Request) {
     const clientSafeResponse = buildClientSafeResponse({
       ...handlerResponse,
       message: assistantMessageToStore,
+      summary: summaryToSave || handlerResponse.summary,
     });
 
     return NextResponse.json(clientSafeResponse);
