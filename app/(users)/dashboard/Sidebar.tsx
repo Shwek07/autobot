@@ -11,7 +11,6 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check of het mobiel is
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -23,7 +22,6 @@ export default function Sidebar() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Sluit sidebar wanneer je navigeert op mobiel
   useEffect(() => {
     if (isMobile) {
       setIsOpen(false);
@@ -46,7 +44,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobiele header met hamburger */}
       {isMobile && (
         <div className={styles.mobileHeader}>
           <div className={styles.logo}>🔧 AutoParts Pro</div>
@@ -64,9 +61,7 @@ export default function Sidebar() {
       
       )}
 
-      {/* Sidebar - conditioneel zichtbaar op mobiel */}
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-        {/* Logo - verberg op mobiel want die zit in header */}
         {!isMobile && (
           <div className={styles.logo}>
             🔧 AutoParts Pro
@@ -96,7 +91,6 @@ export default function Sidebar() {
         </nav>
       </aside>
 
-      {/* Overlay voor mobiel */}
       {isMobile && isOpen && (
         <div 
           className={styles.overlay}

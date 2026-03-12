@@ -17,7 +17,6 @@ export default function Parts(){
 
     return (
         <section className={styles.categories}>
-               {/* Background animations */}
       
             <div className={styles.content}>
              <div className={styles.header}>

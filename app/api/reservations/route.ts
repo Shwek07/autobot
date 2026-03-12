@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 
-// GET - Alle reserveringen van gebruiker ophalen
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -51,7 +50,6 @@ export async function GET(req: Request) {
   }
 }
 
-// POST - Nieuwe reservering aanmaken (voor chatbot)
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -104,7 +102,7 @@ export async function POST(req: Request) {
   }
 }
 
-// PUT - Reservering bijwerken (bijv. aantal wijzigen)
+// PUT - Reservering bijwerken 
 export async function PUT(req: Request) {
   try {
     const session = await getServerSession(authOptions);

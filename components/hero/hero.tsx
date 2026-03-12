@@ -28,14 +28,12 @@ export default function Hero() {
     years: false
   });
 
-  // Fetch all unique brands on component mount
   useEffect(() => {
   const fetchBrands = async () => {
     try {
       const res = await fetch("/api/hero/brands");
       const data = await res.json();
 
-      // Ensure data is an array
       if (Array.isArray(data)) {
         setBrands(data);
       } else {
@@ -112,7 +110,6 @@ export default function Hero() {
       return;
     }
     
-    // Redirect to products page with filters
     router.push(`/products?brand=${encodeURIComponent(selectedBrand)}&model=${encodeURIComponent(selectedModel)}&year=${selectedYear}`);
   };
 
@@ -121,9 +118,6 @@ export default function Hero() {
       <div className={styles.overlay} />
       <div className={styles.content}>
          <div className={styles.logo}>
-         
-          {/* <span className={styles.logoMain}># CARPARTS</span>
-          <span className={styles.logoExpert}>EXPERT</span> */}
         </div> 
         
         <h1 className={styles.heroTitle}>Vind <span className={styles.highlight}>onderdelen</span> voor jouw auto in seconden</h1>

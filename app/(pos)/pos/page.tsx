@@ -11,7 +11,7 @@ import PaymentModal from '@/components/pos/PaymentModal';
 import ReceiptModal from '@/components/pos/ReceiptModal';
 import SalesHistory from '@/components/pos/SalesHistory';
 
-import styles from './pos.module.css'; // ✅ FIX: dit was receipt.module.css
+import styles from './pos.module.css'; 
 
 import { FiUser, FiCalendar, FiClock, FiLogOut } from 'react-icons/fi';
 
@@ -29,7 +29,7 @@ export default function POSPage() {
   const { data: session, status } = useSession();
 
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [receiptCart, setReceiptCart] = useState<CartItem[]>([]); // ✅ snapshot voor bon
+  const [receiptCart, setReceiptCart] = useState<CartItem[]>([]); 
 
   const [showPayment, setShowPayment] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);

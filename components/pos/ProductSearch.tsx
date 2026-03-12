@@ -43,7 +43,6 @@ export default function ProductSearch({ onAddToCart, cartItems }: Props) {
         setProducts(results);
         setLoading(false);
         
-        // Auto-add als exacte barcode match
         if (results.length === 1) {
           handleAddToCart(results[0], 1);
           setSearchTerm('');

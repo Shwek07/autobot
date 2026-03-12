@@ -81,7 +81,6 @@ export default function AutoModelManagement() {
     m.engine_variant?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Groepeer op merk
   const groupedModels = filteredModels.reduce((acc, model) => {
     if (!acc[model.auto_merk]) {
       acc[model.auto_merk] = [];

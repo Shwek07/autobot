@@ -104,7 +104,6 @@ export default function ShoppingCart({
                       <small>SRD{item.verkoop_prijs.toFixed(2)}/stuk</small>
                     </div>
 
-                    {/* Quantity Controls */}
                     <div className={styles.quantityControls}>
                       <button
                         onClick={() => onUpdateQuantity(item.product_id, item.quantity - 1)}

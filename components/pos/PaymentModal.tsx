@@ -50,14 +50,12 @@ export default function PaymentModal({
   const inputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Auto-focus op cash input wanneer contant wordt geselecteerd
   useEffect(() => {
     if (paymentMethod === 'contant' && inputRef.current) {
       inputRef.current.focus();
     }
   }, [paymentMethod]);
 
-  // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -69,7 +67,6 @@ export default function PaymentModal({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
 
-  // ESC key to close
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -108,7 +105,6 @@ export default function PaymentModal({
 
       setSuccess(true);
       
-      // Korte vertraging voor success animatie
       setTimeout(() => {
         onComplete(transaction);
       }, 500);
@@ -274,7 +270,7 @@ export default function PaymentModal({
             </div>
           )}
 
-          {/* Success Message (kort voor transitie) */}
+          {/* Success Message */}
           {success && (
             <div className={`${styles.errorBox} ${styles.positiveChange}`}>
               <FiCheckCircle className={styles.errorIcon} />
@@ -319,7 +315,7 @@ export default function PaymentModal({
             </button>
           </div>
 
-          {/* Footer met veilige betaling indicatie */}
+          {/* Footer */}
           <div style={{ 
             textAlign: 'center', 
             marginTop: '1.5rem',

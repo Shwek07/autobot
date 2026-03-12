@@ -1,7 +1,7 @@
 // app/components/autobot/autobot.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./autobot.module.css";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -31,6 +31,31 @@ interface ChatbotApiResponse {
   intent?: "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK";
 }
 
+interface ChatbotErrorResponse extends Partial<ChatbotApiResponse> {
+  error?: string;
+  retryAfter?: number;
+}
+
+interface ApiMessage {
+  message_id: number | string;
+  role: "user" | "assistant" | string;
+  content: string;
+  created_at: string;
+}
+
+interface ApiChat {
+  chat_id: number | string;
+  title?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+type CustomRequestError = Error & {
+  status?: number;
+  code?: string;
+  retryAfter?: number;
+};
+
 const BOT_AVATAR = "/images/ai-agent.webp";
 
 const INITIAL_SUGGESTIONS = [
@@ -48,127 +73,66 @@ const createInitialBotMessage = (): Message => ({
   suggestions: INITIAL_SUGGESTIONS,
 });
 
+const mapDbMessageToUiMessage = (msg: ApiMessage): Message => ({
+  id: String(msg.message_id),
+  text: String(msg.content || ""),
+  sender: msg.role === "assistant" ? "bot" : "user",
+  timestamp: new Date(msg.created_at),
+});
+
+const mapDbChatToUiChat = (chat: ApiChat): ChatSession => ({
+  id: String(chat.chat_id),
+  title: chat.title || "Nieuwe chat",
+  createdAt: new Date(chat.created_at),
+  updatedAt: new Date(chat.updated_at),
+  preview: chat.title || "Start een nieuw gesprek...",
+});
+
 export default function AutoBot() {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const inFlightRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
+  const inFlightRef = useRef(false);
 
-  const activeMessages = activeChatId ? messages[activeChatId] || [] : [];
-  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
-
-  const loadMessages = async (chatId: string) => {
-    try {
-      const res = await fetch(`/api/chats/${chatId}/messages`, {
-        method: "GET",
-        cache: "no-store",
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(data?.message || `HTTP_${res.status}`);
-      }
-
-      const dbMessages = Array.isArray(data?.messages) ? data.messages : [];
-
-      const mappedMessages: Message[] = dbMessages
-        .filter((msg: any) => msg.role === "user" || msg.role === "assistant")
-        .map((msg: any) => ({
-          id: String(msg.message_id),
-          text: msg.content,
-          sender: msg.role === "assistant" ? "bot" : "user",
-          timestamp: new Date(msg.created_at),
-        }));
-
-      setMessages((prev) => ({
-        ...prev,
-        [chatId]:
-          mappedMessages.length > 0 ? mappedMessages : [createInitialBotMessage()],
-      }));
-    } catch (error) {
-      console.error("loadMessages error:", error);
-
-      setMessages((prev) => ({
-        ...prev,
-        [chatId]: prev[chatId]?.length ? prev[chatId] : [createInitialBotMessage()],
-      }));
-    }
-  };
-
-  const loadChats = async () => {
-    try {
-      const res = await fetch("/api/chats", {
-        method: "GET",
-        cache: "no-store",
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(data?.message || `HTTP_${res.status}`);
-      }
-
-      const dbChats = Array.isArray(data?.chats) ? data.chats : [];
-
-      const mappedChats: ChatSession[] = dbChats.map((chat: any) => ({
-        id: String(chat.chat_id),
-        title: chat.title || "Nieuwe chat",
-        createdAt: new Date(chat.created_at),
-        updatedAt: new Date(chat.updated_at),
-        preview: chat.title || "Start een nieuw gesprek...",
-      }));
-
-      setChatSessions(mappedChats);
-
-      if (mappedChats.length > 0) {
-        setActiveChatId((prev) => prev ?? mappedChats[0].id);
-      } else {
-        setActiveChatId(null);
-      }
-    } catch (error) {
-      console.error("loadChats error:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadChats();
-  }, []);
-
-  useEffect(() => {
-    if (!activeChatId) return;
-    loadMessages(activeChatId);
-  }, [activeChatId]);
-
-  useEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    el.scrollTop = el.scrollHeight;
-  }, [activeMessages, isTyping]);
-
-  useEffect(() => {
-    return () => {
-      abortRef.current?.abort();
-    };
-  }, []);
+  const activeMessages = useMemo(
+    () => (activeChatId ? messages[activeChatId] || [] : []),
+    [activeChatId, messages]
+  );
 
   const formatTime = (date: Date) =>
-    date.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" });
+    date.toLocaleTimeString("nl-NL", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   const formatChatDate = (date: Date) =>
-    date.toLocaleDateString("nl-NL", { day: "2-digit", month: "2-digit" });
+    date.toLocaleDateString("nl-NL", {
+      day: "2-digit",
+      month: "2-digit",
+    });
 
-  const addMessageToChat = (chatId: string, msg: Message) => {
+  const focusInput = () => {
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const addMessageToChat = (chatId: string, message: Message) => {
     setMessages((prev) => ({
       ...prev,
-      [chatId]: [...(prev[chatId] || []), msg],
+      [chatId]: [...(prev[chatId] || []), message],
+    }));
+  };
+
+  const replaceChatMessages = (chatId: string, nextMessages: Message[]) => {
+    setMessages((prev) => ({
+      ...prev,
+      [chatId]: nextMessages.length > 0 ? nextMessages : [createInitialBotMessage()],
     }));
   };
 
@@ -190,6 +154,63 @@ export default function AutoBot() {
     );
   };
 
+  const loadMessages = async (chatId: string) => {
+    try {
+      const res = await fetch(`/api/chats/${chatId}/messages`, {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error((data?.message || `HTTP_${res.status}`).toString());
+      }
+
+      const dbMessages: ApiMessage[] = Array.isArray(data?.messages)
+        ? data.messages
+        : [];
+
+      const mappedMessages = dbMessages
+        .filter((msg) => msg.role === "user" || msg.role === "assistant")
+        .map(mapDbMessageToUiMessage);
+
+      replaceChatMessages(chatId, mappedMessages);
+    } catch (error) {
+      console.error("loadMessages error:", error);
+
+      setMessages((prev) => ({
+        ...prev,
+        [chatId]: prev[chatId]?.length
+          ? prev[chatId]
+          : [createInitialBotMessage()],
+      }));
+    }
+  };
+
+  const loadChats = async () => {
+    try {
+      const res = await fetch("/api/chats", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error((data?.message || `HTTP_${res.status}`).toString());
+      }
+
+      const dbChats: ApiChat[] = Array.isArray(data?.chats) ? data.chats : [];
+      const mappedChats = dbChats.map(mapDbChatToUiChat);
+
+      setChatSessions(mappedChats);
+      setActiveChatId((prev) => prev ?? mappedChats[0]?.id ?? null);
+    } catch (error) {
+      console.error("loadChats error:", error);
+    }
+  };
+
   const createNewChat = async () => {
     try {
       const res = await fetch("/api/chats", {
@@ -205,7 +226,7 @@ export default function AutoBot() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data?.message || `HTTP_${res.status}`);
+        throw new Error((data?.message || `HTTP_${res.status}`).toString());
       }
 
       const dbChat = data?.chat;
@@ -225,10 +246,7 @@ export default function AutoBot() {
       };
 
       setChatSessions((prev) => [newChat, ...prev]);
-      setMessages((prev) => ({
-        ...prev,
-        [newChatId]: [createInitialBotMessage()],
-      }));
+      replaceChatMessages(newChatId, [createInitialBotMessage()]);
       setActiveChatId(newChatId);
       setInputMessage("");
 
@@ -236,63 +254,104 @@ export default function AutoBot() {
         sessionStorage.removeItem("chatSessionId");
       }
 
-      setTimeout(() => inputRef.current?.focus(), 0);
+      focusInput();
     } catch (error) {
       console.error("createNewChat error:", error);
       alert("Kon nieuwe chat niet aanmaken.");
     }
   };
 
-      const deleteChat = async (chatId: string) => {
-      const confirmed = window.confirm("Weet je zeker dat je deze chat volledig wilt verwijderen?");
-      if (!confirmed) return;
-      
-      try {
-        setDeletingChatId(chatId);
-      
-        const res = await fetch(`/api/chats/${chatId}`, {
-          method: "DELETE",
-        });
-      
-        const data = await res.json().catch(() => ({}));
-      
-        if (!res.ok) {
-          throw new Error(data?.message || `HTTP_${res.status}`);
-        }
-      
-        setChatSessions((prev) => {
-          const updated = prev.filter((chat) => chat.id !== chatId);
-        
-          if (activeChatId === chatId) {
-            const nextActive = updated.length > 0 ? updated[0].id : null;
-            setActiveChatId(nextActive);
-          
-            if (typeof window !== "undefined") {
-              sessionStorage.removeItem("chatSessionId");
-            }
-          }
-        
-          return updated;
-        });
-      
-        setMessages((prev) => {
-          const updated = { ...prev };
-          delete updated[chatId];
-          return updated;
-        });
-      } catch (error) {
-        console.error("deleteChat error:", error);
-        alert("Kon chat niet verwijderen.");
-      } finally {
-        setDeletingChatId(null);
+  const deleteChat = async (chatId: string) => {
+    const confirmed = window.confirm(
+      "Weet je zeker dat je deze chat volledig wilt verwijderen?"
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingChatId(chatId);
+
+      const res = await fetch(`/api/chats/${chatId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error((data?.message || `HTTP_${res.status}`).toString());
       }
+
+      setChatSessions((prev) => {
+        const updated = prev.filter((chat) => chat.id !== chatId);
+
+        if (activeChatId === chatId) {
+          const nextActive = updated.length > 0 ? updated[0].id : null;
+          setActiveChatId(nextActive);
+
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("chatSessionId");
+          }
+        }
+
+        return updated;
+      });
+
+      setMessages((prev) => {
+        const updated = { ...prev };
+        delete updated[chatId];
+        return updated;
+      });
+    } catch (error) {
+      console.error("deleteChat error:", error);
+      alert("Kon chat niet verwijderen.");
+    } finally {
+      setDeletingChatId(null);
+    }
+  };
+
+  const buildBotErrorMessage = (
+    err: CustomRequestError,
+    currentChatId: string
+  ) => {
+    const msg = String(err?.message || "");
+    const status = Number(err?.status || 0);
+    const retryAfter = Number(err?.retryAfter || 0);
+
+    const isRateLimited =
+      status === 429 ||
+      msg.includes("HTTP_429") ||
+      msg.includes("RATE_LIMIT_EXCEEDED");
+
+    const isAiDown =
+      msg.includes("AI_SERVICE_DOWN") ||
+      msg.includes("HTTP_503") ||
+      msg.toLowerCase().includes("quota") ||
+      msg.toLowerCase().includes("unauthorized") ||
+      msg.toLowerCase().includes("api key");
+
+    const botError: Message = {
+      id: `${Date.now()}_bot_error_${currentChatId}`,
+      text: isRateLimited
+        ? retryAfter > 0
+          ? `Je stuurt te veel berichten te snel. Wacht ${retryAfter} seconden en probeer opnieuw.`
+          : "Je stuurt te veel berichten te snel. Wacht even en probeer opnieuw."
+        : isAiDown
+        ? "AutoBot is tijdelijk niet beschikbaar. Probeer later opnieuw."
+        : "Sorry, er is een verbindingsprobleem. Probeer het later opnieuw.",
+      sender: "bot",
+      timestamp: new Date(),
+      suggestions: isRateLimited
+        ? ["Probeer straks opnieuw", "Onderdelen zoeken"]
+        : isAiDown
+        ? ["Probeer opnieuw", "Onderdelen zoeken"]
+        : ["Probeer opnieuw"],
     };
 
+    return botError;
+  };
 
   const sendMessage = async (text: string) => {
     const clean = text.trim();
-    if (!clean || !activeChatId) return;
-    if (inFlightRef.current) return;
+    if (!clean || !activeChatId || inFlightRef.current) return;
 
     abortRef.current?.abort();
     abortRef.current = new AbortController();
@@ -329,18 +388,25 @@ export default function AutoBot() {
         }),
       });
 
-      const data: Partial<ChatbotApiResponse> = await res.json().catch(() => ({}));
+      const data: ChatbotErrorResponse = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const serverMsg = (data?.message || "").toString();
-        throw new Error(serverMsg || `HTTP_${res.status}`);
+        const error = new Error(
+          (data?.message || `HTTP_${res.status}`).toString()
+        ) as CustomRequestError;
+
+        error.status = res.status;
+        error.code = (data?.error || "").toString();
+        error.retryAfter = Number(data?.retryAfter || 0);
+
+        throw error;
       }
 
       const botText = (data?.message || "").toString().trim();
 
       const botMessage: Message = {
         id: `${Date.now()}_bot`,
-        text: botText.length ? botText : "Ik kon geen antwoord genereren.",
+        text: botText || "Ik kon geen antwoord genereren.",
         sender: "bot",
         timestamp: new Date(),
         suggestions: data?.suggestions,
@@ -356,43 +422,44 @@ export default function AutoBot() {
 
       console.error("AutoBot sendMessage error:", err);
 
-      const msg = String(err?.message || "");
-
-      const isAiDown =
-        msg.includes("AI_SERVICE_DOWN") ||
-        msg.includes("HTTP_503") ||
-        msg.toLowerCase().includes("quota") ||
-        msg.toLowerCase().includes("unauthorized") ||
-        msg.toLowerCase().includes("api key");
-
-      const botError: Message = {
-        id: `${Date.now()}_bot_error`,
-        text: isAiDown
-          ? "AutoBot is tijdelijk niet beschikbaar. Probeer later opnieuw."
-          : "Sorry, er is een verbindingsprobleem. Probeer het later opnieuw.",
-        sender: "bot",
-        timestamp: new Date(),
-        suggestions: isAiDown
-          ? ["Probeer opnieuw", "Onderdelen zoeken"]
-          : ["Probeer opnieuw"],
-      };
-
+      const botError = buildBotErrorMessage(err, currentChatId);
       addMessageToChat(currentChatId, botError);
     } finally {
       setIsTyping(false);
       inFlightRef.current = false;
-      setTimeout(() => inputRef.current?.focus(), 0);
+      focusInput();
     }
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await sendMessage(inputMessage);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    sendMessage(suggestion);
+    void sendMessage(suggestion);
   };
+
+  useEffect(() => {
+    void loadChats();
+  }, []);
+
+  useEffect(() => {
+    if (!activeChatId) return;
+    void loadMessages(activeChatId);
+  }, [activeChatId]);
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [activeMessages, isTyping]);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   return (
     <section className={styles.autobot}>
@@ -449,12 +516,12 @@ export default function AutoBot() {
                           {formatChatDate(chat.updatedAt)}
                         </span>
                       </div>
-                  
+
                       <p className={styles.chatListPreview}>
                         {chat.preview || "Geen preview beschikbaar"}
                       </p>
                     </button>
-                  
+
                     <button
                       type="button"
                       className={styles.deleteChatButton}
@@ -529,6 +596,7 @@ export default function AutoBot() {
                       <h3>AutoBot Assistent</h3>
                       <p>AI-gestuurde onderdelenspecialist</p>
                     </div>
+
                     <div className={styles.headerBadge}>
                       <span className={styles.headerDot} /> Actief
                     </div>
@@ -607,6 +675,7 @@ export default function AutoBot() {
                                 height={30}
                               />
                             </div>
+
                             <div className={styles.typingIndicator}>
                               <span></span>
                               <span></span>
@@ -631,6 +700,7 @@ export default function AutoBot() {
                           maxLength={500}
                           autoComplete="off"
                         />
+
                         <button
                           type="submit"
                           className={styles.sendButton}

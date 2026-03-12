@@ -1,3 +1,4 @@
+// app/api/chatbot/route.ts
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
@@ -7,6 +8,11 @@ import { detectIntent } from "@/lib/chatbot/intent";
 import { handleSearch } from "@/lib/chatbot/handlers/search";
 import { handleReservation } from "@/lib/chatbot/handlers/reservation";
 import { handleGeneral } from "@/lib/chatbot/handlers/general";
+import {
+  checkRateLimit,
+  cleanupRateLimitStore,
+} from "@/lib/security/rateLimiting";
+import { getClientIdentifier } from "@/lib/security/getClientIdentifier";
 import { getClient, query } from "@/lib/db";
 import {
   getLatestChatSummary,
@@ -69,6 +75,10 @@ type SearchSummaryPayload = {
   openQuestion?: string;
 };
 
+type ChatHandlerResponse = ChatResponseBody & {
+  intent?: ChatIntent;
+};
+
 async function getUserIdByEmail(email: string): Promise<number | null> {
   const result = await query(
     `
@@ -93,7 +103,8 @@ async function validateAndLockChat(
     `
     SELECT chat_id, title
     FROM chats
-    WHERE chat_id = $1 AND user_id = $2
+    WHERE chat_id = $1
+      AND user_id = $2
     FOR UPDATE
     `,
     [chatId, userId]
@@ -154,7 +165,7 @@ function tryParseJson<T = unknown>(value: string): T | null {
 }
 
 function extractSearchSummaryFromResponse(
-  response: ChatResponseBody & { intent?: ChatIntent }
+  response: ChatHandlerResponse
 ): string | null {
   if (response.intent !== "SEARCH") {
     return null;
@@ -201,8 +212,7 @@ function buildSearchFallbackAssistantMessage(summary?: string): string {
     return "Ik heb geen passend resultaat gevonden in de database.";
   }
 
-  const searchState = parsed.searchState;
-  const readyForDbSearch = Boolean(searchState?.readyForDbSearch);
+  const readyForDbSearch = Boolean(parsed.searchState?.readyForDbSearch);
 
   if (readyForDbSearch) {
     return "Top, ik heb genoeg informatie verzameld en ga nu zoeken in de database.";
@@ -218,9 +228,7 @@ function buildSearchFallbackAssistantMessage(summary?: string): string {
   return "Ik help je graag verder. Geef me het onderdeel, het merk, het automerk, het model en het bouwjaar.";
 }
 
-function buildClientSafeResponse(
-  response: ChatResponseBody & { intent?: ChatIntent }
-): ChatResponseBody & { intent?: ChatIntent } {
+function buildClientSafeResponse(response: ChatHandlerResponse): ChatHandlerResponse {
   if (response.intent !== "SEARCH") {
     return response;
   }
@@ -236,7 +244,7 @@ function buildClientSafeResponse(
 async function runIntentHandler(
   body: ChatRequestBody,
   userId?: number
-): Promise<ChatResponseBody & { intent?: ChatIntent }> {
+): Promise<ChatHandlerResponse> {
   const intentResult = await detectIntent(body);
 
   let response: ChatResponseBody;
@@ -256,14 +264,33 @@ async function runIntentHandler(
       break;
   }
 
-  response.intent = intentResult.intent;
-  return response;
+  return {
+    ...response,
+    intent: intentResult.intent,
+  };
+}
+
+async function releaseClient(
+  client: Awaited<ReturnType<typeof getClient>> | null,
+  rollback = false
+) {
+  if (!client) return;
+
+  try {
+    if (rollback) {
+      await client.query("ROLLBACK");
+    }
+  } catch {}
+
+  client.release();
 }
 
 export async function POST(req: Request) {
   let client: Awaited<ReturnType<typeof getClient>> | null = null;
 
   try {
+    cleanupRateLimitStore();
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -294,6 +321,32 @@ export async function POST(req: Request) {
       );
     }
 
+    const clientKey = getClientIdentifier(req, userId);
+
+    const rateLimit = checkRateLimit(clientKey, {
+      windowMs: 60_000,
+      maxRequests: 10,
+      blockDurationMs: 5 * 60_000,
+    });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          message: rateLimit.blocked
+            ? "Te veel verzoeken gedetecteerd. Je bent tijdelijk geblokkeerd."
+            : "Te veel berichten in korte tijd. Wacht even en probeer opnieuw.",
+          error: "RATE_LIMIT_EXCEEDED",
+          retryAfter: rateLimit.retryAfter,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter),
+          },
+        }
+      );
+    }
+
     const latestSummary = await getLatestChatSummary(localChatId);
 
     client = await getClient();
@@ -302,8 +355,7 @@ export async function POST(req: Request) {
     const lockedChat = await validateAndLockChat(client, localChatId, userId);
 
     if (!lockedChat) {
-      await client.query("ROLLBACK");
-      client.release();
+      await releaseClient(client, true);
       client = null;
 
       return NextResponse.json(
@@ -338,7 +390,7 @@ export async function POST(req: Request) {
     );
 
     await client.query("COMMIT");
-    client.release();
+    await releaseClient(client);
     client = null;
 
     const recentHistory = await getRecentChatHistory(localChatId, 6);
@@ -351,7 +403,7 @@ export async function POST(req: Request) {
     };
 
     const handlerResponse = await runIntentHandler(bodyWithContext, userId);
-    const rawAssistantMessage = String(handlerResponse?.message || "").trim();
+    const rawAssistantMessage = String(handlerResponse.message || "").trim();
 
     let summaryToSave = "";
     let assistantMessageToStore = rawAssistantMessage;
@@ -375,7 +427,7 @@ export async function POST(req: Request) {
           assistantMessage: rawAssistantMessage,
         });
 
-        if (updatedSummary && updatedSummary.trim()) {
+        if (updatedSummary?.trim()) {
           summaryToSave = updatedSummary.trim();
         }
       } catch (summaryError) {
@@ -390,8 +442,7 @@ export async function POST(req: Request) {
       const lockedChat2 = await validateAndLockChat(client, localChatId, userId);
 
       if (!lockedChat2) {
-        await client.query("ROLLBACK");
-        client.release();
+        await releaseClient(client, true);
         client = null;
 
         return NextResponse.json(
@@ -421,11 +472,11 @@ export async function POST(req: Request) {
       );
 
       await client.query("COMMIT");
-      client.release();
+      await releaseClient(client);
       client = null;
     }
 
-    if (summaryToSave && summaryToSave.trim()) {
+    if (summaryToSave.trim()) {
       try {
         await saveChatSummary(localChatId, summaryToSave.trim());
       } catch (summarySaveError) {
@@ -441,16 +492,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json(clientSafeResponse);
   } catch (err: any) {
-    if (client) {
-      try {
-        await client.query("ROLLBACK");
-      } catch {}
-      client.release();
-    }
+    await releaseClient(client, true);
 
     console.error("/api/chatbot error:", err);
 
-    const message = err?.message?.toLowerCase() ?? "";
+    const message = String(err?.message || "").toLowerCase();
 
     const isAiServiceDown =
       message.includes("api key") ||

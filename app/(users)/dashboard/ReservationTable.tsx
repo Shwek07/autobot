@@ -13,7 +13,6 @@ interface Reservation {
   status: string;
   reserved_at: string;
   expires_at: string;
-  // Product gegevens van de JOIN
   product_name: string;
   product_merk: string;
   sku: string;
@@ -32,7 +31,6 @@ export default function ReservationsTable() {
   useEffect(() => {
     fetchReservations();
     
-    // Refresh elke minuut voor countdown
     const interval = setInterval(fetchReservations, 60000);
     return () => clearInterval(interval);
   }, []);

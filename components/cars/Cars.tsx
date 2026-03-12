@@ -76,7 +76,6 @@ export default function Cars() {
   return (
     <div className={styles.container}>
 
-      {/* Cars Grid */}
       {loading.cars ? (
         <div className={styles.loadingGrid}>
           {[...Array(6)].map((_, i) => (

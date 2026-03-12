@@ -39,7 +39,6 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  // Filter products
   useEffect(() => {
     const temp = products.filter((p) =>
       p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||

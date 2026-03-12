@@ -318,7 +318,6 @@ export default function SalesHistory({ initialStats }: Props) {
                       </td>
                     </tr>
 
-                    {/* Expanded details row */}
                     {expandedOrder === sale.order_id && (
                       <tr className={styles.expandedRow}>
                         <td colSpan={6}>

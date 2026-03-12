@@ -95,7 +95,6 @@ if (error)
   0
 );
   
-  // New statistics
   const averagePrice = products.length > 0 
     ? products.reduce((sum, p) => sum + p.verkoop_prijs, 0) / products.length 
     : 0;
@@ -111,7 +110,6 @@ async function handleDelete(id: number) {
       method: "DELETE",
     });
 
-    // Optimistic update
     setProducts(prev => prev.filter(p => p.product_id !== id));
   } catch (err) {
     console.error(err);
@@ -122,7 +120,6 @@ async function handleDelete(id: number) {
 
   return (
     <div className={styles.dashboard}>
-      {/* Header */}
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Admin Dashboard</h1>
@@ -135,7 +132,6 @@ async function handleDelete(id: number) {
         </div>
       </div>
 
-      {/* Stats Grid - Top Row (3 cards) */}
       <div className={styles.statsGridTop}>
         <StatCard 
           label="Totaal Producten" 
@@ -159,7 +155,6 @@ async function handleDelete(id: number) {
     
 
 
-      {/* Alert Banner */}
       {lowStock.length > 0 && (
         <div className={styles.alertBanner}>
           <span className={styles.alertIcon}>⚠️</span>
@@ -170,7 +165,6 @@ async function handleDelete(id: number) {
         </div>
       )}
 
-      {/* Recent Products Table - Full Width */}
       <div className={styles.fullWidthSection}>
         <div className={`${styles.card} ${styles.tableCard}`}>
           <div className={styles.cardHeader}>
@@ -261,7 +255,6 @@ async function handleDelete(id: number) {
 
       <RecentCarModels />
 
-      {/* Low Stock Section - Only show if there are items with low stock */}
       {lowStock.length > 0 && (
         <div className={styles.fullWidthSection}>
           <div className={`${styles.card} ${styles.lowStockCard}`}>

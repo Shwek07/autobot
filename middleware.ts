@@ -26,12 +26,10 @@ export async function middleware(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
   const redirected = req.cookies.get("redirect_done")?.value;
 
-  // Helper: read callbackUrl (NextAuth uses callbackUrl)
+
   const callbackUrl = searchParams.get("callbackUrl");
 
-  // ---------------------------------------
-  // 1) If user is logged in and visits /login
-  //    => redirect to callbackUrl if present
+
   // ---------------------------------------
   if (pathname === "/login" && token) {
     if (callbackUrl) {
@@ -42,8 +40,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(redirectPath, req.url));
   }
 
-  // ---------------------------------------
-  // 2) Protect routes: if not logged in => go to login WITH callbackUrl
+
   // ---------------------------------------
   const protectedRoute = Object.keys(routePermissions).find((route) =>
     pathname.startsWith(route)
@@ -65,13 +62,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // ---------------------------------------
-  // 3) Role redirect for "/" (only if NO callbackUrl intent)
-  //    IMPORTANT: Do not override if the user is coming back from login flow
+
   // ---------------------------------------
   if (pathname === "/" && token && !redirected) {
-    // If someone explicitly navigates to "/" we can redirect.
-    // But do NOT do anything if a callbackUrl exists (rare on "/"), just in case.
     if (!callbackUrl) {
       const redirectPath = getRoleBasedRedirectPath(token.role as UserRole | undefined);
       const response = NextResponse.redirect(new URL(redirectPath, req.url));

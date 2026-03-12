@@ -42,7 +42,6 @@ export const authOptions: NextAuthOptions = {
             return false;
           }
 
-          // Eventueel OAuth info bijwerken
           await query(
             `UPDATE users
              SET image = $1,

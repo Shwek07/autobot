@@ -8,12 +8,10 @@ import styles from "./navbar.module.css";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  // Close menu on route change (when user clicks a link)
   function close() {
     setOpen(false);
   }
 
-  // Close on ESC
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
