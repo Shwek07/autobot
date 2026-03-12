@@ -5,14 +5,14 @@ import Groq from "groq-sdk";
 import { z } from "zod";
 
 const DecisionSchema = z.object({
-  intent: z.enum(["SEARCH", "RESERVATION", "GENERAL", "SMALLTALK"]),
+  intent: z.enum(["SEARCH", "RESERVATION", "GENERAL"]),
   confidence: z.number().min(0).max(1),
 });
 
 const INTENT_CONFIG = {
   role: "intent-classifier",
   app: "AutoBot",
-  version: 2,
+  version: 3,
   instructions: [
     "Bepaal ALLEEN de intent van de gebruiker.",
     "Antwoord ALLEEN met geldige JSON.",
@@ -53,22 +53,19 @@ const INTENT_CONFIG = {
     },
     GENERAL: {
       description:
-        "Algemene auto-vragen, auto-onderhoud, auto-problemen of advies, zonder directe zoek- of reserveringsactie.",
+        "Algemene auto-vragen, auto-onderhoud, auto-problemen, advies en ook begroetingen of korte sociale berichten, zonder directe zoek- of reserveringsactie.",
       examples: [
         "Mijn auto trilt bij het remmen, wat kan het zijn?",
         "Wanneer moet ik mijn olie vervangen?",
         "Wat doet een distributieriem?",
+        "Wat is een sparkplug en waarvoor wordt het gebruikt?",
+        "Hallo",
+        "Dankjewel",
       ],
       detection_rules: [
-        "Als het geen product search, reservering of smalltalk is, kies GENERAL.",
+        "Als het geen product search of reservering is, kies GENERAL.",
+        "Begroetingen, bedankjes en korte sociale berichten vallen ook onder GENERAL.",
         "Alles buiten autopart-context mag ook GENERAL worden.",
-      ],
-    },
-    SMALLTALK: {
-      description: "Begroetingen, bedankjes en casual praat.",
-      examples: ["Hallo", "Hoe gaat het?", "Dankjewel", "Top"],
-      detection_rules: [
-        "Korte sociale berichten zonder inhoudelijke autopart-vraag zijn SMALLTALK.",
       ],
     },
   },
@@ -76,10 +73,10 @@ const INTENT_CONFIG = {
     "Als iemand wil kopen / apart houden / reserveren / ophalen, kies RESERVATION boven SEARCH.",
     "Als iemand een onderdeel of onderdeelnummer noemt zonder reserveringsactie, kies SEARCH.",
     "Korte vervolgreplies zoals een bouwjaar, model of merk blijven SEARCH als de summary/history laat zien dat er al een zoekflow bezig is.",
-    "Als iets duidelijk smalltalk is, kies SMALLTALK.",
+    "Gebruik GENERAL voor algemene inhoudelijke vragen én voor begroetingen of bedankjes.",
   ],
   output_schema: {
-    intent: "SEARCH | RESERVATION | GENERAL | SMALLTALK",
+    intent: "SEARCH | RESERVATION | GENERAL",
     confidence: "number between 0 and 1",
   },
 } as const;

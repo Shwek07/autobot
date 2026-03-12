@@ -1,287 +1,188 @@
-// lib/chatbot/handlers/search.ts
+import Groq from "groq-sdk";
+import type {
+  ChatRequestBody,
+  ChatResponseBody,
+  ChatSummaryState,
+  SearchResultItem,
+} from "../types";
+import { collectSearchState } from "../collectSearchState";
+import { createEmptyChatSummaryState, parseChatSummary } from "../chatState";
+import { searchProductsForVehicle } from "../searchDb";
 
-import type { ChatRequestBody, ChatResponseBody } from "../types";
-import { extractSearchJson } from "./extractSearchJson";
-
-type RequiredSearchField = "part" | "model" | "year";
-
-interface SearchSummaryState {
-  intent: "SEARCH" | "RESERVATION" | "GENERAL" | "SMALLTALK" | "";
-  searchState: {
-    part: string;
-    partNumber: string;
-    brand: string;
-    model: string;
-    year: string;
-    missingFields: RequiredSearchField[];
-    readyForDbSearch: boolean;
-    lastAskedField: RequiredSearchField | "";
-  };
-  reservationState: {
-    part: string;
-    quantity: string;
-    pickupDate: string;
-  };
-  notes: string[];
-  openQuestion: string;
+function buildSearchQueryText(summary: ChatSummaryState): string {
+  const s = summary.searchState;
+  return `${s.part} | ${s.brand} | ${s.autoBrand} | ${s.model} | ${s.year}`.trim();
 }
 
-function createEmptySummary(): SearchSummaryState {
-  return {
-    intent: "",
-    searchState: {
-      part: "",
-      partNumber: "",
-      brand: "",
-      model: "",
-      year: "",
-      missingFields: ["part", "model", "year"],
-      readyForDbSearch: false,
-      lastAskedField: "",
-    },
-    reservationState: {
-      part: "",
-      quantity: "",
-      pickupDate: "",
-    },
-    notes: [],
-    openQuestion: "",
-  };
+function buildFallbackSearchMessage(items: SearchResultItem[], summary: ChatSummaryState): string {
+  const s = summary.searchState;
+
+  if (!items.length) {
+    return `Ik heb geen resultaten gevonden voor ${s.part} van ${s.brand} voor een ${s.autoBrand} ${s.model} ${s.year}.`;
+  }
+
+  const preview = items
+    .slice(0, 3)
+    .map((item) => {
+      const stockText =
+        item.stockQuantity != null ? `voorraad: ${item.stockQuantity}` : "voorraad onbekend";
+      const priceText =
+        item.salePrice != null ? `prijs: ${item.salePrice}` : "prijs onbekend";
+
+      return `${item.productName} (${item.productBrand}) - ${stockText}, ${priceText}`;
+    })
+    .join("; ");
+
+  return `Ik heb ${items.length} resultaat${items.length === 1 ? "" : "en"} gevonden voor ${s.part} van ${s.brand} voor een ${s.autoBrand} ${s.model} ${s.year}. ${preview}`;
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
+async function generateUserSearchReply(
+  summary: ChatSummaryState,
+  items: SearchResultItem[]
+): Promise<string> {
+  const apiKey = (process.env.GROQ_API_KEY || "").trim();
+  const modelName = (process.env.GROQ_MODEL || "llama-3.3-70b-versatile").trim();
 
-function asString(value: unknown): string {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function normalizeRequiredField(value: string): RequiredSearchField | "" {
-  if (value === "part" || value === "model" || value === "year") return value;
-  return "";
-}
-
-function parseSummary(summary?: string): SearchSummaryState {
-  if (!summary?.trim()) {
-    return createEmptySummary();
+  if (!apiKey) {
+    return buildFallbackSearchMessage(items, summary);
   }
 
   try {
-    const parsed = JSON.parse(summary);
+    const client = new Groq({ apiKey });
 
-    if (!isObject(parsed)) {
-      return createEmptySummary();
+    const prompt = `
+Je bent AutoBot, een behulpzame chatbot voor een auto-onderdelenwinkel.
+
+Je krijgt:
+1. de zoekinput
+2. echte database-resultaten
+
+Jouw taak:
+- schrijf een korte, duidelijke Nederlandse reactie voor de gebruiker
+- als er resultaten zijn:
+  - zeg dat je iets hebt gevonden
+  - noem maximaal 3 producten kort
+  - noem merk, eventueel part number, prijs en voorraad als beschikbaar
+  - verzin geen info die er niet is
+- als er geen resultaten zijn:
+  - zeg dat er niets is gevonden
+  - blijf kort en duidelijk
+- geen markdown tabel
+- geen JSON
+- natuurlijke winkel-assistent stijl
+
+ZOEKINPUT:
+${JSON.stringify(summary.searchState, null, 2)}
+
+DATABASE RESULTATEN:
+${JSON.stringify(items, null, 2)}
+
+Geef alleen de reactie voor de gebruiker terug.
+    `.trim();
+
+    const completion = await client.chat.completions.create({
+      model: modelName,
+      temperature: 0.3,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
+
+    const content = completion.choices?.[0]?.message?.content?.trim();
+
+    if (!content) {
+      return buildFallbackSearchMessage(items, summary);
     }
 
-    const base = createEmptySummary();
-    const searchStateRaw = isObject(parsed.searchState) ? parsed.searchState : {};
-    const reservationStateRaw = isObject(parsed.reservationState)
-      ? parsed.reservationState
-      : {};
-
-    const merged: SearchSummaryState = {
-      intent:
-        parsed.intent === "SEARCH" ||
-        parsed.intent === "RESERVATION" ||
-        parsed.intent === "GENERAL" ||
-        parsed.intent === "SMALLTALK"
-          ? parsed.intent
-          : "",
-      searchState: {
-        part: asString(searchStateRaw.part),
-        partNumber: asString(searchStateRaw.partNumber),
-        brand: asString(searchStateRaw.brand),
-        model: asString(searchStateRaw.model),
-        year: asString(searchStateRaw.year),
-        missingFields: Array.isArray(searchStateRaw.missingFields)
-          ? searchStateRaw.missingFields.filter(
-              (field): field is RequiredSearchField =>
-                field === "part" || field === "model" || field === "year"
-            )
-          : base.searchState.missingFields,
-        readyForDbSearch:
-          typeof searchStateRaw.readyForDbSearch === "boolean"
-            ? searchStateRaw.readyForDbSearch
-            : base.searchState.readyForDbSearch,
-        lastAskedField: normalizeRequiredField(asString(searchStateRaw.lastAskedField)),
-      },
-      reservationState: {
-        part: asString(reservationStateRaw.part),
-        quantity: asString(reservationStateRaw.quantity),
-        pickupDate: asString(reservationStateRaw.pickupDate),
-      },
-      notes: Array.isArray(parsed.notes)
-        ? parsed.notes.filter((item): item is string => typeof item === "string")
-        : [],
-      openQuestion: asString(parsed.openQuestion),
-    };
-
-    return recalculateSearchState(merged);
-  } catch {
-    return createEmptySummary();
+    return content;
+  } catch (error) {
+    console.error("generateUserSearchReply error:", error);
+    return buildFallbackSearchMessage(items, summary);
   }
-}
-
-function recalculateSearchState(summary: SearchSummaryState): SearchSummaryState {
-  const missingFields: RequiredSearchField[] = [];
-
-  if (!summary.searchState.part) missingFields.push("part");
-  if (!summary.searchState.model) missingFields.push("model");
-  if (!summary.searchState.year) missingFields.push("year");
-
-  let openQuestion = "";
-  let lastAskedField: RequiredSearchField | "" = "";
-
-  if (missingFields.length > 0) {
-    const nextField = missingFields[0];
-    lastAskedField = nextField;
-
-    if (nextField === "part") {
-      openQuestion = "Welk onderdeel zoek je precies?";
-    } else if (nextField === "model") {
-      openQuestion = "Voor welk automodel is het onderdeel?";
-    } else if (nextField === "year") {
-      openQuestion = "Van welk bouwjaar is de auto?";
-    }
-  }
-
-  return {
-    ...summary,
-    intent: "SEARCH",
-    searchState: {
-      ...summary.searchState,
-      missingFields,
-      readyForDbSearch: missingFields.length === 0,
-      lastAskedField,
-    },
-    openQuestion,
-  };
-}
-
-function mergeSearchState(
-  current: SearchSummaryState,
-  incoming: {
-    part?: string;
-    partNumber?: string;
-    brand?: string;
-    model?: string;
-    year?: string;
-  }
-): SearchSummaryState {
-  const next: SearchSummaryState = {
-    ...current,
-    intent: "SEARCH",
-    searchState: {
-      ...current.searchState,
-      part: incoming.part?.trim() ? incoming.part.trim() : current.searchState.part,
-      partNumber: incoming.partNumber?.trim()
-        ? incoming.partNumber.trim()
-        : current.searchState.partNumber,
-      brand: incoming.brand?.trim() ? incoming.brand.trim() : current.searchState.brand,
-      model: incoming.model?.trim() ? incoming.model.trim() : current.searchState.model,
-      year: incoming.year?.trim() ? incoming.year.trim() : current.searchState.year,
-      missingFields: current.searchState.missingFields,
-      readyForDbSearch: current.searchState.readyForDbSearch,
-      lastAskedField: current.searchState.lastAskedField,
-    },
-  };
-
-  return recalculateSearchState(next);
-}
-
-function buildSuggestions(summary: SearchSummaryState): string[] {
-  const missing = summary.searchState.missingFields;
-
-  if (missing.includes("part")) {
-    return ["spark plug", "remblokken", "waterpomp"];
-  }
-
-  if (missing.includes("model")) {
-    return ["Hilux", "Corolla", "Vitz"];
-  }
-
-  if (missing.includes("year")) {
-    return ["2012", "2015", "2020"];
-  }
-
-  return ["Zoek verder", "Check voorraad", "Check compatibiliteit"];
 }
 
 export async function handleSearch(body: ChatRequestBody): Promise<ChatResponseBody> {
   try {
-    const currentSummary = parseSummary(body.chatSummary);
+    const currentSummary = parseChatSummary(body.chatSummary);
 
-    const extracted = await extractSearchJson({
+    const intakeResult = await collectSearchState({
       message: body.message || "",
-      currentSearchState: currentSummary.searchState,
+      currentSummary,
     });
 
-    const updatedSummary = mergeSearchState(currentSummary, extracted);
+    const updatedSummary: ChatSummaryState = {
+      ...currentSummary,
+      intent: "SEARCH",
+      searchState: {
+        part: intakeResult.updatedSearchState.part,
+        brand: intakeResult.updatedSearchState.brand,
+        autoBrand: intakeResult.updatedSearchState.autoBrand,
+        model: intakeResult.updatedSearchState.model,
+        year: intakeResult.updatedSearchState.year,
+        missingFields: intakeResult.updatedSearchState.missingFields,
+        readyForDbSearch: intakeResult.updatedSearchState.readyForDbSearch,
+        lastAskedField: intakeResult.updatedSearchState.lastAskedField,
+      },
+      searchResults: currentSummary.searchResults || createEmptyChatSummaryState().searchResults,
+      notes: intakeResult.notes || currentSummary.notes || [],
+      openQuestion: intakeResult.nextQuestion,
+    };
+
+    if (!updatedSummary.searchState.readyForDbSearch) {
+      return {
+        message: intakeResult.assistantReply,
+        intent: "SEARCH",
+        suggestions:
+          intakeResult.suggestions?.length > 0
+            ? intakeResult.suggestions.filter(Boolean)
+            : [],
+        summary: JSON.stringify(updatedSummary, null, 2),
+      };
+    }
+
+    const dbResult = await searchProductsForVehicle(updatedSummary.searchState);
+
+    updatedSummary.searchResults = {
+      hasSearched: true,
+      totalFound: dbResult.totalFound,
+      items: dbResult.items,
+      lastQueryText: buildSearchQueryText(updatedSummary),
+    };
+
+    updatedSummary.openQuestion = "";
+
+    if (dbResult.totalFound === 0) {
+      updatedSummary.notes = [
+        ...(updatedSummary.notes || []),
+        "Laatste zoekopdracht gaf geen resultaten in de database.",
+      ];
+    }
+
+    const userReply = await generateUserSearchReply(updatedSummary, dbResult.items);
 
     return {
-      message: JSON.stringify(
-        {
-          status: "Ik ben het aan het checken.",
-          intent: "SEARCH",
-          flow: "COLLECT_SEARCH_INFO",
-          extractedFromCurrentMessage: extracted,
-          collected: {
-            part: updatedSummary.searchState.part,
-            partNumber: updatedSummary.searchState.partNumber,
-            brand: updatedSummary.searchState.brand,
-            model: updatedSummary.searchState.model,
-            year: updatedSummary.searchState.year,
-          },
-          missingFields: updatedSummary.searchState.missingFields,
-          readyForDbSearch: updatedSummary.searchState.readyForDbSearch,
-          nextQuestion: updatedSummary.openQuestion,
-          summary: updatedSummary,
-        },
-        null,
-        2
-      ),
+      message: userReply,
       intent: "SEARCH",
-      suggestions: buildSuggestions(updatedSummary),
+      suggestions:
+        dbResult.totalFound > 0
+          ? dbResult.items.slice(0, 3).map((item) => item.productName)
+          : [],
+      summary: JSON.stringify(updatedSummary, null, 2),
     };
   } catch (error) {
-    console.error("handleSearch extraction error:", error);
+    console.error("handleSearch error:", error);
 
-    const fallbackSummary = recalculateSearchState(parseSummary(body.chatSummary));
+    const fallbackSummary = parseChatSummary(body.chatSummary);
 
     return {
-      message: JSON.stringify(
-        {
-          status: "Ik ben het aan het checken.",
-          intent: "SEARCH",
-          flow: "COLLECT_SEARCH_INFO",
-          extractedFromCurrentMessage: {
-            part: "",
-            partNumber: "",
-            brand: "",
-            model: "",
-            year: "",
-          },
-          collected: {
-            part: fallbackSummary.searchState.part,
-            partNumber: fallbackSummary.searchState.partNumber,
-            brand: fallbackSummary.searchState.brand,
-            model: fallbackSummary.searchState.model,
-            year: fallbackSummary.searchState.year,
-          },
-          missingFields: fallbackSummary.searchState.missingFields,
-          readyForDbSearch: fallbackSummary.searchState.readyForDbSearch,
-          nextQuestion:
-            fallbackSummary.openQuestion ||
-            "Ik heb nog meer info nodig: automodel, bouwjaar en onderdeel.",
-          summary: fallbackSummary,
-          error: "Extractie mislukt",
-        },
-        null,
-        2
-      ),
+      message:
+        "Er ging iets mis tijdens het zoeken in de database. Probeer het opnieuw.",
       intent: "SEARCH",
-      suggestions: buildSuggestions(fallbackSummary),
+      suggestions: [],
+      summary: JSON.stringify(fallbackSummary, null, 2),
     };
   }
 }
