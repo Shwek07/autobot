@@ -521,7 +521,9 @@
   justify-content: center;
   text-decoration: none;
 }
-
+.lowStockSectionHeader{
+  margin-bottom: 20px;
+}
 .deleteButton,
 .updateButton {
   width: 34px;
@@ -531,7 +533,159 @@
 .deleteButton {
   background: #f80303;
 }
+.headerButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
+.count {
+  background: #eef2ff;
+  color: #6366f1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.filters {
+  padding: 0 24px 20px 24px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.clearButton {
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background: #e2e8f0;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sortable:hover {
+  background: #eef2ff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.paginationInfo {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.paginationButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.pageButton {
+  padding: 10px 16px;
+  background: #eef2ff;
+  color: rgba(60, 130, 255, 0.95);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  background: rgba(60, 130, 255, 0.95);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.emptyState {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.emptyStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  color: #64748b;
+}
+
+.emptyIcon {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.emptyStateButton {
+  padding: 10px 18px;
+  background: #eef2ff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emptyStateButton:hover {
+  background: #6366f1;
+  color: white;
+}
 .updateButton {
   background: #f2f2f2;
 }
@@ -621,12 +775,12 @@
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 15px; /* Minder padding op mobiel */
+    padding: 15px;
   }
 
   .statsGridTop {
     grid-template-columns: 1fr;
-    gap: 15px; /* Kleinere gap tussen stats cards */
+    gap: 15px; 
     margin-bottom: 25px;
   }
 
@@ -638,7 +792,7 @@
   }
 
   .title {
-    font-size: 1.5rem; /* Kleinere titel op mobiel */
+    font-size: 1.5rem;
   }
 
   .headerActions {
@@ -654,48 +808,48 @@
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
-    padding: 18px; /* Minder padding op mobiel */
+    padding: 18px; 
   }
 
   .card {
-    padding: 0; /* Kaarten hebben geen padding nodig op mobiel */
+    padding: 0; 
   }
 
   .fullWidthSection {
-    margin-bottom: 25px; /* Minder marge tussen secties */
+    margin-bottom: 25px; 
   }
 
   .table td,
   .table th {
-    padding: 12px 10px; /* Kleinere padding in tabel op mobiel */
+    padding: 12px 10px; 
   }
 
   .statCard {
-    padding: 18px; /* Kleinere padding op mobiel */
+    padding: 18px; 
   }
 
   .statValue {
-    font-size: 1.5rem; /* Kleinere statistieken op mobiel */
+    font-size: 1.5rem; 
   }
 
   .lowStockGrid {
-    gap: 12px; /* Kleinere gap tussen low stock items */
-    padding: 18px; /* Padding voor low stock grid */
+    gap: 12px;
+    padding: 18px; 
   }
 
   .content {
-    padding: 15px; /* Minder padding in content area */
+    padding: 15px;
   }
 
   .alertBanner {
-    padding: 12px 15px; /* Kleinere padding op mobiel */
+    padding: 12px 15px; 
     margin-bottom: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard {
-    padding: 10px; /* Nog minder padding op zeer kleine schermen */
+    padding: 10px; 
   }
 
   .content {
@@ -725,7 +879,7 @@
 
   .table td,
   .table th {
-    padding: 10px 8px; /* Nog kleinere padding */
+    padding: 10px 8px; 
     font-size: 0.85rem;
   }
 

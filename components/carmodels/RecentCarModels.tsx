@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./RecentCarModels.module.css";
 import Link from "next/link";
 
@@ -14,21 +14,33 @@ interface AutoModel {
   vin?: string;
 }
 
+const ROWS_PER_PAGE = 10;
+
 export default function RecentCarModels() {
   const [models, setModels] = useState<AutoModel[]>([]);
-  const [filtered, setFiltered] = useState<AutoModel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState({ merk: "", bouwjaar: "" });
-  const [sortConfig, setSortConfig] = useState<{ key: keyof AutoModel; direction: 'asc' | 'desc' } | null>(null);
+  const totalItems = models.length;
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof AutoModel;
+    direction: "asc" | "desc";
+  } | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function fetchModels() {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/automodels?limit=10", { cache: "no-store" });
+
+      // IMPORTANT:
+      // remove ?limit=10 so you can paginate on the frontend
+      const res = await fetch("/api/admin/automodels", { cache: "no-store" });
+
       if (!res.ok) throw new Error("Failed to fetch car models");
+
       const data = await res.json();
       setModels(data);
-      setFiltered(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -40,57 +52,78 @@ export default function RecentCarModels() {
     fetchModels();
   }, []);
 
-  useEffect(() => {
+  const filteredAndSorted = useMemo(() => {
     let temp = [...models];
-    
-    // Apply filters
-    if (search.merk) {
+
+    // Search across all relevant fields
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+
       temp = temp.filter((m) =>
-        m.auto_merk.toLowerCase().includes(search.merk.toLowerCase())
+        [
+          m.auto_merk,
+          m.auto_model,
+          String(m.bouwjaar),
+          m.engine_variant ?? "",
+          m.body_type ?? "",
+          m.vin ?? "",
+          String(m.auto_id),
+        ].some((value) => value.toLowerCase().includes(term))
       );
     }
-    if (search.bouwjaar) {
-      temp = temp.filter((m) => m.bouwjaar === Number(search.bouwjaar));
-    }
-    
-    // Apply sorting
-    if (sortConfig !== null) {
+
+    // Sorting
+    if (sortConfig) {
       temp.sort((a, b) => {
-        if (a[sortConfig.key]! < b[sortConfig.key]!) {
-          return sortConfig.direction === 'asc' ? -1 : 1;
+        const aValue = a[sortConfig.key] ?? "";
+        const bValue = b[sortConfig.key] ?? "";
+
+        if (aValue < bValue) {
+          return sortConfig.direction === "asc" ? -1 : 1;
         }
-        if (a[sortConfig.key]! > b[sortConfig.key]!) {
-          return sortConfig.direction === 'asc' ? 1 : -1;
+        if (aValue > bValue) {
+          return sortConfig.direction === "asc" ? 1 : -1;
         }
         return 0;
       });
     }
-    
-    setFiltered(temp);
-  }, [search, models, sortConfig]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch({ ...search, [e.target.name]: e.target.value });
-  };
+    return temp;
+  }, [models, searchTerm, sortConfig]);
+
+  const totalPages = Math.ceil(filteredAndSorted.length / ROWS_PER_PAGE);
+
+  const paginatedRows = useMemo(() => {
+    const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
+    const endIndex = startIndex + ROWS_PER_PAGE;
+    return filteredAndSorted.slice(startIndex, endIndex);
+  }, [filteredAndSorted, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortConfig]);
 
   const handleSort = (key: keyof AutoModel) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
+
     setSortConfig({ key, direction });
   };
 
   const clearFilters = () => {
-    setSearch({ merk: "", bouwjaar: "" });
+    setSearchTerm("");
     setSortConfig(null);
+    setCurrentPage(1);
   };
 
   const getSortIcon = (key: keyof AutoModel) => {
     if (sortConfig?.key === key) {
-      return sortConfig.direction === 'asc' ? '↑' : '↓';
+      return sortConfig.direction === "asc" ? "↑" : "↓";
     }
-    return '↕️';
+    return "↕";
   };
 
   if (loading) {
@@ -107,42 +140,35 @@ export default function RecentCarModels() {
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.titleIcon}>🚗</span>
+          <span className={styles.count}>{totalItems}</span>
+          
           Recente Auto Modellen
         </h2>
-       
-             <Link href="/admin/cars/new">
-              <button className={styles.viewAllButton}>+ Add new car</button>
-            </Link>
-              <Link href="/admin/cars/">
-              <button className={styles.viewAllButton}>Bekijk alles →</button>
-            </Link>
+
+        <div className={styles.headerButtons}>
+          <Link href="/admin/cars/new">
+            <button className={styles.viewAllButton}>+ Add new car</button>
+          </Link>
+
+          <Link href="/admin/cars/">
+            <button className={styles.viewAllButton}>Bekijk alles →</button>
+          </Link>
+        </div>
       </div>
 
-      {/* Filter Section */}
       <div className={styles.filters}>
         <div className={styles.searchWrapper}>
           <span className={styles.searchIcon}>🔍</span>
           <input
-            name="merk"
-            placeholder="Zoek op merk..."
-            value={search.merk}
-            onChange={handleChange}
+            type="text"
+            placeholder="Zoek op merk, model, bouwjaar, engine, body type, VIN..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
           />
         </div>
-        <div className={styles.yearWrapper}>
-          <input
-            name="bouwjaar"
-            type="number"
-            placeholder="Bouwjaar"
-            value={search.bouwjaar}
-            onChange={handleChange}
-            className={styles.yearInput}
-            min="1900"
-            max={new Date().getFullYear()}
-          />
-        </div>
-        {(search.merk || search.bouwjaar || sortConfig) && (
+
+        {(searchTerm || sortConfig) && (
           <button onClick={clearFilters} className={styles.clearButton}>
             ✖ Wissen
           </button>
@@ -153,27 +179,30 @@ export default function RecentCarModels() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th onClick={() => handleSort('auto_merk')} className={styles.sortable}>
-                Merk {getSortIcon('auto_merk')}
+              <th onClick={() => handleSort("auto_merk")} className={styles.sortable}>
+                Merk {getSortIcon("auto_merk")}
               </th>
-              <th onClick={() => handleSort('auto_model')} className={styles.sortable}>
-                Model {getSortIcon('auto_model')}
+              <th onClick={() => handleSort("auto_model")} className={styles.sortable}>
+                Model {getSortIcon("auto_model")}
               </th>
-              <th onClick={() => handleSort('bouwjaar')} className={styles.sortable}>
-                Bouwjaar {getSortIcon('bouwjaar')}
+              <th onClick={() => handleSort("bouwjaar")} className={styles.sortable}>
+                Bouwjaar {getSortIcon("bouwjaar")}
               </th>
-              <th onClick={() => handleSort('engine_variant')} className={styles.sortable}>
-                Engine {getSortIcon('engine_variant')}
+              <th onClick={() => handleSort("engine_variant")} className={styles.sortable}>
+                Engine {getSortIcon("engine_variant")}
               </th>
-              <th onClick={() => handleSort('body_type')} className={styles.sortable}>
-                Body Type {getSortIcon('body_type')}
+              <th onClick={() => handleSort("body_type")} className={styles.sortable}>
+                Body Type {getSortIcon("body_type")}
               </th>
-              <th>VIN</th>
+              <th onClick={() => handleSort("vin")} className={styles.sortable}>
+                VIN {getSortIcon("vin")}
+              </th>
             </tr>
           </thead>
+
           <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((m, index) => (
+            {paginatedRows.length > 0 ? (
+              paginatedRows.map((m) => (
                 <tr key={m.auto_id} className={styles.row}>
                   <td className={styles.merkCell}>
                     <span className={styles.merkBadge}>{m.auto_merk}</span>
@@ -187,7 +216,7 @@ export default function RecentCarModels() {
                   <td className={styles.vinCell}>
                     {m.vin ? (
                       <span className={styles.vin} title={m.vin}>
-                        {m.vin.substring(0, 8)}...
+                        {m.vin.length > 8 ? `${m.vin.substring(0, 8)}...` : m.vin}
                       </span>
                     ) : (
                       <span className={styles.emptyValue}>-</span>
@@ -211,6 +240,32 @@ export default function RecentCarModels() {
           </tbody>
         </table>
       </div>
+
+      {filteredAndSorted.length > 0 && (
+        <div className={styles.pagination}>
+          <div className={styles.paginationInfo}>
+            Pagina <strong>{currentPage}</strong> van <strong>{totalPages}</strong>
+          </div>
+
+          <div className={styles.paginationButtons}>
+            <button
+              className={styles.pageButton}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              ← Vorige
+            </button>
+
+            <button
+              className={styles.pageButton}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Volgende →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
